@@ -1,0 +1,377 @@
+        /* ================================================================
+           Go/No Go 遊戲專用樣式
+           ================================================================ */
+        .gng-grid-wrapper {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .gng-grid-container {
+            display: grid;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+        }
+        .gng-grid-container.cols-1 {
+            --cols: 1;
+            --rows: 1;
+            --h-gaps: 0px;
+            --v-gaps: 0px;
+            --card-max: 750px;
+            --card: min(calc((100vw - 24px - var(--h-gaps)) / var(--cols)), calc((100vh - 210px - var(--v-gaps)) / var(--rows)), var(--card-max));
+            grid-template-columns: repeat(var(--cols), var(--card));
+            grid-auto-rows: var(--card);
+        }
+        .gng-grid-container.cols-2 {
+            --cols: 2;
+            --rows: 1;
+            --h-gaps: 16px;
+            --v-gaps: 0px;
+            --card-max: 592px;
+            --card: min(calc((100vw - 24px - var(--h-gaps)) / var(--cols)), calc((100vh - 210px - var(--v-gaps)) / var(--rows)), var(--card-max));
+            grid-template-columns: repeat(var(--cols), var(--card));
+            grid-auto-rows: var(--card);
+        }
+        .gng-grid-container.cols-3 {
+            --cols: 3;
+            --rows: 1;
+            --h-gaps: 32px;
+            --v-gaps: 0px;
+            --card-max: 100vw;
+            --card: min(calc((100vw - 24px - var(--h-gaps)) / var(--cols)), calc((100vh - 210px - var(--v-gaps)) / var(--rows)), var(--card-max));
+            grid-template-columns: repeat(var(--cols), var(--card));
+            grid-auto-rows: var(--card);
+        }
+        .gng-grid-container .gng-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            padding: 6px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1/1;
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+            transition: background 0.4s;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+        .gng-grid-container .gng-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 6px;
+            border-radius: 18px;
+            background: transparent;
+        }
+
+        .gng-n-select {
+            background: var(--control-bg);
+            border: none;
+            border-radius: 40px;
+            padding: 0 16px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-color);
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            transition: var(--btn-transition);
+            height: 44px;
+        }
+        [data-theme="dark"] .gng-n-select {
+            background: #0d47a1;
+            color: #e0e0e0;
+        }
+
+        /* ================================================================
+           底部控制區 (N-back / Go-NoGo 共用)
+           ================================================================ */
+        .bottom-controls {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            flex-shrink: 0;
+            padding: 6px 0 2px 0;
+            gap: 8px;
+            min-height: 56px;
+            border-top: 2px solid var(--border-color);
+            margin-top: 4px;
+            padding-top: 8px;
+            transition: border-color 0.4s;
+        }
+        .bottom-controls .left-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .bottom-controls .center-group {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            justify-content: center;
+        }
+        .bottom-controls .right-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        /* 速度控制 */
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--control-bg-nback);
+            padding: 4px 10px;
+            border-radius: 30px;
+            border: 2px solid var(--nback-brown);
+            transition: background 0.3s, border 0.3s;
+            height: 44px;
+        }
+        .speed-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            color: var(--nback-brown);
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--btn-transition);
+            touch-action: manipulation;
+            padding: 0;
+            line-height: 1;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .speed-display {
+            min-width: 32px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--control-text);
+            transition: color 0.3s;
+            line-height: 1;
+        }
+
+        /* 播放按鈕 (共用) */
+        .play-btn {
+            width: 47px;
+            height: 47px;
+            border: none;
+            border-radius: 50%;
+            background: var(--nback-brown);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--btn-transition), border-radius 0.3s;
+            touch-action: manipulation;
+            position: relative;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .play-btn:focus-visible { outline: 3px solid #ffb300; outline-offset: 2px; }
+        .play-btn:hover { background: #6D4C41; }
+        [data-theme="dark"] .play-btn { background: #8D6E63; }
+        [data-theme="dark"] .play-btn:hover { background: #A1887F; }
+        .play-btn .play-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            width: 20px;
+            height: 20px;
+            position: relative;
+        }
+        .play-btn .play-icon .triangle {
+            width: 0;
+            height: 0;
+            border-left: 14px solid white;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            transition: all 0.3s ease;
+            margin-left: 4.5px;
+        }
+        .play-btn .play-icon .pause-bar {
+            display: none;
+            width: 4px;
+            height: 18px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            position: absolute;
+        }
+        .play-btn .play-icon .pause-bar.left { left: 3px; }
+        .play-btn .play-icon .pause-bar.right { right: 3px; }
+        .play-btn.playing .play-icon .triangle {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+        .play-btn.playing .play-icon .pause-bar {
+            display: block;
+            opacity: 1;
+            animation: pauseIn 0.3s ease forwards;
+        }
+        .play-btn:not(.playing) .play-icon .triangle {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+        .play-btn:not(.playing) .play-icon .pause-bar {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        @keyframes pauseIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 匹配 / 不匹配 按鈕 (N-back) */
+        .nback-controls .match-btn,
+        .nback-controls .notmatch-btn {
+            border: none;
+            border-radius: 40px;
+            padding: 14px 32px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--btn-transition);
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 140px;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+        .nback-controls .match-btn {
+            background: var(--highlight-correct);
+            box-shadow: var(--btn-shadow-correct);
+        }
+        .nback-controls .match-btn:hover {
+            background: var(--btn-hover-correct);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow-correct);
+        }
+        .nback-controls .notmatch-btn {
+            background: var(--highlight-wrong);
+            box-shadow: var(--btn-shadow-wrong);
+        }
+        .nback-controls .notmatch-btn:hover {
+            background: var(--btn-hover-wrong);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow-wrong);
+        }
+        [data-theme="dark"] .nback-controls .match-btn { background: #0d47a1; box-shadow: var(--btn-shadow-correct); }
+        [data-theme="dark"] .nback-controls .match-btn:hover { background: var(--btn-hover-correct); box-shadow: var(--btn-shadow-correct); }
+        [data-theme="dark"] .nback-controls .notmatch-btn { background: #b71c1c; box-shadow: var(--btn-shadow-wrong); }
+        [data-theme="dark"] .nback-controls .notmatch-btn:hover { background: var(--btn-hover-wrong); box-shadow: var(--btn-shadow-wrong); }
+
+        /* Go / No Go 按鈕 */
+        .gng-controls .go-btn,
+        .gng-controls .nogo-btn {
+            border: none;
+            border-radius: 40px;
+            padding: 10px 28px;
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--btn-transition);
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 80px;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+        .gng-controls .go-btn {
+            background: var(--highlight-correct);
+            box-shadow: var(--btn-shadow-correct);
+        }
+        .gng-controls .go-btn:hover {
+            background: var(--btn-hover-correct);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow-correct);
+        }
+        .gng-controls .nogo-btn {
+            background: var(--highlight-wrong);
+            box-shadow: var(--btn-shadow-wrong);
+        }
+        .gng-controls .nogo-btn:hover {
+            background: var(--btn-hover-wrong);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow-wrong);
+        }
+        [data-theme="dark"] .gng-controls .go-btn { background: #0d47a1; box-shadow: var(--btn-shadow-correct); }
+        [data-theme="dark"] .gng-controls .go-btn:hover { background: var(--btn-hover-correct); box-shadow: var(--btn-shadow-correct); }
+        [data-theme="dark"] .gng-controls .nogo-btn { background: #b71c1c; box-shadow: var(--btn-shadow-wrong); }
+        [data-theme="dark"] .gng-controls .nogo-btn:hover { background: var(--btn-hover-wrong); box-shadow: var(--btn-shadow-wrong); }
+
+        /* 側滑選單 */
+        .slide-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100%;
+            background: var(--slide-bg);
+            box-shadow: var(--slide-shadow);
+            z-index: 2001;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            backdrop-filter: blur(8px);
+        }
+        .slide-menu.open { right: 0; }
+        .slide-menu .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 24px;
+            color: var(--text-color);
+            padding: 12px 16px;
+            border-radius: 20px;
+            background: var(--card-bg);
+            cursor: pointer;
+            transition: var(--btn-transition);
+            box-shadow: var(--card-shadow);
+            border: none;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .slide-menu .menu-item:hover { background: var(--slide-item-hover); }
+        .slide-menu .menu-item .state-badge {
+            margin-left: auto;
+            font-size: 20px;
+        }
+        .slide-menu .menu-divider {
+            border-top: 2px solid var(--border-color);
+            margin: 4px 0;
+        }

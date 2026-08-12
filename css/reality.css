@@ -1,0 +1,435 @@
+        /* ================================================================
+           現實導向（Reality Orientation）
+           ================================================================ */
+        .hidden {
+            display: none !important;
+        }
+
+        .category-grid.game-select {
+            grid-template-columns: repeat(5, 1fr);
+        }
+        #mainMenu .menu-header {
+            margin-bottom: 20px;
+        }
+        #mainMenu .menu-subtitle {
+            margin-bottom: 42px;
+        }
+        #mainMenu .category-grid.game-select {
+            max-width: 1200px;
+        }
+        #mainMenu .category-grid.game-select .category-btn {
+            min-height: 150px;
+        }
+        #mainMenu .category-grid.game-select .category-btn .icon {
+            font-size: 58px;
+            margin-bottom: 10px;
+        }
+        #mainMenu .category-grid.game-select .category-btn .label {
+            font-size: 26px;
+        }
+
+        .reality-board {
+            position: fixed;
+            inset: 0;
+            z-index: 1100;
+            background: var(--container-bg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.4s;
+        }
+        #realitySettings {
+            z-index: 1500;
+        }
+        #realitySettings .menu-title {
+            letter-spacing: 0;
+        }
+        .reality-top {
+            position: absolute;
+            top: 10px;
+            left: 14px;
+            right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 20;
+            pointer-events: none;
+        }
+        .reality-top > * {
+            pointer-events: auto;
+        }
+        .reality-top-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .reality-edit-btn {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border-radius: 50%;
+        }
+        .reality-edit-emoji {
+            font-size: 18px;
+            line-height: 1;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .reality-stage {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+        .reality-page {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 72px 28px 86px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.22s ease;
+        }
+        .reality-page.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .reality-page.hidden {
+            display: none;
+        }
+
+        .reality-time-page {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(18px, 4vh, 44px);
+        }
+        .reality-info {
+            background: var(--card-bg);
+            border-radius: 36px;
+            box-shadow: var(--card-shadow);
+            padding: 18px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            min-height: 0;
+            transition: background 0.4s, box-shadow 0.4s;
+        }
+        .reality-label {
+            font-size: var(--reality-label-size, 40px);
+            font-weight: 700;
+            color: var(--muted-text);
+            letter-spacing: 0;
+            line-height: 1.1;
+            text-align: center;
+        }
+        .reality-value {
+            font-size: var(--reality-value-size, 104px);
+            font-weight: 800;
+            color: #00C800;
+            letter-spacing: 0;
+            line-height: 1.12;
+            white-space: nowrap;
+            text-align: center;
+            width: 100%;
+        }
+        .reality-time-page .reality-info {
+            gap: clamp(20px, 5vh, 48px);
+        }
+        .reality-location-block {
+            gap: clamp(20px, 5vh, 48px);
+        }
+        #realityDate {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.12em;
+            line-height: 1.08;
+            max-height: 64vh;
+            overflow: hidden;
+        }
+        .reality-location-block .reality-value {
+            max-height: 56vh;
+            overflow: hidden;
+        }
+        .reality-time-digits,
+        .reality-weekday {
+            color: #00C800;
+        }
+        .reality-time-digits {
+            font-size: 1.32em;
+            line-height: 1;
+        }
+        .reality-static {
+            color: #000;
+        }
+        [data-theme="dark"] .reality-static {
+            color: var(--text-color);
+        }
+        .reality-location-home {
+            color: var(--text-color);
+        }
+
+        .reality-duo {
+            width: 100%;
+            max-width: 1500px;
+            display: flex;
+            flex-direction: row;
+            gap: clamp(16px, 3vw, 48px);
+            justify-content: center;
+            align-items: stretch;
+        }
+        .reality-duo .reality-info {
+            flex: 1;
+            max-width: 640px;
+            gap: 10px;
+            padding: 24px 18px;
+        }
+        .reality-big-icon {
+            width: min(240px, 30vh, 30vw);
+            height: min(240px, 30vh, 30vw);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: min(150px, 24vh, 24vw);
+            line-height: 1;
+        }
+        .reality-weather-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(8px, 1.5vw, 18px);
+            width: 100%;
+            min-width: 0;
+        }
+        .reality-weather-icon {
+            flex: 0 0 auto;
+            font-size: clamp(48px, 10vw, 110px);
+            line-height: 1;
+        }
+        .reality-weather-row .reality-value {
+            width: auto;
+            flex: 0 1 auto;
+        }
+        .reality-location-block {
+            width: 100%;
+            max-width: 1100px;
+            min-height: 32vh;
+            padding: 26px 34px;
+        }
+
+        .reality-nav {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 16px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 26px;
+        }
+        .reality-nav-btn {
+            width: 58px;
+            height: 58px;
+            border: none;
+            border-radius: 50%;
+            background: var(--control-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: var(--btn-transition);
+            padding: 0;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .reality-nav-btn img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            pointer-events: none;
+            user-select: none;
+        }
+        .reality-nav-arrow-flip {
+            transform: scaleX(-1);
+        }
+        .reality-nav-btn:hover:not(:disabled) {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+        }
+        .reality-nav-btn:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+        .reality-dots {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .reality-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid var(--muted-text);
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+            transition: var(--btn-transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .reality-dot.active {
+            background: var(--highlight-correct);
+            border-color: var(--highlight-correct);
+        }
+
+        [data-theme="dark"] .reality-nav-btn img {
+            filter: brightness(0) invert(1);
+        }
+        [data-theme="dark"] .reality-nav-btn {
+            background-color: #0d47a1;
+        }
+        [data-theme="dark"] .reality-nav-btn:hover:not(:disabled) {
+            background-color: #1565c0;
+        }
+
+        .reality-setting-select {
+            font-size: 20px;
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            max-width: 260px;
+            cursor: pointer;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .reality-done-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 28px;
+            font-weight: 700;
+            border: none;
+            border-radius: 40px;
+            background: var(--highlight-correct);
+            color: #fff;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: var(--btn-shadow-correct);
+            transition: var(--btn-transition);
+        }
+        .reality-done-btn:hover {
+            background: var(--btn-hover-correct);
+            transform: translateY(-2px);
+        }
+        [data-theme="dark"] .reality-done-btn {
+            background: #0d47a1;
+            box-shadow: var(--btn-shadow-correct);
+        }
+        [data-theme="dark"] .reality-done-btn:hover {
+            background: #1565c0;
+        }
+
+        @media (min-width: 900px) and (orientation: landscape) {
+            .reality-time-page {
+                flex-direction: row;
+            }
+            .reality-time-page .reality-info {
+                flex: 1;
+            }
+        }
+        @media (max-width: 820px) {
+            .category-grid.game-select {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            #mainMenu .category-grid.game-select {
+                max-width: 860px;
+            }
+            #mainMenu .category-grid.game-select .category-btn {
+                min-height: 140px;
+            }
+            #mainMenu .category-grid.game-select .category-btn .icon {
+                font-size: 50px;
+                margin-bottom: 8px;
+            }
+            #mainMenu .category-grid.game-select .category-btn .label {
+                font-size: 23px;
+            }
+            .reality-nav-btn {
+                width: 52px;
+                height: 52px;
+            }
+            .reality-nav-btn img {
+                width: 32px;
+                height: 32px;
+            }
+        }
+        @media (max-width: 640px) {
+            .category-grid.game-select {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            #mainMenu .menu-header {
+                margin-bottom: 14px;
+            }
+            #mainMenu .menu-subtitle {
+                margin-bottom: 30px;
+            }
+            #mainMenu .category-grid.game-select .category-btn {
+                min-height: 125px;
+            }
+            #mainMenu .category-grid.game-select .category-btn .icon {
+                font-size: 46px;
+                margin-bottom: 8px;
+            }
+            #mainMenu .category-grid.game-select .category-btn .label {
+                font-size: 21px;
+            }
+            .reality-duo {
+                flex-direction: column;
+            }
+            .reality-page {
+                padding: 64px 12px 78px;
+            }
+            .reality-info {
+                padding: 14px 16px;
+            }
+            .reality-setting-select {
+                max-width: 190px;
+                font-size: 18px;
+                padding: 6px 10px;
+            }
+        }
+        @media (max-width: 540px) {
+            .category-grid.game-select {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            #mainMenu .menu-subtitle {
+                margin-bottom: 24px;
+            }
+            #mainMenu .category-grid.game-select .category-btn {
+                min-height: 115px;
+            }
+            #mainMenu .category-grid.game-select .category-btn .icon {
+                font-size: 42px;
+                margin-bottom: 8px;
+            }
+            #mainMenu .category-grid.game-select .category-btn .label {
+                font-size: 19px;
+            }
+            .reality-nav {
+                gap: 18px;
+            }
+            .reality-dot {
+                width: 14px;
+                height: 14px;
+            }
+        }

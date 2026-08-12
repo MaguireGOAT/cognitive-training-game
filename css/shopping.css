@@ -1,0 +1,407 @@
+        /* ================================================================
+           買餸記憶遊戲專用樣式
+           ================================================================ */
+        .hidden {
+            display: none !important;
+        }
+
+        .shopping-stage {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .shopping-view {
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 購物清單 */
+        .shopping-list-panel {
+            width: min(96vw, 1250px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px;
+        }
+        .shopping-list-hint {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--muted-text);
+            text-align: center;
+            transition: color 0.4s;
+        }
+
+        .shopping-list-grid {
+            display: grid;
+            gap: 18px;
+            justify-content: center;
+            align-items: stretch;
+            align-content: center;
+            width: 100%;
+            --max-w: min(96vw, 1250px);
+            --card: min(calc((var(--max-w) - (var(--cols) - 1) * var(--gaps-h)) / var(--cols)),
+                        calc((100vh - 290px - (var(--rows) - 1) * var(--gaps-v)) / var(--rows)));
+            grid-template-columns: repeat(var(--cols), var(--card));
+            grid-auto-rows: var(--card);
+        }
+        .shopping-list-grid.count-2 { --cols: 2; --rows: 1; --gaps-h: 18px; --gaps-v: 0px; }
+        .shopping-list-grid.count-3 { --cols: 3; --rows: 1; --gaps-h: 24px; --gaps-v: 0px; }
+        .shopping-list-grid.count-4 { --cols: 4; --rows: 1; --gaps-h: 28px; --gaps-v: 0px; }
+        .shopping-list-grid.count-5 { --cols: 3; --rows: 2; --gaps-h: 24px; --gaps-v: 18px; }
+        .shopping-list-grid.count-6 { --cols: 3; --rows: 2; --gaps-h: 24px; --gaps-v: 18px; }
+
+        .shopping-list-card {
+            background: var(--card-bg);
+            border: 4px solid transparent;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            padding: 6px 6px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.4s, border-color 0.2s, box-shadow 0.2s, transform 0.16s;
+        }
+        .shopping-list-card .food-image {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+        .shopping-list-card .food-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 6px;
+            border-radius: 18px;
+        }
+        .shopping-list-card .food-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-color);
+            line-height: 1.2;
+            margin-top: 4px;
+            overflow: hidden;
+            max-height: 40px;
+            text-align: center;
+            transition: color 0.4s;
+        }
+        .shopping-list-card.name-only {
+            justify-content: center;
+            gap: 0;
+        }
+        .shopping-list-card.name-only .food-name {
+            font-size: 44px;
+            font-weight: 800;
+            max-height: none;
+            margin: 0;
+        }
+
+        /* 回饋提示 */
+        .shopping-feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 40;
+            font-size: 44px;
+            font-weight: 800;
+            padding: 10px 28px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            pointer-events: none;
+            text-align: center;
+            white-space: nowrap;
+            transition: opacity 0.3s ease;
+        }
+        [data-theme="dark"] .shopping-feedback {
+            background: rgba(30, 30, 50, 0.95);
+        }
+
+        /* 回憶揀選 */
+        .shopping-recall-panel {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 0;
+        }
+        .shopping-recall-grid {
+            display: grid;
+            gap: 14px;
+            justify-content: center;
+            align-items: stretch;
+            align-content: center;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+        }
+        .shopping-recall-grid.count-4 {
+            --cols: 4;
+            --rows: 1;
+            --gaps-h: 18px;
+            --gaps-v: 0px;
+            --card-max: 560px;
+        }
+        .shopping-recall-grid.count-6 {
+            --cols: 3;
+            --rows: 2;
+            --gaps-h: 20px;
+            --gaps-v: 18px;
+            --card-max: 520px;
+        }
+        .shopping-recall-grid.count-8 {
+            --cols: 4;
+            --rows: 2;
+            --gaps-h: 22px;
+            --gaps-v: 18px;
+            --card-max: 500px;
+        }
+        .shopping-recall-grid {
+            --card: min(calc((100vw - 24px - (var(--cols) - 1) * var(--gaps-h)) / var(--cols)),
+                        calc((100vh - 200px - (var(--rows) - 1) * var(--gaps-v)) / var(--rows)),
+                        var(--card-max));
+            grid-template-columns: repeat(var(--cols), var(--card));
+            grid-auto-rows: var(--card);
+        }
+
+        .shopping-recall-card {
+            background: var(--card-bg);
+            border: 4px solid transparent;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            padding: 6px 6px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: var(--btn-transition), border-color 0.15s ease, background 0.4s;
+        }
+        .shopping-recall-card:hover:not(.dimmed) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+        .shopping-recall-card:active:not(.dimmed) { transform: scale(0.97); }
+        .shopping-recall-card .food-image {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+        .shopping-recall-card .food-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 6px;
+            border-radius: 18px;
+            pointer-events: none;
+        }
+        .shopping-recall-card .food-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-color);
+            line-height: 1.2;
+            margin-top: 4px;
+            overflow: hidden;
+            max-height: 40px;
+            opacity: 1;
+            text-align: center;
+            transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.3s ease, color 0.4s;
+        }
+        .hide-names .shopping-recall-card .food-name {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .shopping-recall-card.selected {
+            border-color: var(--highlight-correct);
+            background: #edf8f2;
+            box-shadow: 0 0 0 6px rgba(59, 168, 123, 0.20);
+        }
+        [data-theme="dark"] .shopping-recall-card.selected {
+            background: #1a2a4a;
+            box-shadow: 0 0 0 6px rgba(66, 165, 245, 0.25);
+        }
+        .shopping-recall-card.wrong-flash {
+            border-color: var(--highlight-wrong);
+            background: #fdeeec;
+            box-shadow: 0 0 0 6px rgba(217, 90, 90, 0.18);
+        }
+        [data-theme="dark"] .shopping-recall-card.wrong-flash { background: #3a1a1a; }
+        .shopping-recall-card.dimmed {
+            opacity: 0.55;
+            cursor: default;
+        }
+
+        .shopping-selected-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 6px;
+            border-radius: 50%;
+            background: var(--highlight-correct);
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            pointer-events: none;
+        }
+        .shopping-selected-badge.visible { display: flex; }
+
+        /* 底部狀態 */
+        .shopping-controls {
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .shopping-progress {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--highlight-correct);
+            background: var(--question-bg);
+            padding: 6px 22px;
+            border-radius: 30px;
+            min-width: 180px;
+            text-align: center;
+            transition: color 0.4s, background 0.4s;
+        }
+        .shopping-timer {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--nback-brown);
+            background: var(--control-bg);
+            padding: 6px 18px;
+            border-radius: 30px;
+            min-width: 110px;
+            text-align: center;
+            transition: color 0.4s, background 0.4s;
+        }
+        .shopping-timer.alert { color: var(--highlight-wrong); }
+
+        /* 主要動作按鈕 */
+        .shopping-primary-btn {
+            border: none;
+            border-radius: 40px;
+            padding: 14px 32px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            background: var(--highlight-correct);
+            box-shadow: var(--btn-shadow-correct);
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            transition: var(--btn-transition);
+        }
+        .shopping-primary-btn:hover {
+            background: var(--btn-hover-correct);
+            transform: translateY(-2px);
+        }
+        [data-theme="dark"] .shopping-primary-btn {
+            background: #0d47a1;
+            box-shadow: 0 6px 0 #0a2a6a;
+        }
+        [data-theme="dark"] .shopping-primary-btn:hover { background: #1565c0; }
+
+        /* 響應式調整 */
+        @media (max-width: 820px) {
+            .shopping-list-hint { font-size: 18px; }
+            .shopping-list-grid { --max-w: min(96vw, 900px); }
+            .shopping-recall-grid.count-4 { --gaps-h: 16px; --gaps-v: 0px; --card-max: 520px; }
+            .shopping-recall-grid.count-6 { --gaps-h: 16px; --gaps-v: 14px; --card-max: 480px; }
+            .shopping-recall-grid.count-8 { --gaps-h: 16px; --gaps-v: 14px; --card-max: 460px; }
+            .shopping-progress { font-size: 28px; }
+            .shopping-timer { font-size: 23px; }
+        }
+
+        @media (max-width: 640px) {
+            .shopping-list-grid.count-5,
+            .shopping-list-grid.count-6 {
+                --cols: 2;
+                --rows: 3;
+                --gaps-h: 18px;
+                --gaps-v: 18px;
+            }
+            .shopping-recall-grid.count-8 {
+                --cols: 2;
+                --rows: 4;
+                --gaps-h: 14px;
+                --gaps-v: 14px;
+                --card-max: 420px;
+            }
+            .shopping-controls { gap: 12px; }
+            .shopping-progress { font-size: 24px; padding: 4px 16px; min-width: 140px; }
+            .shopping-timer { font-size: 20px; padding: 4px 14px; min-width: 96px; }
+            .shopping-primary-btn { font-size: 22px; padding: 12px 26px; }
+        }
+
+        @media (max-width: 540px) {
+            .shopping-list-grid.count-3,
+            .shopping-list-grid.count-4 {
+                --cols: 2;
+                --rows: 2;
+                --gaps-h: 16px;
+                --gaps-v: 16px;
+            }
+            .shopping-list-card { border-radius: 16px; padding: 4px; }
+            .shopping-list-card .food-image { border-radius: 12px; }
+            .shopping-list-card .food-image img { padding: 4px; }
+            .shopping-list-card .food-name { font-size: 16px; }
+            .shopping-list-card.name-only .food-name { font-size: 30px; }
+            .shopping-feedback { font-size: 30px; padding: 8px 18px; }
+            .shopping-recall-grid.count-4 { --gaps-h: 12px; --gaps-v: 0px; --card-max: 400px; }
+            .shopping-recall-grid.count-6 { --cols: 2; --rows: 3; --gaps-h: 12px; --gaps-v: 12px; --card-max: 400px; }
+            .shopping-recall-card { border-radius: 16px; padding: 4px; }
+            .shopping-recall-card .food-image { border-radius: 12px; }
+            .shopping-recall-card .food-image img { padding: 4px; }
+            .shopping-recall-card .food-name { font-size: 15px; }
+            .shopping-selected-badge { min-width: 28px; height: 28px; font-size: 16px; }
+            .shopping-list-hint { font-size: 15px; }
+            .shopping-primary-btn { font-size: 19px; padding: 10px 20px; }
+        }

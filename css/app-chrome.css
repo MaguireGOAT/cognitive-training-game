@@ -1,0 +1,142 @@
+        /* ================================================================
+           Shared app chrome: hamburger, back, and side menu
+           ================================================================ */
+        .back-btn,
+        .hamburger-btn {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--control-bg, #e8dfd6);
+            border: none;
+            color: var(--text, var(--text-color, #3d2c1e));
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.16s ease, box-shadow 0.16s ease;
+            font-family: inherit;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .save-btn {
+            height: 44px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 22px;
+            background: var(--control-bg, #e8dfd6);
+            border: none;
+            color: var(--text, var(--text-color, #3d2c1e));
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.16s ease, box-shadow 0.16s ease;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .save-btn:hover {
+            background: var(--btn-hover, #d5c9bc);
+        }
+        [data-theme="dark"] .save-btn {
+            background-color: #0d47a1;
+            color: #fff;
+        }
+        [data-theme="dark"] .save-btn:hover {
+            background-color: #1565c0;
+        }
+        .back-btn:hover,
+        .hamburger-btn:hover {
+            background: var(--btn-hover, #d5c9bc);
+        }
+        .back-btn .back-icon,
+        .hamburger-btn .menu-icon {
+            display: block;
+            object-fit: contain;
+            pointer-events: none;
+            user-select: none;
+        }
+        .back-btn .back-icon {
+            width: 24px;
+            height: 24px;
+        }
+        .hamburger-btn .menu-icon {
+            width: 32px;
+            height: 32px;
+        }
+        [data-theme="dark"] .back-btn,
+        [data-theme="dark"] .hamburger-btn {
+            background-color: #0d47a1;
+        }
+        [data-theme="dark"] .back-btn:hover,
+        [data-theme="dark"] .hamburger-btn:hover {
+            background-color: #1565c0;
+        }
+        [data-theme="dark"] .back-btn .back-icon,
+        [data-theme="dark"] .hamburger-btn .menu-icon {
+            filter: brightness(0) invert(1);
+        }
+
+        .slide-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100%;
+            background: var(--slide-bg, var(--menu-bg, rgba(255, 255, 255, 0.96)));
+            box-shadow: var(--slide-shadow, 0 0 20px rgba(0, 0, 0, 0.15));
+            z-index: 3000;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            backdrop-filter: blur(8px);
+        }
+        .slide-menu.open {
+            right: 0;
+        }
+        .slide-menu .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 24px;
+            color: var(--text, var(--text-color, #3d2c1e));
+            padding: 12px 16px;
+            border-radius: 20px;
+            background: var(--card-bg, var(--panel-bg, #ffffff));
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.16s ease, box-shadow 0.16s ease;
+            box-shadow: var(--card-shadow, 0 6px 18px rgba(0, 0, 0, 0.08));
+            border: none;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .slide-menu .menu-item:hover {
+            background: var(--slide-item-hover, #e8e0d8);
+        }
+        .slide-menu .menu-item .state-badge {
+            margin-left: auto;
+            font-size: 20px;
+        }
+        .slide-menu .menu-divider {
+            border-top: 2px solid var(--border-color, var(--divider, #d4c5b8));
+            margin: 4px 0;
+        }
+        [data-theme="dark"] .slide-menu {
+            background: var(--slide-bg, rgba(30, 30, 50, 0.96));
+        }
+        [data-theme="dark"] .slide-menu .menu-item {
+            background: #2d2d44;
+            color: #e0e0e0;
+        }
+        [data-theme="dark"] .slide-menu .menu-item:hover {
+            background: #3a3a5a;
+        }
+        [data-theme="dark"] .slide-menu .menu-divider {
+            border-color: #3a3a5a;
+        }

@@ -1,0 +1,50 @@
+        .home-overlay {
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .home-header {
+            margin-bottom: 4px;
+        }
+
+        .home-header .menu-title {
+            letter-spacing: 0;
+        }
+
+        .home-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            max-width: 900px;
+            width: 100%;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .home-link {
+            text-decoration: none;
+            aspect-ratio: 1 / 1;
+        }
+
+        .home-link:hover {
+            text-decoration: none;
+        }
+
+        @media (max-width: 820px) {
+            .home-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                max-width: 860px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .home-grid {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .home-grid {
+                gap: 6px;
+            }
+        }

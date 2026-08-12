@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>認知訓練</title>
+    <meta name="theme-color" content="#f5f0e8" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="認知遊戲" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/app-chrome.css" />
+    <link rel="stylesheet" href="css/reality.css" />
+    <link rel="stylesheet" href="css/food.css" />
+    <link rel="stylesheet" href="css/nback.css" />
+    <link rel="stylesheet" href="css/gng.css" />
+    <link rel="stylesheet" href="css/shopping.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/unified.css" />
+    <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('cognitiveAppTheme')==='dark'?'dark':'light');}catch(e){}</script>
+</head>
+<body>
+
+    <!-- ================================================================
+        Home
+       ================================================================ -->
+    <div class="menu-overlay home-overlay app-screen" id="home">
+        <div style="position:fixed; top:10px; right:14px; z-index:3000;">
+            <button class="hamburger-btn" id="homeMenuBtn" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+        </div>
+        <div class="menu-header home-header">
+            <div class="menu-title"><span class="brain">🧠</span> 認知訓練</div>
+        </div>
+        <div class="menu-subtitle">選擇一個遊戲或活動開始</div>
+        <div class="home-grid">
+            <button class="category-btn home-link" data-router-target="realityBoard">
+                <span class="icon">🧭</span>
+                <span class="label">現實導向</span>
+            </button>
+            <button class="category-btn home-link" data-router-target="mainMenu">
+                <span class="icon">🍽️</span>
+                <span class="label">食物遊戲</span>
+            </button>
+            <button class="category-btn home-link" data-router-target="palm">
+                <span class="icon">👍</span>
+                <span class="label">手掌跳飛機</span>
+            </button>
+        </div>
+        <div class="menu-footer"></div>
+    </div>
+
+    <!-- ================================================================
+        Reality Orientation
+       ================================================================ -->
+    <div class="reality-board app-screen" id="realityBoard">
+        <div class="reality-top">
+            <button class="back-btn" id="realityBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+            <div class="reality-top-right">
+                <button class="action-btn reality-edit-btn" id="realityEditBtn"><span class="reality-edit-emoji" aria-hidden="true">✏️</span></button>
+                <button class="hamburger-btn" id="realityMenuBtn" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+            </div>
+        </div>
+
+        <div class="reality-stage" id="realityStage">
+            <section class="reality-page" data-page="time">
+                <div class="reality-time-page">
+                    <div class="reality-info">
+                        <div class="reality-label">時間</div>
+                        <div class="reality-value" id="realityTime">--:-- 上午</div>
+                    </div>
+                </div>
+            </section>
+            <section class="reality-page" data-page="date">
+                <div class="reality-time-page">
+                    <div class="reality-info">
+                        <div class="reality-label">日期</div>
+                        <div class="reality-value" id="realityDate">----年--月--日（星期--）</div>
+                    </div>
+                </div>
+            </section>
+            <section class="reality-page" data-page="season">
+                <div class="reality-duo" id="realityDuo">
+                    <div class="reality-info reality-season-block">
+                        <div class="reality-label">季節</div>
+                        <div class="reality-value" id="realitySeasonText">--</div>
+                    </div>
+                    <div class="reality-info reality-weather-block" id="realityWeatherBlock">
+                        <div class="reality-label">天氣</div>
+                        <div class="reality-weather-row">
+                            <div class="reality-weather-icon" id="realityWeatherIcon" aria-hidden="true"></div>
+                            <div class="reality-value" id="realityWeatherText">--</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="reality-page" data-page="location">
+                <div class="reality-info reality-location-block">
+                    <div class="reality-label">地點</div>
+                    <div class="reality-value" id="realityLocationText">未設定</div>
+                </div>
+            </section>
+        </div>
+
+        <div class="reality-nav">
+            <button class="reality-nav-btn" id="realityPrevBtn"><img class="reality-nav-arrow" src="assets/icons/back.png" alt="上一頁" /></button>
+            <div class="reality-dots" id="realityDots"></div>
+            <button class="reality-nav-btn" id="realityNextBtn"><img class="reality-nav-arrow reality-nav-arrow-flip" src="assets/icons/back.png" alt="下一頁" /></button>
+        </div>
+    </div>
+
+    <div class="menu-overlay app-screen" id="realitySettings">
+        <div style="position:fixed; top:10px; left:14px; z-index:3000;">
+            <button class="back-btn" id="realitySettingsBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+        </div>
+        <div style="position:fixed; top:10px; right:14px; z-index:3000;">
+            <button class="hamburger-btn" id="realitySettingsMenuBtn" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+        </div>
+        <div class="menu-header" style="margin-top:20px;">
+            <div class="menu-title">⚙️ 設定</div>
+        </div>
+        <div style="max-width:620px; width:100%; display:flex; flex-direction:column; gap:18px; padding:10px 20px;">
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">天氣</span>
+                <select id="realityWeatherSelect" class="reality-setting-select">
+                    <option value="未設定">未設定</option>
+                    <option value="晴" selected>晴</option>
+                    <option value="陰">陰</option>
+                    <option value="雨">雨</option>
+                    <option value="雷暴">雷暴</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">季節</span>
+                <select id="realitySeasonSelect" class="reality-setting-select">
+                    <option value="自動" selected>自動</option>
+                    <option value="春天">春天</option>
+                    <option value="夏天">夏天</option>
+                    <option value="秋天">秋天</option>
+                    <option value="冬天">冬天</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">地點</span>
+                <select id="realityLocationSelect" class="reality-setting-select">
+                    <option value="未設定" selected>未設定</option>
+                    <option value="鰂魚涌富璟">鰂魚涌富璟</option>
+                    <option value="油塘康璟">油塘康璟</option>
+                    <option value="筲箕灣聖輝">筲箕灣聖輝</option>
+                    <option value="新蒲崗康璟">新蒲崗康璟</option>
+                    <option value="觀塘慶樺">觀塘慶樺</option>
+                    <option value="深水埗慶楠">深水埗慶楠</option>
+                    <option value="荃灣慶楠">荃灣慶楠</option>
+                    <option value="上水慶楠">上水慶楠</option>
+                    <option value="沙田富璟">沙田富璟</option>
+                    <option value="大埔富樺">大埔富樺</option>
+                    <option value="上水富璟">上水富璟</option>
+                    <option value="沙田第一城富璟">沙田第一城富璟</option>
+                </select>
+            </div>
+            <div style="margin-top:10px;">
+                <button id="realityDoneBtn" class="reality-done-btn">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        Food game main menu
+       ================================================================ -->
+    <div class="menu-overlay app-screen" id="mainMenu">
+        <div class="menu-header">
+            <div class="menu-title"><span class="brain">🍽️</span> 食物遊戲</div>
+        </div>
+        <div style="position:fixed; top:10px; left:14px; z-index:3000;">
+            <button class="back-btn" id="foodMainBackBtn" data-app-back="previous" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+        </div>
+        <div style="position:fixed; top:10px; right:14px; z-index:3000;">
+            <button class="hamburger-btn" id="hamburgerBtnHome" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+        </div>
+        <div class="menu-subtitle">選擇一個遊戲或活動開始</div>
+        <div class="category-grid game-select">
+            <button class="category-btn" id="gameFoodBtn">
+                <span class="icon">❓</span>
+                <span class="label">食物分類</span>
+            </button>
+            <button class="category-btn" id="gameNbackBtn">
+                <span class="icon">🧩</span>
+                <span class="label">N-back 記憶</span>
+            </button>
+            <button class="category-btn" id="gameGngBtn">
+                <span class="icon">✅</span>
+                <span class="label">Go/No Go</span>
+            </button>
+            <button class="category-btn" id="gameShoppingBtn">
+                <span class="icon">🛒</span>
+                <span class="label">買餸</span>
+            </button>
+        </div>
+        <div class="menu-footer"></div>
+    </div>
+
+    <!-- ================================================================
+        Food category selector
+       ================================================================ -->
+    <div class="menu-overlay app-screen" id="foodCategorySelect">
+        <div style="position:fixed; top:10px; left:14px; z-index:3000;">
+            <button class="back-btn" id="foodCategoryBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+        </div>
+        <div style="position:fixed; top:10px; right:14px; z-index:3000;">
+            <button class="hamburger-btn" id="hamburgerBtnFoodCategory" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+        </div>
+        <div class="menu-header" style="margin-top:20px;">
+            <div class="menu-title">❓ 選擇食物類別</div>
+        </div>
+        <div class="menu-subtitle" id="foodSubtitle">點擊類別開始挑戰</div>
+        <div class="category-grid food-select" id="foodCategoryGrid"></div>
+    </div>
+
+    <!-- ================================================================
+        Food category game
+       ================================================================ -->
+    <div class="game-container app-screen" id="foodGame">
+        <div class="top-bar">
+            <div class="left-group">
+                <button class="back-btn" id="foodBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+            </div>
+            <div class="question-area">
+                <span class="question-text" id="questionText">
+                    哪一個是 <span class="category-highlight">水果</span> ？
+                </span>
+            </div>
+            <div class="right-group">
+                <div class="score-display" id="foodScoreDisplay">
+                    得分&nbsp;<span id="foodScoreNum">0</span>
+                </div>
+                <div class="dropdown-wrapper">
+                    <label for="countSelect">顯示</label>
+                    <select id="countSelect">
+                        <option value="2">2</option>
+                        <option value="3" selected>3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                <button class="action-btn" id="toggleNamesBtn" title="顯示/隱藏食物名稱">
+                    名稱
+                    <span class="state-badge" id="nameBadge" style="margin-left:4px; font-size:16px;">●</span>
+                </button>
+                <span class="separator">|</span>
+                <button class="hamburger-btn" id="hamburgerBtnFood" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+            </div>
+        </div>
+
+        <div class="grid-wrapper">
+            <div class="grid-container cols-3" id="gridContainer"></div>
+        </div>
+
+        <div class="footer">
+            <span class="hint">💡 點擊圖片選擇答案</span>
+            <span class="round-info" id="foodRoundInfo">第 1 題</span>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        N-back memory game
+       ================================================================ -->
+    <div class="game-container app-screen" id="nbackGame">
+        <div class="top-bar">
+            <div class="left-group">
+                <button class="back-btn" id="nbackBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+            </div>
+            <div class="right-group">
+                <div class="score-display" id="nbackScoreDisplay">
+                    得分&nbsp;<span id="nbackScoreNum">0</span>
+                </div>
+                <select class="nback-n-select" id="nbackNSelect">
+                    <option value="1">N=1</option>
+                    <option value="2">N=2</option>
+                    <option value="3">N=3</option>
+                </select>
+                <span class="separator">|</span>
+                <button class="hamburger-btn" id="hamburgerBtnNback" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+            </div>
+        </div>
+
+        <div class="grid-wrapper" style="flex:1; display:flex; align-items:center; justify-content:center;">
+            <div class="nback-image-container" id="nbackImageContainer">
+                <img id="nbackImage" src="" alt="食物" />
+                <div class="nback-overlay" id="nbackOverlay"></div>
+                <div class="nback-step-label" id="nbackStepLabel">#0</div>
+                <button class="magnify-btn nback-magnify-btn" id="nbackMagnifyBtn" title="放大圖片" style="display:none;">🔍</button>
+            </div>
+        </div>
+
+        <div class="bottom-controls">
+            <div class="left-group">
+                <div class="speed-control">
+                    <button class="speed-btn" id="nbackSpeedDown">◀</button>
+                    <span class="speed-display" id="nbackSpeedDisplay">5</span>
+                    <button class="speed-btn" id="nbackSpeedUp">▶</button>
+                </div>
+                <button class="play-btn" id="nbackPlayBtn">
+                    <span class="play-icon">
+                        <span class="triangle"></span>
+                        <span class="pause-bar left"></span>
+                        <span class="pause-bar right"></span>
+                    </span>
+                </button>
+            </div>
+            <div class="center-group nback-controls">
+                <button class="match-btn" id="nbackMatchBtn">✅ 匹配</button>
+                <button class="notmatch-btn" id="nbackNotMatchBtn">❌ 不匹配</button>
+            </div>
+            <div class="right-group"></div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        Go/No Go game
+       ================================================================ -->
+    <div class="game-container app-screen" id="gngGame">
+        <div class="top-bar">
+            <div class="left-group">
+                <button class="back-btn" id="gngBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+            </div>
+            <div class="question-area">
+                <span class="gng-rules-text" id="gngRuleText">
+                    ✅ <span class="go-highlight" id="gngGoLabel">水果</span> → ❌ <span class="nogo-highlight" id="gngNoGoLabel">蔬菜</span>
+                </span>
+            </div>
+            <div class="right-group">
+                <div class="score-display" id="gngScoreDisplay">
+                    得分&nbsp;<span id="gngScoreNum">0</span>
+                </div>
+                <div class="dropdown-wrapper" id="gngGameCountWrapper">
+                    <label for="gngGameCountSelect">顯示</label>
+                    <select id="gngGameCountSelect">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <button class="hamburger-btn" id="hamburgerBtnGng" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+            </div>
+        </div>
+
+        <div class="gng-grid-wrapper" id="gngGridWrapper">
+            <div class="gng-grid-container cols-2" id="gngGridContainer"></div>
+        </div>
+
+        <div class="bottom-controls">
+            <div class="left-group">
+                <div class="speed-control">
+                    <button class="speed-btn" id="gngSpeedDown">◀</button>
+                    <span class="speed-display" id="gngSpeedDisplay">5</span>
+                    <button class="speed-btn" id="gngSpeedUp">▶</button>
+                </div>
+                <button class="play-btn" id="gngPlayBtn">
+                    <span class="play-icon">
+                        <span class="triangle"></span>
+                        <span class="pause-bar left"></span>
+                        <span class="pause-bar right"></span>
+                    </span>
+                </button>
+            </div>
+            <div class="center-group gng-controls">
+                <button class="go-btn" id="gngGoBtn">✅</button>
+                <button class="nogo-btn" id="gngNoGoBtn">❌</button>
+            </div>
+            <div class="right-group"></div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        Go/No Go settings
+       ================================================================ -->
+    <div class="menu-overlay app-screen" id="gngSettings">
+        <div style="position:fixed; top:10px; left:14px; z-index:3000;">
+            <button class="back-btn" id="gngSettingsBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+        </div>
+        <div style="position:fixed; top:10px; right:14px; z-index:3000; display:flex; align-items:center; gap:8px;">
+            <button class="save-btn" id="gngSaveSettingsBtn" title="儲存設定">💾儲存</button>
+            <button class="hamburger-btn" id="hamburgerBtnGngSettings" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+        </div>
+        <div class="menu-header" style="margin-top:20px;">
+            <div class="menu-title">⚙️ 設定</div>
+        </div>
+        <div class="menu-subtitle">設定任務規則與切換條件</div>
+        <div style="max-width:600px; width:100%; display:flex; flex-direction:column; gap:18px; padding:10px 20px;">
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">✅ Go 類別</span>
+                <select id="gngGoCategory" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="全部">全部</option>
+                    <option value="水果">水果</option>
+                    <option value="蔬菜">蔬菜</option>
+                    <option value="肉類">肉類</option>
+                    <option value="點心">點心</option>
+                    <option value="堅果">堅果</option>
+                    <option value="甜品">甜品</option>
+                    <option value="海鮮">海鮮</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">❌ No Go 類別</span>
+                <select id="gngNoGoCategory" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="全部">全部</option>
+                    <option value="水果">水果</option>
+                    <option value="蔬菜">蔬菜</option>
+                    <option value="肉類">肉類</option>
+                    <option value="點心">點心</option>
+                    <option value="堅果">堅果</option>
+                    <option value="甜品">甜品</option>
+                    <option value="海鮮">海鮮</option>
+                </select>
+            </div>
+            <div class="separator" style="width:100%; border-top:2px solid var(--border-color);"></div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">🔄 自動切換</span>
+                <button id="gngAutoToggle" style="font-size:20px; padding:6px 24px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color); cursor:pointer; -webkit-tap-highlight-color:transparent; transition: background 0.3s;">關閉</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">切換類型</span>
+                <select id="gngSwitchType" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="random">隨機變更兩者</option>
+                    <option value="swap" selected>互換</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">切換頻率</span>
+                <select id="gngSwitchFreq" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="5">5 張</option>
+                    <option value="10" selected>10 張</option>
+                    <option value="15">15 張</option>
+                    <option value="20">20 張</option>
+                </select>
+            </div>
+            <div style="margin-top:10px;">
+                <button id="gngStartBtn" style="width:100%; padding:14px; font-size:28px; font-weight:700; border:none; border-radius:40px; background:var(--highlight-correct); color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; box-shadow:var(--btn-shadow-correct); transition: background 0.2s, transform 0.15s, box-shadow 0.15s;">▶ 開始遊戲</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        Shopping memory game
+       ================================================================ -->
+    <div class="game-container app-screen" id="shoppingGame">
+        <div class="top-bar">
+            <div class="left-group">
+                <button class="back-btn" id="shoppingBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+            </div>
+            <div class="question-area">
+                <span class="question-text" id="shoppingPhaseText">📋 購物清單（3 樣）</span>
+            </div>
+            <div class="right-group">
+                <div class="score-display" id="shoppingScoreDisplay">
+                    得分&nbsp;<span id="shoppingScoreNum">0</span>
+                </div>
+                <button class="action-btn" id="shoppingNameToggleBtn" title="顯示/隱藏食物名稱">
+                    名稱
+                    <span class="state-badge" id="shoppingNameBadge" style="margin-left:4px; font-size:16px;">●</span>
+                </button>
+                <span class="separator">|</span>
+                <button class="hamburger-btn" id="hamburgerBtnShopping" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+            </div>
+        </div>
+
+        <div class="shopping-stage" id="shoppingStage">
+            <div class="shopping-view" id="shoppingListView">
+                <div class="shopping-list-panel">
+                    <div class="shopping-list-grid" id="shoppingListGrid"></div>
+                    <div class="shopping-list-hint" id="shoppingListHint">記住清單，時間到後開始揀選</div>
+                </div>
+            </div>
+
+            <div class="shopping-view hidden" id="shoppingRecallView">
+                <div class="shopping-recall-panel">
+                    <div class="shopping-recall-grid" id="shoppingRecallGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-controls">
+            <div class="left-group"></div>
+            <div class="center-group shopping-controls">
+                <span class="shopping-progress hidden" id="shoppingProgress">已揀選 0 / 3</span>
+                <span class="shopping-timer" id="shoppingTimer">--</span>
+                <button class="shopping-primary-btn hidden" id="shoppingManualStartBtn">▶ 記住了，開始揀選</button>
+            </div>
+            <div class="right-group"></div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        Shopping settings
+       ================================================================ -->
+    <div class="menu-overlay app-screen" id="shoppingSettings">
+        <div style="position:fixed; top:10px; left:14px; z-index:3000;">
+            <button class="back-btn" id="shoppingSettingsBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+        </div>
+        <div style="position:fixed; top:10px; right:14px; z-index:3000; display:flex; align-items:center; gap:8px;">
+            <button class="save-btn" id="shoppingSaveSettingsBtn" title="儲存設定">💾儲存</button>
+            <button class="hamburger-btn" id="hamburgerBtnShoppingSettings" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+        </div>
+        <div class="menu-header" style="margin-top:20px;">
+            <div class="menu-title">🛒 設定</div>
+        </div>
+        <div class="menu-subtitle">設定購物清單與回憶任務</div>
+        <div style="max-width:600px; width:100%; display:flex; flex-direction:column; gap:18px; padding:10px 20px;">
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">📋 清單顯示</span>
+                <select id="shoppingListDisplayMode" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="image" selected>圖片</option>
+                    <option value="name">名稱</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">🔢 清單數量</span>
+                <select id="shoppingListCount" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">⏳ 記憶時間</span>
+                <select id="shoppingMemoryTime" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="5">5 秒</option>
+                    <option value="10">10 秒</option>
+                    <option value="15">15 秒</option>
+                    <option value="20">20 秒</option>
+                    <option value="manual" selected>手動</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">🧩 選擇數量</span>
+                <select id="shoppingChoiceCount" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="4">4</option>
+                    <option value="6" selected>6</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+            <div class="separator" style="width:100%; border-top:2px solid var(--border-color);"></div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">🔢 順序要求</span>
+                <select id="shoppingOrderRequired" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="false" selected>不需順序</option>
+                    <option value="true">需要順序</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                <span style="font-size:22px; font-weight:600; color:var(--text-color);">⏳ 揀選時間</span>
+                <select id="shoppingRecallTime" style="font-size:20px; padding:6px 16px; border-radius:30px; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="0" selected>不限時</option>
+                    <option value="15">15 秒</option>
+                    <option value="30">30 秒</option>
+                    <option value="45">45 秒</option>
+                    <option value="60">60 秒</option>
+                </select>
+            </div>
+            <div style="margin-top:10px;">
+                <button id="shoppingStartBtn" style="width:100%; padding:14px; font-size:28px; font-weight:700; border:none; border-radius:40px; background:var(--highlight-correct); color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; box-shadow:var(--btn-shadow-correct); transition: background 0.2s, transform 0.15s, box-shadow 0.15s;">▶ 開始遊戲</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        手掌跳飛機
+       ================================================================ -->
+    <div class="game-container app-screen" id="palm">
+        <div class="top-bar">
+            <div class="left-group">
+                <button class="back-btn" id="palmBackBtn" data-app-back="previous" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+            </div>
+            <div class="right-group">
+                <div class="menu-group">
+                    <span class="menu-label">手勢</span>
+                    <select id="difficultySelect">
+                        <option value="easy">包剪揼</option>
+                        <option value="hard" selected>全部</option>
+                    </select>
+                </div>
+                <span class="separator">|</span>
+                <div class="menu-group">
+                    <span class="menu-label">正反手</span>
+                    <select id="handSelect">
+                        <option value="both" selected>正反手</option>
+                        <option value="palmar">正手</option>
+                    </select>
+                </div>
+                <span class="separator">|</span>
+                <button class="hamburger-btn" id="palmMenuBtn" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+            </div>
+        </div>
+
+        <div class="grid-wrapper">
+            <div class="game-board">
+                <div class="side" id="leftSide">
+                    <div id="leftGesture" class="gesture-image"></div>
+                </div>
+                <div class="side" id="rightSide">
+                    <div id="rightGesture" class="gesture-image"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-controls">
+            <div class="left-group"></div>
+            <div class="center-group palm-controls">
+                <button class="play-btn" id="playBtn" title="自動播放">
+                    <span class="play-icon">
+                        <span class="triangle"></span>
+                        <span class="pause-bar left"></span>
+                        <span class="pause-bar right"></span>
+                    </span>
+                </button>
+                <div class="divider-vertical"></div>
+                <button id="swapBtn" title="交換左右手勢">
+                    <span id="swapSymbol">交換</span>
+                </button>
+                <div class="divider-vertical"></div>
+                <div class="speed-control">
+                    <button class="speed-btn" id="speedDown" title="減慢速度">◀</button>
+                    <span class="speed-display" id="speedDisplay">5</span>
+                    <button class="speed-btn" id="speedUp" title="加快速度">▶</button>
+                </div>
+            </div>
+            <div class="right-group"></div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        Shared overlays and side menu
+       ================================================================ -->
+    <div class="overlay" id="overlay">
+        <div class="message-box" id="messageBox">
+            <span class="msg-icon" id="msgIcon">✅</span>
+            <div class="msg-text" id="msgText">正確</div>
+            <div class="msg-sub" id="msgSub">太棒了！</div>
+            <div id="msgButtons"></div>
+        </div>
+    </div>
+
+    <div class="overlay" id="magnifyOverlay">
+        <div class="magnify-box" onclick="event.stopPropagation();">
+            <button class="close-btn" id="magnifyCloseBtn">✕</button>
+            <div class="image-wrapper">
+                <img id="magnifyImage" src="" alt="放大圖片" />
+            </div>
+            <div class="food-name" id="magnifyName"></div>
+        </div>
+    </div>
+
+    <div class="slide-menu" id="slideMenu">
+        <div class="menu-item" id="slideThemeBtn">
+            🌑 深色模式
+            <span class="state-badge" id="themeBadge">○</span>
+        </div>
+        <div class="menu-item" id="slideBgMusicBtn">
+            🔊 背景音樂
+            <span class="state-badge" id="bgMusicBadge">●</span>
+        </div>
+        <div class="menu-item" id="slideSfxBtn">
+            🔊 音效
+            <span class="state-badge" id="sfxBadge">●</span>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item" id="slideHomeBtn">🏠 回到主頁</div>
+    </div>
+
+    <div class="slide-menu-backdrop" id="slideMenuBackdrop"></div>
+
+    <audio id="appBgAudio" src="assets/audio/background.mp3" loop preload="auto"></audio>
+
+    <script src="js/app-chrome.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/reality.js"></script>
+    <script src="js/palm.js"></script>
+    <script src="js/food/data.js"></script>
+    <script src="js/food/utils.js"></script>
+    <script src="js/food/prefs.js"></script>
+    <script src="js/food/audio.js"></script>
+    <script src="js/food/ui.js"></script>
+    <script src="js/food/food.js"></script>
+    <script src="js/food/nback.js"></script>
+    <script src="js/food/gng.js"></script>
+    <script src="js/food/shopping.js"></script>
+    <script src="js/food/main.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            var homeTiles = document.querySelectorAll('[data-router-target]');
+            for (var i = 0; i < homeTiles.length; i++) {
+                homeTiles[i].addEventListener('click', function () {
+                    var target = this.getAttribute('data-router-target');
+                    if (window.CognitiveRouter) {
+                        window.CognitiveRouter.navigate(target);
+                    }
+                });
+            }
+            window.CognitiveRouter.initialize('home');
+        })();
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('sw.js').catch(function (error) {
+                    console.warn('Service worker registration failed:', error);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+        /* ================================================================
+           全域變數與基礎樣式
+           ================================================================ */
+        :root {
+            --bg-color: #f5f0e8;
+            --container-bg: #f5f0e8;
+            --card-bg: #ffffff;
+            --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            --font-family: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            --btn-transition: background 0.2s ease, color 0.2s ease, transform 0.16s ease, box-shadow 0.16s ease, border-color 0.2s ease;
+            --press-anim: press-icon 0.16s ease-in-out;
+            --text-color: #3d2c1e;
+            --muted-text: #8b7a6a;
+            --question-bg: #f7f1ea;
+            --score-bg: #e8dfd6;
+            --control-bg: #e8dfd6;
+            --border-color: #f0e8de;
+            --highlight-correct: #3ba87b;
+            --highlight-wrong: #d95a5a;
+            --btn-hover: #d5c9bc;
+            --complete-badge: #3ba87b;
+            --panel-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            --slide-bg: rgba(255,255,255,0.95);
+            --slide-shadow: 0 0 20px rgba(0,0,0,0.15);
+            --primary-blue: #1e88e5;
+            --btn-bg: #1e88e5;
+            --btn-shadow: 0 4px 0 #0d47a1;
+            --btn-text: #ffffff;
+            --error-bg: #ffcdd2;
+            --error-text: #d32f2f;
+            --control-bg-nback: #f8f9fa;
+            --control-text: #1a2a3a;
+            --slide-item-hover: #e8e0d8;
+            --nback-brown: #5D4037;
+            --toggle-on-bg: rgba(59, 168, 123, 0.25);
+            --btn-shadow-correct: 0 6px 0 #2a7a5a;
+            --btn-shadow-wrong: 0 6px 0 #8a3a3a;
+            --btn-hover-correct: #4cb88a;
+            --btn-hover-wrong: #e06b6b;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a2e;
+            --container-bg: #1a1a2e;
+            --card-bg: #2d2d44;
+            --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+            --text-color: #e0e0e0;
+            --muted-text: #b0b0c0;
+            --question-bg: transparent;
+            --score-bg: #0d47a1;
+            --control-bg: #0d47a1;
+            --border-color: #3a3a5a;
+            --highlight-correct: #42a5f5;
+            --highlight-wrong: #e06b6b;
+            --btn-hover: #1565c0;
+            --complete-badge: #42a5f5;
+            --panel-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            --slide-bg: rgba(30,30,50,0.95);
+            --slide-shadow: 0 0 20px rgba(0,0,0,0.5);
+            --primary-blue: #42a5f5;
+            --btn-bg: #0d47a1;
+            --btn-shadow: 0 4px 0 #091f4b;
+            --btn-text: #e0e0e0;
+            --error-bg: #4a1a1a;
+            --error-text: #ff8a80;
+            --control-bg-nback: #2d2d44;
+            --control-text: #e0e0e0;
+            --slide-item-hover: #3a3a5a;
+            --nback-brown: #8D6E63;
+            --toggle-on-bg: rgba(66, 165, 245, 0.25);
+            --btn-shadow-correct: 0 6px 0 #0a2a6a;
+            --btn-shadow-wrong: 0 6px 0 #6a1010;
+            --btn-hover-correct: #1565c0;
+            --btn-hover-wrong: #c62828;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            height: 100%;
+            font-family: var(--font-family);
+            background: var(--bg-color);
+            overflow: hidden;
+            transition: background 0.4s, color 0.4s;
+        }
+        button, input, select, textarea {
+            font-family: var(--font-family);
+        }

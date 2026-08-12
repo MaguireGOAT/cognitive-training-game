@@ -1,0 +1,76 @@
+        /* ================================================================
+           N-back 遊戲專用樣式
+           ================================================================ */
+        .nback-image-container {
+            width: min(80vw, calc(100vh - 180px), 850px);
+            max-width: 100%;
+            aspect-ratio: 1/1;
+            background: var(--card-bg);
+            border-radius: 30px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.4s;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .nback-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 6px;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .nback-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            font-size: 60px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(0,0,0,0.9);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .nback-step-label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .nback-n-select {
+            background: var(--control-bg);
+            border: none;
+            border-radius: 40px;
+            padding: 0 16px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-color);
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            transition: var(--btn-transition);
+            height: 44px;
+        }
+        [data-theme="dark"] .nback-n-select {
+            background: #0d47a1;
+            color: #e0e0e0;
+        }
