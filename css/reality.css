@@ -80,6 +80,15 @@
             flex: 1;
             min-height: 0;
             position: relative;
+            touch-action: pan-y;
+            user-select: none;
+            overflow: hidden;
+        }
+        .reality-stage.reality-dragging {
+            cursor: grabbing;
+        }
+        .reality-stage.reality-dragging .reality-page {
+            transition: none;
         }
         .reality-page {
             position: absolute;
@@ -90,11 +99,39 @@
             padding: calc(72px * var(--ui-scale)) calc(28px * var(--ui-scale)) calc(86px * var(--ui-scale));
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.22s ease;
+            transform: translateX(0);
+            transition: opacity 0.22s ease, transform 0.30s cubic-bezier(0.25, 0.8, 0.3, 1);
+            will-change: transform, opacity;
         }
         .reality-page.active {
             opacity: 1;
             pointer-events: auto;
+        }
+        .reality-page.slide-in-left,
+        .reality-page.slide-in-right {
+            opacity: 0;
+        }
+        .reality-page.slide-out-left,
+        .reality-page.slide-out-right {
+            opacity: 1;
+        }
+        .reality-page.slide-in-left,
+        .reality-page.slide-out-right {
+            transform: translateX(-100%);
+        }
+        .reality-page.slide-in-right,
+        .reality-page.slide-out-left {
+            transform: translateX(100%);
+        }
+        .reality-page.dismissed-left {
+            opacity: 0;
+            transform: translateX(-100%);
+            transition: none;
+        }
+        .reality-page.dismissed-right {
+            opacity: 0;
+            transform: translateX(100%);
+            transition: none;
         }
         .reality-page.hidden {
             display: none;
@@ -129,7 +166,7 @@
             text-align: center;
         }
         .reality-value {
-            font-size: var(--reality-value-size, calc(104px * var(--ui-scale)));
+            font-size: var(--reality-value-size, calc(140px * var(--ui-scale)));
             font-weight: 800;
             color: #00C800;
             letter-spacing: 0;
@@ -188,8 +225,13 @@
         .reality-duo .reality-info {
             flex: 1;
             max-width: calc(640px * var(--ui-scale));
-            gap: calc(10px * var(--ui-scale));
-            padding: calc(24px * var(--ui-scale)) calc(18px * var(--ui-scale));
+            gap: calc(18px * var(--ui-scale));
+            padding: calc(36px * var(--ui-scale)) calc(28px * var(--ui-scale));
+            min-height: min(54vh, calc(460px * var(--ui-scale)));
+        }
+        .reality-duo .reality-value {
+            max-height: min(30vh, calc(300px * var(--ui-scale)));
+            overflow: hidden;
         }
         .reality-big-icon {
             width: min(calc(240px * var(--ui-scale)), 30vh, 30vw);
@@ -210,7 +252,7 @@
         }
         .reality-weather-icon {
             flex: 0 0 auto;
-            font-size: clamp(calc(48px * var(--ui-scale)), 10vw, calc(110px * var(--ui-scale)));
+            font-size: clamp(calc(60px * var(--ui-scale)), 12vw, calc(140px * var(--ui-scale)));
             line-height: 1;
         }
         .reality-weather-row .reality-value {

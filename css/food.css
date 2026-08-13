@@ -19,33 +19,42 @@
             width: 100%;
             height: 100%;
             max-height: 100%;
+            --name-track: calc(44px * var(--ui-scale));
+            --row-name-track: var(--name-track);
+            --name-shift: calc(-1 * var(--rows) * (var(--name-track) - var(--row-name-track)) / 2);
+            transform: translateY(var(--name-shift));
+            transition: grid-template-columns 0.35s ease, grid-template-rows 0.35s ease, transform 0.35s ease;
+        }
+        #foodGame.hide-names .grid-container {
+            --name-track: calc(0px * var(--ui-scale));
+            --row-name-track: calc(0px * var(--ui-scale));
         }
         .grid-container.cols-2 {
             --cols: 2;
             --rows: 1;
             --h-gaps: calc(16px * var(--ui-scale));
             --v-gaps: calc(0px * var(--ui-scale));
-            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)));
+            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps) - var(--rows) * var(--name-track)) / var(--rows)));
             grid-template-columns: repeat(var(--cols), var(--card));
-            grid-auto-rows: var(--card);
+            grid-template-rows: repeat(var(--rows), calc(var(--card) + var(--row-name-track)));
         }
         .grid-container.cols-3 {
             --cols: 3;
             --rows: 1;
             --h-gaps: calc(32px * var(--ui-scale));
             --v-gaps: calc(0px * var(--ui-scale));
-            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)));
+            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps) - var(--rows) * var(--name-track)) / var(--rows)));
             grid-template-columns: repeat(var(--cols), var(--card));
-            grid-auto-rows: var(--card);
+            grid-template-rows: repeat(var(--rows), calc(var(--card) + var(--row-name-track)));
         }
         .grid-container.cols-4 {
             --cols: 4;
             --rows: 1;
             --h-gaps: calc(48px * var(--ui-scale));
             --v-gaps: calc(0px * var(--ui-scale));
-            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)));
+            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps) - var(--rows) * var(--name-track)) / var(--rows)));
             grid-template-columns: repeat(var(--cols), var(--card));
-            grid-auto-rows: var(--card);
+            grid-template-rows: repeat(var(--rows), calc(var(--card) + var(--row-name-track)));
         }
 
         .food-card {
@@ -60,10 +69,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            aspect-ratio: 1 / 1;
+            justify-content: flex-start;
             width: 100%;
-            height: auto;
+            height: 100%;
             min-height: 0;
             overflow: hidden;
             user-select: none;
@@ -78,10 +86,11 @@
         .food-card.disabled { cursor: default; opacity: 0.8; }
 
         .food-card .food-image {
-            flex: 1;
+            flex: 0 0 auto;
             min-height: 0;
             width: 100%;
             height: auto;
+            aspect-ratio: 1 / 1;
             position: relative;
             border-radius: calc(18px * var(--ui-scale));
             overflow: hidden;
@@ -111,6 +120,7 @@
             overflow: hidden;
             max-height: calc(40px * var(--ui-scale));
             opacity: 1;
+            flex-shrink: 0;
             transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.3s ease, padding 0.3s, color 0.4s;
         }
         .hide-names .food-card .food-name {

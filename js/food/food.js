@@ -330,6 +330,19 @@
             }
         }
 
+        function showFoodGameIntro() {
+            const title = questionText.innerHTML.trim();
+            showCustomMessage(
+                title,
+                '',
+                [],
+                false,
+                false,
+                true,
+                true
+            );
+        }
+
         function startFoodGame(mode) {
             if (mode === 'random') resetFoodProgress();
             else {
@@ -351,11 +364,13 @@
                 window.CognitiveRouter.navigate('foodGame');
                 nextFoodRound();
                 syncTopBarCentering();
+                showFoodGameIntro();
             } else {
                 document.getElementById('foodGame').style.display = 'flex';
                 document.getElementById('foodCategorySelect').classList.add('hidden');
                 syncTopBarCentering();
                 nextFoodRound();
+                showFoodGameIntro();
             }
         }
 

@@ -26,7 +26,7 @@
 
         /* 購物清單 */
         .shopping-list-panel {
-            width: min(96vw, calc(1250px * var(--ui-scale)));
+            width: min(96vw, calc(1500px * var(--ui-scale)));
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -40,6 +40,7 @@
             text-align: center;
             line-height: 1.25;
             transition: color 0.4s;
+            display: none;
         }
 
         .shopping-list-grid {
@@ -48,18 +49,28 @@
             justify-content: center;
             align-items: stretch;
             align-content: center;
-            width: min(96vw, calc(1250px * var(--ui-scale)));
-            --max-w: min(96vw, calc(1250px * var(--ui-scale)));
+            width: min(96vw, calc(1500px * var(--ui-scale)));
+            --max-w: min(96vw, calc(1500px * var(--ui-scale)));
+            --name-track: calc(44px * var(--ui-scale));
+            --row-name-track: var(--name-track);
+            --name-shift: calc(-1 * var(--rows) * (var(--name-track) - var(--row-name-track)) / 2);
             --card: min(calc((var(--max-w) - (var(--cols) - 1) * var(--gaps-h)) / var(--cols)),
-                        calc((100vh - calc(210px * var(--ui-scale)) - (var(--rows) - 1) * var(--gaps-v)) / var(--rows)));
+                        calc((100vh - calc(180px * var(--ui-scale)) - (var(--rows) - 1) * var(--gaps-v) - var(--rows) * var(--name-track)) / var(--rows)));
             grid-template-columns: repeat(var(--cols), var(--card));
-            grid-auto-rows: var(--card);
+            grid-template-rows: repeat(var(--rows), calc(var(--card) + var(--row-name-track)));
+            transform: translateY(var(--name-shift));
+            transition: grid-template-columns 0.35s ease, grid-template-rows 0.35s ease, transform 0.35s ease;
         }
         .shopping-list-grid.count-2 { --cols: 2; --rows: 1; --gaps-h: calc(18px * var(--ui-scale)); --gaps-v: calc(0px * var(--ui-scale)); }
         .shopping-list-grid.count-3 { --cols: 3; --rows: 1; --gaps-h: calc(24px * var(--ui-scale)); --gaps-v: calc(0px * var(--ui-scale)); }
         .shopping-list-grid.count-4 { --cols: 4; --rows: 1; --gaps-h: calc(28px * var(--ui-scale)); --gaps-v: calc(0px * var(--ui-scale)); }
         .shopping-list-grid.count-5 { --cols: 3; --rows: 2; --gaps-h: calc(24px * var(--ui-scale)); --gaps-v: calc(18px * var(--ui-scale)); }
         .shopping-list-grid.count-6 { --cols: 3; --rows: 2; --gaps-h: calc(24px * var(--ui-scale)); --gaps-v: calc(18px * var(--ui-scale)); }
+        .shopping-list-grid.name-mode { --name-track: calc(0px * var(--ui-scale)); --row-name-track: calc(0px * var(--ui-scale)); }
+        #shoppingGame.hide-names .shopping-list-grid {
+            --name-track: calc(0px * var(--ui-scale));
+            --row-name-track: calc(0px * var(--ui-scale));
+        }
 
         .shopping-list-card {
             background: var(--card-bg);
@@ -70,7 +81,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             width: 100%;
             height: 100%;
             min-height: 0;
@@ -81,9 +92,11 @@
             transition: background 0.4s, border-color 0.2s, box-shadow 0.2s, transform 0.16s;
         }
         .shopping-list-card .food-image {
-            flex: 1;
+            flex: 0 0 auto;
             min-height: 0;
             width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
             position: relative;
             border-radius: calc(18px * var(--ui-scale));
             overflow: hidden;
@@ -107,12 +120,25 @@
             margin-top: calc(4px * var(--ui-scale));
             overflow: hidden;
             max-height: calc(40px * var(--ui-scale));
+            opacity: 1;
             text-align: center;
-            transition: color 0.4s;
+            flex-shrink: 0;
+            transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.3s ease, padding 0.3s, color 0.4s;
+        }
+        .hide-names .shopping-list-card .food-name {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
         }
         .shopping-list-card.name-only {
             justify-content: center;
             gap: 0;
+        }
+        .hide-names .shopping-list-card.name-only .food-name {
+            max-height: none;
+            opacity: 1;
+            margin: 0;
         }
         .shopping-list-card.name-only .food-name {
             font-size: calc(44px * var(--ui-scale));
@@ -184,11 +210,20 @@
             --card-max: calc(500px * var(--ui-scale));
         }
         .shopping-recall-grid {
+            --name-track: calc(44px * var(--ui-scale));
+            --row-name-track: var(--name-track);
+            --name-shift: calc(-1 * var(--rows) * (var(--name-track) - var(--row-name-track)) / 2);
             --card: min(calc((100vw - calc(24px * var(--ui-scale)) - (var(--cols) - 1) * var(--gaps-h)) / var(--cols)),
-                        calc((100vh - calc(200px * var(--ui-scale)) - (var(--rows) - 1) * var(--gaps-v)) / var(--rows)),
+                        calc((100vh - calc(200px * var(--ui-scale)) - (var(--rows) - 1) * var(--gaps-v) - var(--rows) * var(--name-track)) / var(--rows)),
                         var(--card-max));
             grid-template-columns: repeat(var(--cols), var(--card));
-            grid-auto-rows: var(--card);
+            grid-template-rows: repeat(var(--rows), calc(var(--card) + var(--row-name-track)));
+            transform: translateY(var(--name-shift));
+            transition: grid-template-columns 0.35s ease, grid-template-rows 0.35s ease, transform 0.35s ease;
+        }
+        #shoppingGame.hide-names .shopping-recall-grid {
+            --name-track: calc(0px * var(--ui-scale));
+            --row-name-track: calc(0px * var(--ui-scale));
         }
 
         .shopping-recall-card {
@@ -200,10 +235,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            aspect-ratio: 1 / 1;
+            justify-content: flex-start;
             width: 100%;
-            height: auto;
+            height: 100%;
             overflow: hidden;
             cursor: pointer;
             position: relative;
@@ -217,9 +251,11 @@
         }
         .shopping-recall-card:active:not(.dimmed) { transform: scale(0.97); }
         .shopping-recall-card .food-image {
-            flex: 1;
+            flex: 0 0 auto;
             min-height: 0;
             width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
             position: relative;
             border-radius: calc(18px * var(--ui-scale));
             overflow: hidden;
@@ -246,7 +282,8 @@
             max-height: calc(40px * var(--ui-scale));
             opacity: 1;
             text-align: center;
-            transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.3s ease, color 0.4s;
+            flex-shrink: 0;
+            transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.3s ease, padding 0.3s, color 0.4s;
         }
         .hide-names .shopping-recall-card .food-name {
             max-height: 0;

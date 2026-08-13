@@ -234,12 +234,34 @@
             }
         }
 
+        function showNbackInstruction(afterDismiss) {
+            window.nbackInstructionAction = typeof afterDismiss === 'function' ? afterDismiss : null;
+            window.nbackInstructionPending = true;
+            showCustomMessage(
+                `看看圖片與上 ${nbackState.n} 張是否相同`,
+                '',
+                [],
+                false,
+                false,
+                true
+            );
+        }
+
+        function finishNbackInstruction() {
+            const action = window.nbackInstructionAction;
+            window.nbackInstructionAction = null;
+            window.nbackInstructionPending = false;
+            hideOverlay();
+            if (typeof action === 'function') action();
+        }
+
         function changeNbackN(newN) {
+            const wasPlaying = nbackState.isPlaying;
             nbackState.n = newN;
-            if (nbackState.isPlaying) {
-                pauseNback();
-                startNback();
-            }
+            if (wasPlaying) pauseNback();
+            showNbackInstruction(wasPlaying ? function() {
+                    startNback();
+                } : null);
         }
 
         nbackPlayBtn.addEventListener('click', function() {
@@ -322,7 +344,10 @@
             }
             updateNbackInterval();
             nbackSpeedDisplay.textContent = nbackState.speed;
+            showNbackInstruction(startNback);
         }
+
+        window.finishNbackInstruction = finishNbackInstruction;
 
         if (window.CognitiveRouter) {
             window.CognitiveRouter.registerEnter('nbackGame', prepareNbackGame);

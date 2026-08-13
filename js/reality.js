@@ -64,6 +64,7 @@
         const realityWeatherSelect = document.getElementById('realityWeatherSelect');
         const realitySeasonSelect = document.getElementById('realitySeasonSelect');
         const realityLocationSelect = document.getElementById('realityLocationSelect');
+        const realityStage = document.getElementById('realityStage');
 
         function loadRealitySettings() {
             try {
@@ -156,18 +157,73 @@
                 dot.type = 'button';
                 dot.className = 'reality-dot' + (index === realityState.currentPageIndex ? ' active' : '');
                 dot.setAttribute('aria-label', `第 ${index + 1} 頁`);
-                dot.addEventListener('click', () => showRealityPage(index));
+                dot.addEventListener('click', () => {
+                    showRealityPage(index, index === realityState.currentPageIndex ? 0 : (index > realityState.currentPageIndex ? 1 : -1));
+                });
                 realityDots.appendChild(dot);
             });
         }
 
-        function showRealityPage(index) {
+        let realityTransitionToken = 0;
+        let realityTransitionTimer = null;
+        let realityVisiblePage = null;
+
+        function clearRealityTransition() {
+            realityTransitionToken++;
+            if (realityTransitionTimer) {
+                clearTimeout(realityTransitionTimer);
+                realityTransitionTimer = null;
+            }
+            realitySwipe = null;
+            if (realityStage) realityStage.classList.remove('reality-dragging');
+            document.querySelectorAll('.reality-page').forEach(page => {
+                page.classList.remove(
+                    'slide-in-left', 'slide-in-right', 'slide-out-left', 'slide-out-right',
+                    'dismissed-left', 'dismissed-right'
+                );
+                page.style.transform = '';
+                page.style.opacity = '';
+                page.style.pointerEvents = '';
+            });
+            setRealityPageVisibility();
+        }
+
+        function showRealityPage(index, direction) {
             const pages = getRealityPageNames();
             if (index < 0 || index >= pages.length) return;
+            const oldPage = realityVisiblePage || document.querySelector('.reality-page.active');
+            const newPage = document.querySelector('.reality-page[data-page="' + pages[index] + '"]');
+            if (!newPage) return;
+
             realityState.currentPageIndex = index;
+            clearRealityTransition();
             document.querySelectorAll('.reality-page').forEach(page => {
-                page.classList.toggle('active', page.dataset.page === pages[index]);
+                page.classList.remove('active');
             });
+
+            if (oldPage && oldPage !== newPage && (direction === 1 || direction === -1)) {
+                const token = ++realityTransitionToken;
+                const movingForward = direction === 1;
+                oldPage.classList.add('active', movingForward ? 'slide-out-left' : 'slide-out-right');
+                newPage.classList.add('active', movingForward ? 'slide-in-right' : 'slide-in-left');
+                updateRealityNav();
+                updateRealityDots();
+                fitRealityText();
+                realityTransitionTimer = setTimeout(function() {
+                    if (token !== realityTransitionToken) return;
+                    oldPage.classList.remove('active', 'slide-out-left', 'slide-out-right');
+                    oldPage.classList.add(movingForward ? 'dismissed-left' : 'dismissed-right');
+                    newPage.classList.remove('slide-in-left', 'slide-in-right');
+                    realityVisiblePage = newPage;
+                    realityTransitionTimer = null;
+                }, 320);
+                return;
+            }
+
+            document.querySelectorAll('.reality-page').forEach(page => {
+                page.classList.toggle('active', page === newPage);
+            });
+            realityVisiblePage = newPage;
             updateRealityNav();
             updateRealityDots();
             fitRealityText();
@@ -227,18 +283,19 @@
             if (realityBoard.classList.contains('hidden')) return;
             const vw = document.documentElement.clientWidth;
             const vh = document.documentElement.clientHeight;
-            const valueSize = Math.max(36, Math.min(160, Math.floor(Math.min(vw / 7, vh / 4))));
-            const labelSize = Math.max(22, Math.min(60, Math.floor(Math.min(vw / 14, vh / 9))));
+            const valueSize = Math.max(36, Math.min(210, Math.floor(Math.min(vw / 5.8, vh / 3.4))));
+            const labelSize = Math.max(22, Math.min(76, Math.floor(Math.min(vw / 11, vh / 8))));
             realityBoard.style.setProperty('--reality-value-size', valueSize + 'px');
             realityBoard.style.setProperty('--reality-label-size', labelSize + 'px');
             document.querySelectorAll('.reality-value').forEach(el => {
                 fitRealityValue(el, valueSize);
             });
-            const weatherSize = Math.max(valueSize, Math.min(190, Math.floor(Math.min(vw / 3.8, vh / 2.8))));
-            const locationSize = Math.max(valueSize, Math.min(220, Math.floor(Math.min(vw / 4.4, vh / 2.7)))) * 2.25;
+            const weatherSize = Math.max(valueSize, Math.min(260, Math.floor(Math.min(vw / 3.4, vh / 2.6))));
+            const locationSize = Math.max(valueSize, Math.min(250, Math.floor(Math.min(vw / 3.8, vh / 2.4)))) * 2.1;
             fitRealityValue(realitySeasonText, weatherSize);
             fitRealityValue(realityWeatherText, weatherSize);
             fitRealityValue(realityLocationText, locationSize);
+            fitRealityValue(realityTime, valueSize * 0.8);
             fitRealityValue(realityDate, valueSize * 1.5);
         }
 
@@ -277,8 +334,170 @@
         realityBackBtn.addEventListener('click', function () {
             if (window.CognitiveRouter) window.CognitiveRouter.goBack();
         });
-        realityPrevBtn.addEventListener('click', () => showRealityPage(realityState.currentPageIndex - 1));
-        realityNextBtn.addEventListener('click', () => showRealityPage(realityState.currentPageIndex + 1));
+        realityPrevBtn.addEventListener('click', () => showRealityPage(realityState.currentPageIndex - 1, -1));
+        realityNextBtn.addEventListener('click', () => showRealityPage(realityState.currentPageIndex + 1, 1));
+
+        let realitySwipe = null;
+
+        function clearRealityDragStyles() {
+            realitySwipe = null;
+            if (realityStage) realityStage.classList.remove('reality-dragging');
+            document.querySelectorAll('.reality-page').forEach(page => {
+                page.style.transform = '';
+                page.style.opacity = '';
+                page.style.pointerEvents = '';
+            });
+            setRealityPageVisibility();
+        }
+
+        function updateRealityDragTransform() {
+            if (!realitySwipe) return;
+            const pages = getRealityPageNames();
+            const startIndex = realitySwipe.startIndex;
+            const dx = realitySwipe.currentDx;
+            const width = realitySwipe.width || realityStage.clientWidth || window.innerWidth;
+            const currentPage = document.querySelector('.reality-page[data-page="' + pages[startIndex] + '"]');
+            const prevPage = startIndex > 0 ? document.querySelector('.reality-page[data-page="' + pages[startIndex - 1] + '"]') : null;
+            const nextPage = startIndex < pages.length - 1 ? document.querySelector('.reality-page[data-page="' + pages[startIndex + 1] + '"]') : null;
+
+            document.querySelectorAll('.reality-page').forEach(page => {
+                if (pages.includes(page.dataset.page)) {
+                    page.classList.remove('hidden');
+                    page.style.opacity = '1';
+                    page.style.pointerEvents = 'none';
+                    page.style.transform = '';
+                    page.classList.remove('active');
+                    const pageIndex = pages.indexOf(page.dataset.page);
+                    if (pageIndex !== startIndex && pageIndex !== startIndex - 1 && pageIndex !== startIndex + 1) {
+                        page.style.opacity = '0';
+                    }
+                } else {
+                    page.style.opacity = '0';
+                    page.style.pointerEvents = 'none';
+                }
+            });
+            if (currentPage) {
+                currentPage.classList.add('active');
+                currentPage.style.transform = 'translate3d(' + dx + 'px, 0, 0)';
+            }
+            if (prevPage) prevPage.style.transform = 'translate3d(' + (dx - width) + 'px, 0, 0)';
+            if (nextPage) nextPage.style.transform = 'translate3d(' + (dx + width) + 'px, 0, 0)';
+        }
+
+        function finishRealityDrag(e) {
+            if (!realitySwipe || e.pointerId !== realitySwipe.id) return;
+            const swipe = realitySwipe;
+            const pages = getRealityPageNames();
+            const width = swipe.width || realityStage.clientWidth || window.innerWidth;
+            const dx = e.clientX - swipe.startX;
+            const dy = e.clientY - swipe.startY;
+            realitySwipe = null;
+
+            if (!swipe.dragging) {
+                clearRealityDragStyles();
+                return;
+            }
+
+            e.preventDefault();
+            const threshold = Math.max(50, width / 4);
+            let targetIndex = swipe.startIndex;
+            if (dx <= -threshold && targetIndex < pages.length - 1) targetIndex++;
+            else if (dx >= threshold && targetIndex > 0) targetIndex--;
+
+            const movingForward = targetIndex > swipe.startIndex;
+            const movingBackward = targetIndex < swipe.startIndex;
+            const currentPage = document.querySelector('.reality-page[data-page="' + pages[swipe.startIndex] + '"]');
+            const targetPage = document.querySelector('.reality-page[data-page="' + pages[targetIndex] + '"]');
+
+            realityState.currentPageIndex = targetIndex;
+            updateRealityNav();
+            updateRealityDots();
+
+            document.querySelectorAll('.reality-page').forEach(page => {
+                if (pages.includes(page.dataset.page)) {
+                    page.classList.remove('hidden');
+                    page.style.opacity = '0';
+                    page.style.pointerEvents = 'none';
+                    page.classList.remove('active');
+                    page.style.transform = '';
+                }
+            });
+            if (currentPage) {
+                currentPage.style.opacity = '1';
+                currentPage.style.transform = movingForward
+                    ? 'translate3d(-' + width + 'px, 0, 0)'
+                    : movingBackward
+                        ? 'translate3d(' + width + 'px, 0, 0)'
+                        : 'translate3d(0, 0, 0)';
+            }
+            if (targetPage && targetPage !== currentPage) {
+                targetPage.style.opacity = '1';
+                targetPage.classList.add('active');
+                targetPage.style.transform = 'translate3d(0, 0, 0)';
+            } else if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            if (realityStage) {
+                void realityStage.offsetWidth;
+                realityStage.classList.remove('reality-dragging');
+            }
+
+            const token = ++realityTransitionToken;
+            realityTransitionTimer = setTimeout(function() {
+                if (token !== realityTransitionToken) return;
+                clearRealityDragStyles();
+                document.querySelectorAll('.reality-page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                if (targetPage) targetPage.classList.add('active');
+                realityVisiblePage = targetPage;
+                updateRealityNav();
+                updateRealityDots();
+                fitRealityText();
+            }, 320);
+        }
+
+        if (realityStage) {
+            realityStage.addEventListener('pointerdown', function(e) {
+                if (!e.isPrimary) return;
+                if (e.target.closest('button, select, a')) return;
+                clearRealityTransition();
+                realitySwipe = {
+                    id: e.pointerId,
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    startIndex: realityState.currentPageIndex,
+                    width: realityStage.clientWidth || window.innerWidth,
+                    currentDx: 0,
+                    dragging: false
+                };
+                try {
+                    realityStage.setPointerCapture(e.pointerId);
+                } catch (err) {
+                    // Pointer capture can fail in a few older browsers; drag still works.
+                }
+            });
+            realityStage.addEventListener('pointermove', function(e) {
+                if (!realitySwipe || e.pointerId !== realitySwipe.id) return;
+                const dx = e.clientX - realitySwipe.startX;
+                const dy = e.clientY - realitySwipe.startY;
+                if (!realitySwipe.dragging) {
+                    if (Math.abs(dx) < 8 || Math.abs(dx) <= Math.abs(dy)) return;
+                    realitySwipe.dragging = true;
+                    realityStage.classList.add('reality-dragging');
+                }
+                e.preventDefault();
+                realitySwipe.currentDx = dx;
+                updateRealityDragTransform();
+            });
+            realityStage.addEventListener('pointerup', function(e) {
+                finishRealityDrag(e);
+            });
+            realityStage.addEventListener('pointercancel', function() {
+                clearRealityDragStyles();
+            });
+        }
 
         realityWeatherSelect.addEventListener('change', function() {
             realityState.weather = this.value;

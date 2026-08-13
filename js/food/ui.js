@@ -1,13 +1,18 @@
         // ---- 共用彈窗 ----
-        function showCustomMessage(title, subtitle, buttons, isVictory = false, pauseTimer = true) {
+        function showCustomMessage(title, subtitle, buttons, isVictory = false, pauseTimer = true, extraLarge = false, titleHtml = false) {
             const msgIcon = document.getElementById('msgIcon');
             const msgText = document.getElementById('msgText');
             const msgSub = document.getElementById('msgSub');
             const msgBtns = document.getElementById('msgButtons');
             msgIcon.textContent = isVictory ? '🏆' : '';
-            msgText.textContent = title;
-            msgText.className = 'msg-text' + (isVictory ? ' victory' : '');
+            if (titleHtml) {
+                msgText.innerHTML = title;
+            } else {
+                msgText.textContent = title;
+            }
+            msgText.className = 'msg-text' + (isVictory ? ' victory' : '') + (extraLarge ? ' extra-large' : '');
             msgSub.textContent = subtitle || '';
+            msgSub.classList.toggle('hidden', !subtitle);
             msgBtns.innerHTML = '';
             if (buttons && buttons.length > 0) {
                 const btnGroup = document.createElement('div');
@@ -122,6 +127,14 @@
         document.getElementById('overlay').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.classList.remove('active');
+                if (typeof finishNbackInstruction === 'function' && window.nbackInstructionPending) {
+                    finishNbackInstruction();
+                    return;
+                }
+                if (typeof finishGngIntro === 'function' && window.gngIntroPending) {
+                    finishGngIntro();
+                    return;
+                }
                 if (typeof resumeGngTimer === 'function') resumeGngTimer();
                 const foodGameVisible = !document.getElementById('foodGame').classList.contains('hidden');
                 const hasNextBtn = document.querySelector('#msgButtons .btn-next') !== null;
@@ -130,12 +143,16 @@
                 }
                 const shoppingGameVisible = !document.getElementById('shoppingGame').classList.contains('hidden');
                 if (shoppingGameVisible && typeof shoppingState !== 'undefined') {
-                    if (shoppingState.roundCompletePending && typeof startShoppingRound === 'function') {
+                    if (shoppingState.recallIntroPending && typeof shoppingState.continueRecall === 'function') {
+                        shoppingState.continueRecall();
+                    } else if (shoppingState.introPending && typeof shoppingState.continueIntro === 'function') {
+                        shoppingState.continueIntro();
+                    } else if (shoppingState.roundCompletePending && typeof startShoppingRound === 'function') {
                         shoppingState.roundCompletePending = false;
                         startShoppingRound();
                     } else if (shoppingState.timeoutPending && typeof showShoppingListPhase === 'function') {
                         shoppingState.timeoutPending = false;
-                        showShoppingListPhase();
+                        beginShoppingListPhase();
                     }
                 }
             }

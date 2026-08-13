@@ -74,7 +74,7 @@
             differentGridContainer.className = `different-grid-container count-${count}`;
             differentGridContainer.innerHTML = '';
 
-            items.forEach((item, index) => {
+            function createDifferentCard(item, index) {
                 const card = document.createElement('div');
                 card.className = 'different-card';
                 card.dataset.index = index;
@@ -105,14 +105,30 @@
                 card.appendChild(magnifyBtn);
                 card.appendChild(img);
                 card.addEventListener('click', function() { handleDifferentCardClick(index); });
-                differentGridContainer.appendChild(card);
-            });
+                return card;
+            }
+
+            if (count === 5) {
+                const topRow = document.createElement('div');
+                topRow.className = 'different-row';
+                const bottomRow = document.createElement('div');
+                bottomRow.className = 'different-row';
+                items.forEach((item, index) => {
+                    (index < 3 ? topRow : bottomRow).appendChild(createDifferentCard(item, index));
+                });
+                differentGridContainer.appendChild(topRow);
+                differentGridContainer.appendChild(bottomRow);
+            } else {
+                items.forEach((item, index) => {
+                    differentGridContainer.appendChild(createDifferentCard(item, index));
+                });
+            }
         }
 
         function handleDifferentCardClick(index) {
             if (differentState.isAnswered || differentState.isWaitingForNext) return;
             const item = differentState.items[index];
-            const card = differentGridContainer.children[index];
+            const card = differentGridContainer.querySelector(`.different-card[data-index="${index}"]`);
             if (!item || !card) return;
 
             if (item.isCorrect) {
@@ -121,7 +137,7 @@
                 differentState.score++;
                 updateDifferentScore();
                 card.classList.add('correct-highlight');
-                Array.from(differentGridContainer.children).forEach(child => child.classList.add('disabled'));
+                Array.from(differentGridContainer.querySelectorAll('.different-card')).forEach(child => child.classList.add('disabled'));
                 if (sfxEnabled) playCorrectSound();
                 showCustomMessage(
                     '✅ 正確！',
@@ -180,6 +196,14 @@
             differentState.round = 0;
             updateDifferentScore();
             generateDifferentRound();
+            showCustomMessage(
+                '找出與其他食物不同的一張',
+                '',
+                [],
+                false,
+                false,
+                true
+            );
 
             if (window.CognitiveRouter) {
                 syncTopBarCentering();

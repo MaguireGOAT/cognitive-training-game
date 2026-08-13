@@ -161,12 +161,31 @@
             gngNoGoLabel.textContent = noGoDisplay;
             if (showPopup) {
                 const msg = `任務已變更：✅ ${goDisplay} → ❌ ${noGoDisplay}`;
-                showCustomMessage(msg, '請繼續作答！', [{
-                    text: '知道了',
-                    class: 'btn-stay',
-                    action: () => { hideOverlay(); }
-                }], false, true);
+                showCustomMessage(msg, '請繼續作答！', [], false, true);
             }
+        }
+
+        function showGngIntro() {
+            gngState.isPlaying = true;
+            gngState.timerPaused = true;
+            gngPlayBtn.classList.add('playing');
+            window.gngIntroPending = true;
+            showCustomMessage(
+                gngRuleText.textContent.trim(),
+                '',
+                [],
+                false,
+                false,
+                true
+            );
+        }
+
+        function finishGngIntro() {
+            if (!window.gngIntroPending) return;
+            window.gngIntroPending = false;
+            hideOverlay();
+            gngState.timerPaused = false;
+            resetGngTimer();
         }
 
         function isGngGo(items) {
@@ -433,11 +452,13 @@
                 window.CognitiveRouter.navigate('gngGame');
                 syncTopBarCentering();
                 nextGngImage();
+                showGngIntro();
             } else {
                 document.getElementById('gngSettings').classList.add('hidden');
                 document.getElementById('gngGame').style.display = 'flex';
                 syncTopBarCentering();
                 nextGngImage();
+                showGngIntro();
             }
         });
 

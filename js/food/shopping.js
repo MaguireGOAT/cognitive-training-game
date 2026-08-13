@@ -24,8 +24,12 @@
             roundLocked: false,
             roundCompletePending: false,
             timeoutPending: false,
+            recallIntroPending: false,
             feedbackTimer: null,
             wrongFlashTimer: null,
+            introShownOnce: false,
+            continueIntro: null,
+            continueRecall: null,
         };
 
         const shoppingGameScreen = document.getElementById('shoppingGame');
@@ -134,12 +138,11 @@
         function renderShoppingList() {
             const count = shoppingState.list.length;
             shoppingListGrid.className = `shopping-list-grid count-${count}`;
+            shoppingListGrid.classList.toggle('name-mode', shoppingState.listDisplayMode === 'name');
             shoppingListGrid.innerHTML = '';
             const showImage = shoppingState.listDisplayMode !== 'name';
             const showName = shoppingState.listDisplayMode === 'name' || (showImage && showNames);
-            shoppingListHint.textContent = shoppingState.listRevealMode === 'timer'
-                ? `記住清單，${shoppingState.listSeconds} 秒後開始揀選`
-                : '記住清單，準備好後按「開始揀選」';
+            shoppingListHint.textContent = '';
 
             shoppingState.list.forEach(item => {
                 const card = document.createElement('div');
@@ -174,12 +177,10 @@
                     card.classList.add('name-only');
                 }
 
-                if (showName) {
-                    const nameSpan = document.createElement('div');
-                    nameSpan.className = 'food-name';
-                    nameSpan.textContent = item.name;
-                    card.appendChild(nameSpan);
-                }
+                const nameSpan = document.createElement('div');
+                nameSpan.className = 'food-name';
+                nameSpan.textContent = item.name;
+                card.appendChild(nameSpan);
                 shoppingListGrid.appendChild(card);
             });
         }
@@ -289,7 +290,7 @@
             updateShoppingTimer();
         }
 
-        function showShoppingListPhase() {
+        function showShoppingListPhase(startTimer = true, renderList = true) {
             stopShoppingTimer();
             shoppingState.phase = 'list';
             shoppingState.roundLocked = false;
@@ -299,19 +300,70 @@
             shoppingListView.classList.remove('hidden');
             shoppingRecallView.classList.add('hidden');
             shoppingManualStartBtn.classList.toggle('hidden', shoppingState.listRevealMode !== 'manual');
+            shoppingTimer.classList.toggle('hidden', shoppingState.listRevealMode !== 'timer');
             shoppingPhaseText.textContent = `📋 購物清單（${shoppingState.list.length} 樣）`;
             shoppingProgress.classList.add('hidden');
-            renderShoppingList();
+            if (renderList) {
+                renderShoppingList();
+            } else {
+                shoppingListGrid.innerHTML = '';
+            }
             updateShoppingProgress();
             clearShoppingFeedback();
             syncTopBarCentering();
             if (shoppingState.listRevealMode === 'timer') {
-                startShoppingCountdown(shoppingState.listSeconds, function() {
-                    startShoppingRecall();
-                });
+                if (startTimer) {
+                    startShoppingCountdown(shoppingState.listSeconds, function() {
+                        showShoppingRecallIntro();
+                    });
+                } else {
+                    updateShoppingTimer();
+                }
             } else {
                 updateShoppingTimer();
             }
+        }
+
+        function beginShoppingListPhase() {
+            shoppingState.introPending = true;
+            const renderBeforeIntro = shoppingState.introShownOnce;
+            shoppingState.introShownOnce = true;
+            showShoppingListPhase(false, renderBeforeIntro);
+            shoppingState.continueIntro = function() {
+                shoppingState.introPending = false;
+                shoppingState.continueIntro = null;
+                showShoppingListPhase(true);
+            };
+            const timed = shoppingState.listRevealMode === 'timer';
+            const title = timed
+                ? `記住清單，${shoppingState.listSeconds} 秒後開始揀選`
+                : '記住清單，準備好後按<br><span class="start-hint">「開始揀選」</span>';
+            showCustomMessage(
+                title,
+                '',
+                [],
+                false,
+                false,
+                true,
+                true
+            );
+        }
+
+        function showShoppingRecallIntro() {
+            shoppingState.recallIntroPending = true;
+            shoppingState.continueRecall = function() {
+                shoppingState.recallIntroPending = false;
+                shoppingState.continueRecall = null;
+                startShoppingRecall();
+            };
+            showCustomMessage(
+                '時間到，開始揀選',
+                '',
+                [],
+                false,
+                false,
+                true
+            );
         }
 
         function startShoppingRecall() {
@@ -320,6 +372,7 @@
             shoppingListView.classList.add('hidden');
             shoppingRecallView.classList.remove('hidden');
             shoppingManualStartBtn.classList.add('hidden');
+            shoppingTimer.classList.toggle('hidden', !shoppingState.recallTimed);
             shoppingPhaseText.textContent = '揀選清單中的食物';
             shoppingProgress.classList.remove('hidden');
             renderShoppingRecallGrid();
@@ -348,7 +401,7 @@
                         class: 'btn-stay',
                         action: function() {
                             hideOverlay();
-                            showShoppingListPhase();
+                            beginShoppingListPhase();
                         }
                     }]
                 );
@@ -424,7 +477,7 @@
             shoppingState.roundCompletePending = false;
             shoppingState.round++;
             buildShoppingRound();
-            showShoppingListPhase();
+            beginShoppingListPhase();
         }
 
         function startShoppingSession() {
@@ -449,7 +502,7 @@
             shoppingState.round = 0;
             updateShoppingScore();
             buildShoppingRound();
-            showShoppingListPhase();
+            beginShoppingListPhase();
         }
 
         function clearShoppingFeedback() {
@@ -484,6 +537,10 @@
             shoppingState.roundLocked = false;
             shoppingState.roundCompletePending = false;
             shoppingState.timeoutPending = false;
+            shoppingState.introPending = false;
+            shoppingState.continueIntro = null;
+            shoppingState.recallIntroPending = false;
+            shoppingState.continueRecall = null;
         }
 
         shoppingManualStartBtn.addEventListener('click', function() {
@@ -495,7 +552,6 @@
             showNames = !showNames;
             applyNameVisibility();
             this.classList.toggle('name-hidden', !showNames);
-            if (shoppingState.phase === 'list') renderShoppingList();
         });
 
         shoppingStartBtn.addEventListener('click', function() {

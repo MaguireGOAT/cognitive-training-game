@@ -44,6 +44,9 @@
         .menu-overlay > div:last-child:not(.menu-header):not(.menu-subtitle):not([style*="position:fixed"]) {
             margin-bottom: auto;
         }
+        #gngSettings .menu-header {
+            margin-top: auto !important;
+        }
 
         .menu-header {
             width: 100%;
@@ -86,18 +89,36 @@
         .category-grid.food-select {
             grid-template-columns: repeat(4, 1fr);
             max-width: calc(900px * var(--ui-scale));
-            --food-card: min(calc((100vw - calc(24px * var(--ui-scale)) - calc(18px * var(--ui-scale))) / 4),
-                             calc((100vh - calc(260px * var(--ui-scale)) - calc(18px * var(--ui-scale))) / 2));
-            width: calc(min(100%, calc(900px * var(--ui-scale))));
+            --food-grid-width: min(calc(100vw - calc(60px * var(--ui-scale))), calc(900px * var(--ui-scale)));
+            --food-card: min(calc((var(--food-grid-width) - calc(54px * var(--ui-scale))) / 4),
+                             calc((100vh - calc(260px * var(--ui-scale)) - calc(36px * var(--ui-scale))) / 3));
+            width: var(--food-grid-width);
             grid-auto-rows: var(--food-card);
             align-content: center;
-            overflow: hidden;
         }
         .category-grid.food-select .category-btn {
             min-height: 0;
             height: 100%;
             aspect-ratio: 1 / 1;
             max-width: 100%;
+        }
+        .category-grid.food-select .category-btn .icon {
+            font-size: calc(58px * var(--ui-scale));
+            margin-bottom: calc(10px * var(--ui-scale));
+        }
+        .category-grid.food-select .category-btn .label {
+            font-size: calc(26px * var(--ui-scale));
+        }
+
+        #gngSettings > div:not(.menu-header):not(.menu-subtitle):not([style*="position:fixed"]) span,
+        #shoppingSettings > div:not(.menu-header):not(.menu-subtitle):not([style*="position:fixed"]) span {
+            font-size: calc(26px * var(--ui-scale)) !important;
+        }
+        #gngSettings select,
+        #shoppingSettings select,
+        #gngAutoToggle {
+            font-size: calc(24px * var(--ui-scale)) !important;
+            padding: calc(8px * var(--ui-scale)) calc(18px * var(--ui-scale)) !important;
         }
 
         .category-btn {
@@ -197,6 +218,20 @@
         .message-box .msg-text.victory {
             color: var(--highlight-correct);
             font-size: calc(52px * var(--ui-scale));
+        }
+        .message-box .msg-text.extra-large {
+            font-size: calc(76px * var(--ui-scale));
+            line-height: 1.15;
+        }
+        .message-box .msg-text .category-highlight {
+            color: #b37b4b;
+        }
+        .message-box .msg-text .start-hint {
+            color: var(--highlight-correct);
+            white-space: nowrap;
+        }
+        [data-theme="dark"] .message-box .msg-text .category-highlight {
+            color: #42a5f5;
         }
         .message-box .msg-sub {
             font-size: calc(24px * var(--ui-scale));
