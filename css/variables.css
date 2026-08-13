@@ -2,10 +2,11 @@
            全域變數與基礎樣式
            ================================================================ */
         :root {
+            --ui-scale: clamp(0.72, min(calc(100vw / 1280px), calc(100vh / 800px)), 1.35);
             --bg-color: #f5f0e8;
             --container-bg: #f5f0e8;
             --card-bg: #ffffff;
-            --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            --card-shadow: 0 calc(6px * var(--ui-scale)) calc(18px * var(--ui-scale)) rgba(0, 0, 0, 0.08);
             --font-family: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             --btn-transition: background 0.2s ease, color 0.2s ease, transform 0.16s ease, box-shadow 0.16s ease, border-color 0.2s ease;
             --press-anim: press-icon 0.16s ease-in-out;
@@ -19,12 +20,12 @@
             --highlight-wrong: #d95a5a;
             --btn-hover: #d5c9bc;
             --complete-badge: #3ba87b;
-            --panel-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            --panel-shadow: 0 calc(4px * var(--ui-scale)) calc(16px * var(--ui-scale)) rgba(0,0,0,0.08);
             --slide-bg: rgba(255,255,255,0.95);
-            --slide-shadow: 0 0 20px rgba(0,0,0,0.15);
+            --slide-shadow: 0 0 calc(20px * var(--ui-scale)) rgba(0,0,0,0.15);
             --primary-blue: #1e88e5;
             --btn-bg: #1e88e5;
-            --btn-shadow: 0 4px 0 #0d47a1;
+            --btn-shadow: 0 calc(4px * var(--ui-scale)) 0 #0d47a1;
             --btn-text: #ffffff;
             --error-bg: #ffcdd2;
             --error-text: #d32f2f;
@@ -33,8 +34,8 @@
             --slide-item-hover: #e8e0d8;
             --nback-brown: #5D4037;
             --toggle-on-bg: rgba(59, 168, 123, 0.25);
-            --btn-shadow-correct: 0 6px 0 #2a7a5a;
-            --btn-shadow-wrong: 0 6px 0 #8a3a3a;
+            --btn-shadow-correct: 0 calc(6px * var(--ui-scale)) 0 #2a7a5a;
+            --btn-shadow-wrong: 0 calc(6px * var(--ui-scale)) 0 #8a3a3a;
             --btn-hover-correct: #4cb88a;
             --btn-hover-wrong: #e06b6b;
         }
@@ -43,7 +44,7 @@
             --bg-color: #1a1a2e;
             --container-bg: #1a1a2e;
             --card-bg: #2d2d44;
-            --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+            --card-shadow: 0 calc(6px * var(--ui-scale)) calc(18px * var(--ui-scale)) rgba(0, 0, 0, 0.5);
             --text-color: #e0e0e0;
             --muted-text: #b0b0c0;
             --question-bg: transparent;
@@ -54,12 +55,12 @@
             --highlight-wrong: #e06b6b;
             --btn-hover: #1565c0;
             --complete-badge: #42a5f5;
-            --panel-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            --panel-shadow: 0 calc(4px * var(--ui-scale)) calc(16px * var(--ui-scale)) rgba(0,0,0,0.4);
             --slide-bg: rgba(30,30,50,0.95);
-            --slide-shadow: 0 0 20px rgba(0,0,0,0.5);
+            --slide-shadow: 0 0 calc(20px * var(--ui-scale)) rgba(0,0,0,0.5);
             --primary-blue: #42a5f5;
             --btn-bg: #0d47a1;
-            --btn-shadow: 0 4px 0 #091f4b;
+            --btn-shadow: 0 calc(4px * var(--ui-scale)) 0 #091f4b;
             --btn-text: #e0e0e0;
             --error-bg: #4a1a1a;
             --error-text: #ff8a80;
@@ -68,8 +69,8 @@
             --slide-item-hover: #3a3a5a;
             --nback-brown: #8D6E63;
             --toggle-on-bg: rgba(66, 165, 245, 0.25);
-            --btn-shadow-correct: 0 6px 0 #0a2a6a;
-            --btn-shadow-wrong: 0 6px 0 #6a1010;
+            --btn-shadow-correct: 0 calc(6px * var(--ui-scale)) 0 #0a2a6a;
+            --btn-shadow-wrong: 0 calc(6px * var(--ui-scale)) 0 #6a1010;
             --btn-hover-correct: #1565c0;
             --btn-hover-wrong: #c62828;
         }
@@ -82,6 +83,7 @@
         html, body {
             height: 100%;
             font-family: var(--font-family);
+            font-size: calc(16px * var(--ui-scale));
             background: var(--bg-color);
             overflow: hidden;
             transition: background 0.4s, color 0.4s;

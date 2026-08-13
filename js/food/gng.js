@@ -291,7 +291,7 @@
                     this.style.display = 'none';
                     const fallback = document.createElement('span');
                     fallback.textContent = '🖼️';
-                    fallback.style.fontSize = '40px';
+                    fallback.style.fontSize = 'calc(40px * var(--ui-scale))';
                     this.parentElement.appendChild(fallback);
                 };
                 card.appendChild(img);
@@ -376,9 +376,9 @@
             overlay.style.display = 'flex';
             overlay.style.alignItems = 'center';
             overlay.style.justifyContent = 'center';
-            overlay.style.fontSize = '48px';
+            overlay.style.fontSize = 'calc(48px * var(--ui-scale))';
             overlay.style.fontWeight = '700';
-            overlay.style.textShadow = '0 0 30px rgba(0,0,0,0.9)';
+            overlay.style.textShadow = '0 0 calc(30px * var(--ui-scale)) rgba(0,0,0,0.9)';
             overlay.style.pointerEvents = 'none';
             overlay.style.transition = 'opacity 0.3s';
 

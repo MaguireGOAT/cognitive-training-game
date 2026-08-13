@@ -7,10 +7,10 @@
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
-            min-height: 48px;
-            padding: 4px 2px;
-            row-gap: 6px;
-            --top-extra: 0px;
+            min-height: calc(48px * var(--ui-scale));
+            padding: calc(4px * var(--ui-scale)) calc(2px * var(--ui-scale));
+            row-gap: calc(6px * var(--ui-scale));
+            --top-extra: calc(0px * var(--ui-scale));
         }
         .top-bar.wrapped .left-group { order: 1; }
         .top-bar.wrapped .right-group { order: 2; }
@@ -18,7 +18,7 @@
             order: 3;
             flex: 1 1 100%;
             min-width: 0;
-            padding: 2px 2px 4px;
+            padding: calc(2px * var(--ui-scale)) calc(2px * var(--ui-scale)) calc(4px * var(--ui-scale));
         }
         .top-bar.wrapped .question-text,
         .top-bar.wrapped .gng-rules-text {
@@ -28,13 +28,13 @@
         .top-bar .left-group {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: calc(8px * var(--ui-scale));
             flex-shrink: 0;
         }
         .top-bar .right-group {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: calc(4px * var(--ui-scale));
             flex-shrink: 0;
             flex-wrap: nowrap;
         }
@@ -42,13 +42,13 @@
         .top-bar .right-group .score-display,
         .top-bar .right-group .dropdown-wrapper,
         .top-bar .right-group .hamburger-btn {
-            height: 44px;
+            height: calc(44px * var(--ui-scale));
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .top-bar .right-group .hamburger-btn {
-            margin-left: 2px;
+            margin-left: calc(2px * var(--ui-scale));
         }
 
         /* ================================================================
@@ -60,20 +60,20 @@
             justify-content: center;
             flex: 1 1 auto;
             min-width: max-content;
-            padding: 0 8px;
+            padding: 0 calc(8px * var(--ui-scale));
         }
         .question-text {
-            font-size: 36px;
+            font-size: calc(36px * var(--ui-scale));
             font-weight: 700;
             color: var(--text-color);
             background: var(--question-bg);
             display: inline-block;
-            padding: 0 20px;
-            border-radius: 40px;
-            letter-spacing: 1px;
-            line-height: 44px;
-            height: 44px;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+            padding: 0 calc(20px * var(--ui-scale));
+            border-radius: calc(40px * var(--ui-scale));
+            letter-spacing: calc(1px * var(--ui-scale));
+            line-height: calc(44px * var(--ui-scale));
+            height: calc(44px * var(--ui-scale));
+            box-shadow: inset 0 calc(2px * var(--ui-scale)) calc(8px * var(--ui-scale)) rgba(0, 0, 0, 0.04);
             transition: background 0.4s, color 0.4s, box-shadow 0.4s;
             white-space: nowrap;
             transform: translateX(var(--top-extra));
@@ -82,17 +82,17 @@
         [data-theme="dark"] .question-text .category-highlight { color: #42a5f5; }
 
         .gng-rules-text {
-            font-size: 32px;
+            font-size: calc(32px * var(--ui-scale));
             font-weight: 700;
             color: var(--text-color);
             background: var(--question-bg);
             display: inline-block;
-            padding: 0 16px;
-            border-radius: 40px;
-            letter-spacing: 1px;
-            line-height: 44px;
-            height: 44px;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+            padding: 0 calc(16px * var(--ui-scale));
+            border-radius: calc(40px * var(--ui-scale));
+            letter-spacing: calc(1px * var(--ui-scale));
+            line-height: calc(44px * var(--ui-scale));
+            height: calc(44px * var(--ui-scale));
+            box-shadow: inset 0 calc(2px * var(--ui-scale)) calc(8px * var(--ui-scale)) rgba(0, 0, 0, 0.04);
             transition: background 0.4s, color 0.4s, box-shadow 0.4s;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
@@ -107,8 +107,8 @@
            通用按鈕樣式
            ================================================================ */
         .hamburger-btn {
-            width: 44px;
-            height: 44px;
+            width: calc(44px * var(--ui-scale));
+            height: calc(44px * var(--ui-scale));
             padding: 0;
             display: flex;
             align-items: center;
@@ -121,13 +121,13 @@
             transition: var(--btn-transition);
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            box-shadow: 0 calc(2px * var(--ui-scale)) calc(6px * var(--ui-scale)) rgba(0,0,0,0.08);
             flex-shrink: 0;
         }
         .hamburger-btn .menu-icon {
             display: block;
-            width: 32px;
-            height: 32px;
+            width: calc(32px * var(--ui-scale));
+            height: calc(32px * var(--ui-scale));
             object-fit: contain;
             pointer-events: none;
             user-select: none;
@@ -142,8 +142,8 @@
             background: var(--control-bg);
             border: none;
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
+            width: calc(44px * var(--ui-scale));
+            height: calc(44px * var(--ui-scale));
             cursor: pointer;
             transition: var(--btn-transition);
             font-family: inherit;
@@ -154,8 +154,8 @@
         }
         .back-btn .back-icon {
             display: block;
-            width: 24px;
-            height: 24px;
+            width: calc(24px * var(--ui-scale));
+            height: calc(24px * var(--ui-scale));
             object-fit: contain;
             pointer-events: none;
             user-select: none;
@@ -173,9 +173,9 @@
         .action-btn {
             background: var(--control-bg);
             border: none;
-            border-radius: 40px;
-            padding: 0 14px;
-            font-size: 20px;
+            border-radius: calc(40px * var(--ui-scale));
+            padding: 0 calc(14px * var(--ui-scale));
+            font-size: calc(20px * var(--ui-scale));
             font-weight: 600;
             color: var(--text-color);
             cursor: pointer;
@@ -184,7 +184,7 @@
             white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
             line-height: 1.4;
-            height: 44px;
+            height: calc(44px * var(--ui-scale));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -194,53 +194,53 @@
 
         .score-display {
             background: var(--score-bg);
-            padding: 0 16px;
-            border-radius: 40px;
-            font-size: 20px;
+            padding: 0 calc(16px * var(--ui-scale));
+            border-radius: calc(40px * var(--ui-scale));
+            font-size: calc(20px * var(--ui-scale));
             font-weight: 600;
             color: var(--text-color);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: calc(4px * var(--ui-scale));
             transition: background 0.4s, color 0.4s;
-            height: 44px;
+            height: calc(44px * var(--ui-scale));
         }
         .score-display span {
             color: #b37b4b;
-            font-size: 22px;
+            font-size: calc(22px * var(--ui-scale));
         }
         [data-theme="dark"] .score-display span { color: #42a5f5; }
 
         .dropdown-wrapper {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: calc(4px * var(--ui-scale));
             background: var(--control-bg);
-            padding: 0 12px;
-            border-radius: 40px;
+            padding: 0 calc(12px * var(--ui-scale));
+            border-radius: calc(40px * var(--ui-scale));
             transition: background 0.4s;
-            height: 44px;
+            height: calc(44px * var(--ui-scale));
         }
         .dropdown-wrapper label {
-            font-size: 18px;
+            font-size: calc(18px * var(--ui-scale));
             font-weight: 700;
             color: var(--text-color);
             transition: color 0.4s;
             white-space: nowrap;
         }
         .dropdown-wrapper select {
-            font-size: 18px;
+            font-size: calc(18px * var(--ui-scale));
             font-weight: 600;
-            padding: 2px 4px;
-            border-radius: 15px;
-            border: 2px solid #d4c5b8;
+            padding: calc(2px * var(--ui-scale)) calc(4px * var(--ui-scale));
+            border-radius: calc(15px * var(--ui-scale));
+            border: calc(2px * var(--ui-scale)) solid #d4c5b8;
             background: #fffcf7;
             color: #3d2c1e;
             cursor: pointer;
             outline: none;
             font-family: inherit;
-            min-width: 30px;
-            max-height: 36px;
+            min-width: calc(30px * var(--ui-scale));
+            max-height: calc(36px * var(--ui-scale));
             -webkit-tap-highlight-color: transparent;
             transition: border-color 0.3s;
         }
@@ -252,9 +252,9 @@
 
         .separator {
             color: var(--muted-text);
-            font-size: 20px;
+            font-size: calc(20px * var(--ui-scale));
             font-weight: 300;
-            padding: 0 2px;
+            padding: 0 calc(2px * var(--ui-scale));
             user-select: none;
             transition: color 0.4s;
         }

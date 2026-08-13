@@ -3,8 +3,8 @@
            ================================================================ */
         .back-btn,
         .hamburger-btn {
-            width: 44px;
-            height: 44px;
+            width: calc(44px * var(--ui-scale));
+            height: calc(44px * var(--ui-scale));
             padding: 0;
             display: flex;
             align-items: center;
@@ -16,26 +16,26 @@
             cursor: pointer;
             transition: background 0.2s ease, transform 0.16s ease, box-shadow 0.16s ease;
             font-family: inherit;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 calc(2px * var(--ui-scale)) calc(6px * var(--ui-scale)) rgba(0, 0, 0, 0.08);
             flex-shrink: 0;
             -webkit-tap-highlight-color: transparent;
         }
         .save-btn {
-            height: 44px;
-            padding: 0 16px;
+            height: calc(44px * var(--ui-scale));
+            padding: 0 calc(16px * var(--ui-scale));
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 22px;
+            border-radius: calc(22px * var(--ui-scale));
             background: var(--control-bg, #e8dfd6);
             border: none;
             color: var(--text, var(--text-color, #3d2c1e));
             cursor: pointer;
             transition: background 0.2s ease, transform 0.16s ease, box-shadow 0.16s ease;
             font-family: inherit;
-            font-size: 16px;
+            font-size: calc(16px * var(--ui-scale));
             font-weight: 700;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 calc(2px * var(--ui-scale)) calc(6px * var(--ui-scale)) rgba(0, 0, 0, 0.08);
             flex-shrink: 0;
             -webkit-tap-highlight-color: transparent;
         }
@@ -61,12 +61,12 @@
             user-select: none;
         }
         .back-btn .back-icon {
-            width: 24px;
-            height: 24px;
+            width: calc(24px * var(--ui-scale));
+            height: calc(24px * var(--ui-scale));
         }
         .hamburger-btn .menu-icon {
-            width: 32px;
-            height: 32px;
+            width: calc(32px * var(--ui-scale));
+            height: calc(32px * var(--ui-scale));
         }
         [data-theme="dark"] .back-btn,
         [data-theme="dark"] .hamburger-btn {
@@ -84,18 +84,18 @@
         .slide-menu {
             position: fixed;
             top: 0;
-            right: -320px;
-            width: 300px;
+            right: calc(-320px * var(--ui-scale));
+            width: calc(300px * var(--ui-scale));
             height: 100%;
             background: var(--slide-bg, var(--menu-bg, rgba(255, 255, 255, 0.96)));
-            box-shadow: var(--slide-shadow, 0 0 20px rgba(0, 0, 0, 0.15));
+            box-shadow: var(--slide-shadow, 0 0 calc(20px * var(--ui-scale)) rgba(0, 0, 0, 0.15));
             z-index: 3000;
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px 16px;
+            padding: calc(20px * var(--ui-scale)) calc(16px * var(--ui-scale));
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            backdrop-filter: blur(8px);
+            gap: calc(12px * var(--ui-scale));
+            backdrop-filter: blur(calc(8px * var(--ui-scale)));
         }
         .slide-menu.open {
             right: 0;
@@ -103,15 +103,15 @@
         .slide-menu .menu-item {
             display: flex;
             align-items: center;
-            gap: 16px;
-            font-size: 24px;
+            gap: calc(16px * var(--ui-scale));
+            font-size: calc(24px * var(--ui-scale));
             color: var(--text, var(--text-color, #3d2c1e));
-            padding: 12px 16px;
-            border-radius: 20px;
+            padding: calc(12px * var(--ui-scale)) calc(16px * var(--ui-scale));
+            border-radius: calc(20px * var(--ui-scale));
             background: var(--card-bg, var(--panel-bg, #ffffff));
             cursor: pointer;
             transition: background 0.2s ease, transform 0.16s ease, box-shadow 0.16s ease;
-            box-shadow: var(--card-shadow, 0 6px 18px rgba(0, 0, 0, 0.08));
+            box-shadow: var(--card-shadow, 0 calc(6px * var(--ui-scale)) calc(18px * var(--ui-scale)) rgba(0, 0, 0, 0.08));
             border: none;
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
@@ -121,11 +121,11 @@
         }
         .slide-menu .menu-item .state-badge {
             margin-left: auto;
-            font-size: 20px;
+            font-size: calc(20px * var(--ui-scale));
         }
         .slide-menu .menu-divider {
-            border-top: 2px solid var(--border-color, var(--divider, #d4c5b8));
-            margin: 4px 0;
+            border-top: calc(2px * var(--ui-scale)) solid var(--border-color, var(--divider, #d4c5b8));
+            margin: calc(4px * var(--ui-scale)) 0;
         }
         [data-theme="dark"] .slide-menu {
             background: var(--slide-bg, rgba(30, 30, 50, 0.96));

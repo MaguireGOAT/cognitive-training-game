@@ -32,160 +32,47 @@
         /* Larger title, subtitle, and tile text on the home and food mode menus. */
         #home .menu-title,
         #mainMenu .menu-title {
-            font-size: 56px;
+            font-size: calc(56px * var(--ui-scale));
         }
         #home .menu-title .brain,
         #mainMenu .menu-title .brain {
-            font-size: 56px;
+            font-size: calc(56px * var(--ui-scale));
         }
         #home .menu-subtitle,
         #mainMenu .menu-subtitle {
-            font-size: 28px;
+            font-size: calc(28px * var(--ui-scale));
         }
         #home .category-btn .icon {
-            font-size: 56px;
-            margin-bottom: 8px;
+            font-size: calc(56px * var(--ui-scale));
+            margin-bottom: calc(8px * var(--ui-scale));
         }
         #home .category-btn .label {
-            font-size: 28px;
+            font-size: calc(28px * var(--ui-scale));
         }
 
         /* Keep game modes in a single horizontal row on wide screens. */
         .app-screen#mainMenu .category-grid.game-select {
             grid-template-columns: repeat(5, minmax(0, 1fr));
-            max-width: 1100px;
+            max-width: calc(1100px * var(--ui-scale));
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn {
-            min-height: 110px;
+            min-height: calc(110px * var(--ui-scale));
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn .icon {
-            font-size: 52px;
-            margin-bottom: 8px;
+            font-size: calc(52px * var(--ui-scale));
+            margin-bottom: calc(8px * var(--ui-scale));
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn .label {
-            font-size: 26px;
+            font-size: calc(26px * var(--ui-scale));
         }
         #mainMenu {
-            gap: 18px;
+            gap: calc(18px * var(--ui-scale));
         }
         #mainMenu .menu-header {
-            margin-bottom: 4px;
+            margin-bottom: calc(4px * var(--ui-scale));
         }
         #mainMenu .menu-subtitle {
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 820px) {
-            #home .menu-title,
-            #mainMenu .menu-title {
-                font-size: 42px;
-            }
-            #home .menu-title .brain,
-            #mainMenu .menu-title .brain {
-                font-size: 42px;
-            }
-            #home .menu-subtitle,
-            #mainMenu .menu-subtitle {
-                font-size: 22px;
-            }
-            #home .category-btn .icon {
-                font-size: 46px;
-                margin-bottom: 8px;
-            }
-            #home .category-btn .label {
-                font-size: 23px;
-            }
-            .app-screen#mainMenu .category-grid.game-select {
-                grid-template-columns: repeat(5, minmax(0, 1fr));
-                max-width: 980px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn {
-                min-height: 90px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn .icon {
-                font-size: 42px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn .label {
-                font-size: 21px;
-            }
-        }
-
-        @media (max-width: 640px) {
-            #home .menu-title,
-            #mainMenu .menu-title {
-                font-size: 34px;
-            }
-            #home .menu-title .brain,
-            #mainMenu .menu-title .brain {
-                font-size: 34px;
-            }
-            #home .menu-subtitle,
-            #mainMenu .menu-subtitle {
-                font-size: 20px;
-            }
-            #home .category-btn .icon {
-                font-size: 38px;
-                margin-bottom: 7px;
-            }
-            #home .category-btn .label {
-                font-size: 19px;
-            }
-            .app-screen#mainMenu .category-grid.game-select {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 10px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn {
-                min-height: 80px;
-                padding: 12px 8px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn .icon {
-                font-size: 34px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn .label {
-                font-size: 17px;
-            }
-            #mainMenu .menu-subtitle {
-                margin-bottom: 16px;
-            }
-        }
-
-        @media (max-width: 540px) {
-            #home .menu-title,
-            #mainMenu .menu-title {
-                font-size: 28px;
-            }
-            #home .menu-title .brain,
-            #mainMenu .menu-title .brain {
-                font-size: 28px;
-            }
-            #home .menu-subtitle,
-            #mainMenu .menu-subtitle {
-                font-size: 18px;
-            }
-            #home .category-btn .icon {
-                font-size: 32px;
-                margin-bottom: 6px;
-            }
-            #home .category-btn .label {
-                font-size: 16px;
-            }
-            .app-screen#mainMenu .category-grid.game-select {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 6px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn {
-                min-height: 70px;
-                padding: 8px 6px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn .icon {
-                font-size: 30px;
-            }
-            .app-screen#mainMenu .category-grid.game-select .category-btn .label {
-                font-size: 15px;
-            }
-            #mainMenu .menu-subtitle {
-                margin-bottom: 12px;
-            }
+            margin-bottom: calc(24px * var(--ui-scale));
         }
 
         /* ================================================================
@@ -198,21 +85,21 @@
         #palm .menu-group {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: calc(6px * var(--ui-scale));
         }
         #palm .menu-label {
-            font-size: 18px;
+            font-size: calc(18px * var(--ui-scale));
             font-weight: 600;
             color: var(--muted-text);
             white-space: nowrap;
             transition: color 0.3s;
         }
         #palm select {
-            height: 44px;
-            font-size: 20px;
-            padding: 0 14px;
-            border-radius: 30px;
-            border: 2px solid var(--border-color);
+            height: calc(44px * var(--ui-scale));
+            font-size: calc(20px * var(--ui-scale));
+            padding: 0 calc(14px * var(--ui-scale));
+            border-radius: calc(30px * var(--ui-scale));
+            border: calc(2px * var(--ui-scale)) solid var(--border-color);
             background: var(--card-bg);
             font-weight: 600;
             color: var(--text-color);
@@ -224,12 +111,12 @@
             font-size: inherit;
         }
         #palm select:focus-visible {
-            outline: 2px solid var(--primary-blue);
+            outline: calc(2px * var(--ui-scale)) solid var(--primary-blue);
         }
 
         #palm .grid-wrapper {
             align-items: stretch;
-            padding: 8px 0;
+            padding: calc(8px * var(--ui-scale)) 0;
         }
         #palm .game-board {
             width: 100%;
@@ -238,7 +125,7 @@
             flex-direction: var(--palm-dir, row);
             justify-content: center;
             align-items: center;
-            gap: 14px;
+            gap: calc(14px * var(--ui-scale));
             min-height: 0;
             margin: 0 auto;
             cursor: pointer;
@@ -246,16 +133,16 @@
         }
         #palm .side {
             flex: 0 0 auto;
-            width: var(--palm-side, min(100%, 300px));
-            height: var(--palm-side, min(100%, 300px));
+            width: var(--palm-side, min(100%, calc(300px * var(--ui-scale))));
+            height: var(--palm-side, min(100%, calc(300px * var(--ui-scale))));
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--card-bg);
-            border-radius: 28px;
+            border-radius: calc(28px * var(--ui-scale));
             box-shadow: var(--panel-shadow);
             overflow: hidden;
-            padding: 12px;
+            padding: calc(12px * var(--ui-scale));
             transition: background 0.3s, box-shadow 0.3s;
             cursor: pointer;
         }
@@ -267,7 +154,7 @@
             align-items: center;
             justify-content: center;
             background: var(--control-bg-nback);
-            border-radius: 18px;
+            border-radius: calc(18px * var(--ui-scale));
             overflow: hidden;
             min-width: 0;
             min-height: 0;
@@ -284,8 +171,8 @@
             font-size: 1.5rem;
             color: var(--error-text);
             background: var(--error-bg);
-            padding: 20px;
-            border-radius: 20px;
+            padding: calc(20px * var(--ui-scale));
+            border-radius: calc(20px * var(--ui-scale));
             text-align: center;
             font-weight: bold;
             word-break: break-all;
@@ -294,11 +181,11 @@
         }
 
         #palm .bottom-controls .center-group {
-            gap: 14px;
+            gap: calc(14px * var(--ui-scale));
         }
         #palm .divider-vertical {
-            width: 1px;
-            height: 28px;
+            width: calc(1px * var(--ui-scale));
+            height: calc(28px * var(--ui-scale));
             background: var(--border-color);
             transition: background 0.3s;
         }
@@ -307,7 +194,7 @@
         #palm #swapBtn,
         #palm .speed-control,
         #palm .play-btn {
-            height: 47px;
+            height: calc(47px * var(--ui-scale));
         }
         #palm #swapBtn {
             background: var(--btn-bg);
@@ -318,34 +205,34 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 18px;
-            border-radius: 50px;
+            padding: 0 calc(18px * var(--ui-scale));
+            border-radius: calc(50px * var(--ui-scale));
             cursor: pointer;
             touch-action: manipulation;
             width: auto;
-            min-width: 60px;
-            letter-spacing: 0.5px;
+            min-width: calc(60px * var(--ui-scale));
+            letter-spacing: calc(0.5px * var(--ui-scale));
             line-height: 1.2;
             transition: background 0.3s, box-shadow 0.3s, color 0.3s;
             -webkit-tap-highlight-color: transparent;
         }
         #palm #swapBtn:focus-visible {
-            outline: 3px solid #ffb300;
-            outline-offset: 2px;
+            outline: calc(3px * var(--ui-scale)) solid #ffb300;
+            outline-offset: calc(2px * var(--ui-scale));
         }
         #palm .speed-control {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: calc(6px * var(--ui-scale));
             background: var(--control-bg-nback);
-            padding: 0 10px;
-            border-radius: 30px;
-            border: 2px solid var(--primary-blue);
+            padding: 0 calc(10px * var(--ui-scale));
+            border-radius: calc(30px * var(--ui-scale));
+            border: calc(2px * var(--ui-scale)) solid var(--primary-blue);
             transition: background 0.3s, border 0.3s;
         }
         #palm .speed-btn {
-            width: 28px;
-            height: 28px;
+            width: calc(28px * var(--ui-scale));
+            height: calc(28px * var(--ui-scale));
             border: none;
             background: transparent;
             color: var(--primary-blue);
@@ -357,7 +244,7 @@
             justify-content: center;
             padding: 0;
             line-height: 1;
-            margin-top: 2px;
+            margin-top: calc(2px * var(--ui-scale));
             transition: transform 0.15s, color 0.3s;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
@@ -366,7 +253,7 @@
             transform: scale(0.8);
         }
         #palm .speed-display {
-            min-width: 32px;
+            min-width: calc(32px * var(--ui-scale));
             text-align: center;
             font-size: 1.1rem;
             font-weight: 700;
@@ -375,114 +262,7 @@
             transition: color 0.3s;
         }
         #palm .play-btn {
-            width: 47px;
+            width: calc(47px * var(--ui-scale));
             border-radius: 50%;
             background: var(--btn-bg);
-        }
-
-        @media (max-width: 820px) {
-            #palm #swapBtn,
-            #palm .speed-control,
-            #palm .play-btn {
-                height: 44px;
-            }
-            #palm .play-btn {
-                width: 44px;
-            }
-            #palm .menu-label {
-                font-size: 15px;
-            }
-            #palm select {
-                font-size: 16px;
-                padding: 0 12px;
-            }
-            #palm .right-group {
-                gap: 2px;
-            }
-            #palm .speed-btn {
-                width: 24px;
-                height: 24px;
-                font-size: 0.95rem;
-            }
-            #palm .speed-display {
-                min-width: 26px;
-                font-size: 0.95rem;
-            }
-        }
-
-        @media (max-width: 640px) {
-            #palm #swapBtn,
-            #palm .speed-control,
-            #palm .play-btn {
-                height: 40px;
-            }
-            #palm .play-btn {
-                width: 40px;
-            }
-            #palm .speed-btn {
-                width: 22px;
-                height: 22px;
-                font-size: 0.9rem;
-            }
-            #palm .speed-display {
-                min-width: 24px;
-                font-size: 0.9rem;
-            }
-            #palm .menu-label {
-                font-size: 13px;
-            }
-            #palm select {
-                font-size: 15px;
-                padding: 0 9px;
-            }
-            #palm .separator {
-                font-size: 14px;
-            }
-            #palm .right-group {
-                gap: 1px;
-            }
-            #palm .bottom-controls .center-group {
-                gap: 14px;
-            }
-        }
-
-        @media (max-width: 540px) {
-            #palm #swapBtn,
-            #palm .speed-control,
-            #palm .play-btn {
-                height: 38px;
-            }
-            #palm .play-btn {
-                width: 38px;
-            }
-            #palm #swapBtn {
-                min-width: 52px;
-                padding: 0 14px;
-                font-size: 1.2rem;
-            }
-            #palm .menu-label {
-                font-size: 12px;
-            }
-            #palm select {
-                font-size: 14px;
-                padding: 0 8px;
-            }
-            #palm .right-group {
-                gap: 0;
-            }
-            #palm .right-group .separator {
-                padding: 0 1px;
-            }
-            #palm .speed-btn {
-                width: 20px;
-                height: 20px;
-                font-size: 0.8rem;
-            }
-            #palm .speed-display {
-                min-width: 22px;
-                font-size: 0.8rem;
-            }
-            #palm .bottom-controls .center-group {
-                gap: 10px;
-            }
         }

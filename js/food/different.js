@@ -98,7 +98,7 @@
                     this.style.display = 'none';
                     const fallback = document.createElement('span');
                     fallback.textContent = '🖼️';
-                    fallback.style.fontSize = '40px';
+                    fallback.style.fontSize = 'calc(40px * var(--ui-scale))';
                     card.appendChild(fallback);
                 };
 

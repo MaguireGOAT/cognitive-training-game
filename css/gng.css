@@ -7,13 +7,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2px 0;
+            padding: calc(2px * var(--ui-scale)) 0;
             overflow: hidden;
             position: relative;
         }
         .gng-grid-container {
             display: grid;
-            gap: 16px;
+            gap: calc(16px * var(--ui-scale));
             justify-content: center;
             align-items: center;
             align-content: center;
@@ -24,38 +24,38 @@
         .gng-grid-container.cols-1 {
             --cols: 1;
             --rows: 1;
-            --h-gaps: 0px;
-            --v-gaps: 0px;
-            --card-max: 750px;
-            --card: min(calc((100vw - 24px - var(--h-gaps)) / var(--cols)), calc((100vh - 210px - var(--v-gaps)) / var(--rows)), var(--card-max));
+            --h-gaps: calc(0px * var(--ui-scale));
+            --v-gaps: calc(0px * var(--ui-scale));
+            --card-max: calc(750px * var(--ui-scale));
+            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)), var(--card-max));
             grid-template-columns: repeat(var(--cols), var(--card));
             grid-auto-rows: var(--card);
         }
         .gng-grid-container.cols-2 {
             --cols: 2;
             --rows: 1;
-            --h-gaps: 16px;
-            --v-gaps: 0px;
-            --card-max: 592px;
-            --card: min(calc((100vw - 24px - var(--h-gaps)) / var(--cols)), calc((100vh - 210px - var(--v-gaps)) / var(--rows)), var(--card-max));
+            --h-gaps: calc(16px * var(--ui-scale));
+            --v-gaps: calc(0px * var(--ui-scale));
+            --card-max: calc(592px * var(--ui-scale));
+            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)), var(--card-max));
             grid-template-columns: repeat(var(--cols), var(--card));
             grid-auto-rows: var(--card);
         }
         .gng-grid-container.cols-3 {
             --cols: 3;
             --rows: 1;
-            --h-gaps: 32px;
-            --v-gaps: 0px;
+            --h-gaps: calc(32px * var(--ui-scale));
+            --v-gaps: calc(0px * var(--ui-scale));
             --card-max: 100vw;
-            --card: min(calc((100vw - 24px - var(--h-gaps)) / var(--cols)), calc((100vh - 210px - var(--v-gaps)) / var(--rows)), var(--card-max));
+            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)), var(--card-max));
             grid-template-columns: repeat(var(--cols), var(--card));
             grid-auto-rows: var(--card);
         }
         .gng-grid-container .gng-card {
             background: var(--card-bg);
-            border-radius: 24px;
+            border-radius: calc(24px * var(--ui-scale));
             box-shadow: var(--card-shadow);
-            padding: 6px;
+            padding: calc(6px * var(--ui-scale));
             text-align: center;
             display: flex;
             align-items: center;
@@ -72,17 +72,17 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 6px;
-            border-radius: 18px;
+            padding: calc(6px * var(--ui-scale));
+            border-radius: calc(18px * var(--ui-scale));
             background: transparent;
         }
 
         .gng-n-select {
             background: var(--control-bg);
             border: none;
-            border-radius: 40px;
-            padding: 0 16px;
-            font-size: 20px;
+            border-radius: calc(40px * var(--ui-scale));
+            padding: 0 calc(16px * var(--ui-scale));
+            font-size: calc(20px * var(--ui-scale));
             font-weight: 600;
             color: var(--text-color);
             cursor: pointer;
@@ -90,7 +90,7 @@
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
             transition: var(--btn-transition);
-            height: 44px;
+            height: calc(44px * var(--ui-scale));
         }
         [data-theme="dark"] .gng-n-select {
             background: #0d47a1;
@@ -105,30 +105,30 @@
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
             flex-shrink: 0;
-            padding: 6px 0 2px 0;
-            gap: 8px;
-            min-height: 56px;
-            border-top: 2px solid var(--border-color);
-            margin-top: 4px;
-            padding-top: 8px;
+            padding: calc(6px * var(--ui-scale)) 0 calc(2px * var(--ui-scale)) 0;
+            gap: calc(8px * var(--ui-scale));
+            min-height: calc(56px * var(--ui-scale));
+            border-top: calc(2px * var(--ui-scale)) solid var(--border-color);
+            margin-top: calc(4px * var(--ui-scale));
+            padding-top: calc(8px * var(--ui-scale));
             transition: border-color 0.4s;
         }
         .bottom-controls .left-group {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: calc(12px * var(--ui-scale));
             flex-shrink: 0;
         }
         .bottom-controls .center-group {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: calc(30px * var(--ui-scale));
             justify-content: center;
         }
         .bottom-controls .right-group {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: calc(12px * var(--ui-scale));
             flex-shrink: 0;
         }
 
@@ -136,17 +136,17 @@
         .speed-control {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: calc(6px * var(--ui-scale));
             background: var(--control-bg-nback);
-            padding: 4px 10px;
-            border-radius: 30px;
-            border: 2px solid var(--nback-brown);
+            padding: calc(4px * var(--ui-scale)) calc(10px * var(--ui-scale));
+            border-radius: calc(30px * var(--ui-scale));
+            border: calc(2px * var(--ui-scale)) solid var(--nback-brown);
             transition: background 0.3s, border 0.3s;
-            height: 44px;
+            height: calc(44px * var(--ui-scale));
         }
         .speed-btn {
-            width: 28px;
-            height: 28px;
+            width: calc(28px * var(--ui-scale));
+            height: calc(28px * var(--ui-scale));
             border: none;
             background: transparent;
             color: var(--nback-brown);
@@ -163,7 +163,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         .speed-display {
-            min-width: 32px;
+            min-width: calc(32px * var(--ui-scale));
             text-align: center;
             font-size: 1.1rem;
             font-weight: 700;
@@ -174,8 +174,8 @@
 
         /* 播放按鈕 (共用) */
         .play-btn {
-            width: 47px;
-            height: 47px;
+            width: calc(47px * var(--ui-scale));
+            height: calc(47px * var(--ui-scale));
             border: none;
             border-radius: 50%;
             background: var(--nback-brown);
@@ -191,7 +191,7 @@
             outline: none;
             -webkit-tap-highlight-color: transparent;
         }
-        .play-btn:focus-visible { outline: 3px solid #ffb300; outline-offset: 2px; }
+        .play-btn:focus-visible { outline: calc(3px * var(--ui-scale)) solid #ffb300; outline-offset: calc(2px * var(--ui-scale)); }
         .play-btn:hover { background: #6D4C41; }
         [data-theme="dark"] .play-btn { background: #8D6E63; }
         [data-theme="dark"] .play-btn:hover { background: #A1887F; }
@@ -200,30 +200,30 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            width: 20px;
-            height: 20px;
+            width: calc(20px * var(--ui-scale));
+            height: calc(20px * var(--ui-scale));
             position: relative;
         }
         .play-btn .play-icon .triangle {
             width: 0;
             height: 0;
-            border-left: 14px solid white;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
+            border-left: calc(14px * var(--ui-scale)) solid white;
+            border-top: calc(10px * var(--ui-scale)) solid transparent;
+            border-bottom: calc(10px * var(--ui-scale)) solid transparent;
             transition: all 0.3s ease;
-            margin-left: 4.5px;
+            margin-left: calc(4.5px * var(--ui-scale));
         }
         .play-btn .play-icon .pause-bar {
             display: none;
-            width: 4px;
-            height: 18px;
+            width: calc(4px * var(--ui-scale));
+            height: calc(18px * var(--ui-scale));
             background: white;
-            border-radius: 2px;
+            border-radius: calc(2px * var(--ui-scale));
             transition: all 0.3s ease;
             position: absolute;
         }
-        .play-btn .play-icon .pause-bar.left { left: 3px; }
-        .play-btn .play-icon .pause-bar.right { right: 3px; }
+        .play-btn .play-icon .pause-bar.left { left: calc(3px * var(--ui-scale)); }
+        .play-btn .play-icon .pause-bar.right { right: calc(3px * var(--ui-scale)); }
         .play-btn.playing .play-icon .triangle {
             opacity: 0;
             transform: scale(0.5) rotate(90deg);
@@ -250,21 +250,21 @@
         .nback-controls .match-btn,
         .nback-controls .notmatch-btn {
             border: none;
-            border-radius: 40px;
-            padding: 14px 32px;
-            font-size: 26px;
+            border-radius: calc(40px * var(--ui-scale));
+            padding: calc(14px * var(--ui-scale)) calc(32px * var(--ui-scale));
+            font-size: calc(26px * var(--ui-scale));
             font-weight: 700;
             color: #fff;
             cursor: pointer;
             transition: var(--btn-transition);
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
-            height: 60px;
+            height: calc(60px * var(--ui-scale));
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 140px;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            min-width: calc(140px * var(--ui-scale));
+            box-shadow: 0 calc(6px * var(--ui-scale)) 0 rgba(0,0,0,0.2);
         }
         .nback-controls .match-btn {
             background: var(--highlight-correct);
@@ -272,7 +272,7 @@
         }
         .nback-controls .match-btn:hover {
             background: var(--btn-hover-correct);
-            transform: translateY(-2px);
+            transform: translateY(calc(-2px * var(--ui-scale)));
             box-shadow: var(--btn-shadow-correct);
         }
         .nback-controls .notmatch-btn {
@@ -281,7 +281,7 @@
         }
         .nback-controls .notmatch-btn:hover {
             background: var(--btn-hover-wrong);
-            transform: translateY(-2px);
+            transform: translateY(calc(-2px * var(--ui-scale)));
             box-shadow: var(--btn-shadow-wrong);
         }
         [data-theme="dark"] .nback-controls .match-btn { background: #0d47a1; box-shadow: var(--btn-shadow-correct); }
@@ -293,21 +293,21 @@
         .gng-controls .go-btn,
         .gng-controls .nogo-btn {
             border: none;
-            border-radius: 40px;
-            padding: 10px 28px;
-            font-size: 32px;
+            border-radius: calc(40px * var(--ui-scale));
+            padding: calc(10px * var(--ui-scale)) calc(28px * var(--ui-scale));
+            font-size: calc(32px * var(--ui-scale));
             font-weight: 700;
             color: #fff;
             cursor: pointer;
             transition: var(--btn-transition);
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
-            height: 60px;
+            height: calc(60px * var(--ui-scale));
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 80px;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            min-width: calc(80px * var(--ui-scale));
+            box-shadow: 0 calc(6px * var(--ui-scale)) 0 rgba(0,0,0,0.2);
         }
         .gng-controls .go-btn {
             background: var(--highlight-correct);
@@ -315,7 +315,7 @@
         }
         .gng-controls .go-btn:hover {
             background: var(--btn-hover-correct);
-            transform: translateY(-2px);
+            transform: translateY(calc(-2px * var(--ui-scale)));
             box-shadow: var(--btn-shadow-correct);
         }
         .gng-controls .nogo-btn {
@@ -324,7 +324,7 @@
         }
         .gng-controls .nogo-btn:hover {
             background: var(--btn-hover-wrong);
-            transform: translateY(-2px);
+            transform: translateY(calc(-2px * var(--ui-scale)));
             box-shadow: var(--btn-shadow-wrong);
         }
         [data-theme="dark"] .gng-controls .go-btn { background: #0d47a1; box-shadow: var(--btn-shadow-correct); }
@@ -336,28 +336,28 @@
         .slide-menu {
             position: fixed;
             top: 0;
-            right: -320px;
-            width: 300px;
+            right: calc(-320px * var(--ui-scale));
+            width: calc(300px * var(--ui-scale));
             height: 100%;
             background: var(--slide-bg);
             box-shadow: var(--slide-shadow);
             z-index: 2001;
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px 16px;
+            padding: calc(20px * var(--ui-scale)) calc(16px * var(--ui-scale));
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            backdrop-filter: blur(8px);
+            gap: calc(12px * var(--ui-scale));
+            backdrop-filter: blur(calc(8px * var(--ui-scale)));
         }
         .slide-menu.open { right: 0; }
         .slide-menu .menu-item {
             display: flex;
             align-items: center;
-            gap: 16px;
-            font-size: 24px;
+            gap: calc(16px * var(--ui-scale));
+            font-size: calc(24px * var(--ui-scale));
             color: var(--text-color);
-            padding: 12px 16px;
-            border-radius: 20px;
+            padding: calc(12px * var(--ui-scale)) calc(16px * var(--ui-scale));
+            border-radius: calc(20px * var(--ui-scale));
             background: var(--card-bg);
             cursor: pointer;
             transition: var(--btn-transition);
@@ -369,9 +369,9 @@
         .slide-menu .menu-item:hover { background: var(--slide-item-hover); }
         .slide-menu .menu-item .state-badge {
             margin-left: auto;
-            font-size: 20px;
+            font-size: calc(20px * var(--ui-scale));
         }
         .slide-menu .menu-divider {
-            border-top: 2px solid var(--border-color);
-            margin: 4px 0;
+            border-top: calc(2px * var(--ui-scale)) solid var(--border-color);
+            margin: calc(4px * var(--ui-scale)) 0;
         }

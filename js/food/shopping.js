@@ -165,7 +165,7 @@
                         this.style.display = 'none';
                         const fallback = document.createElement('span');
                         fallback.textContent = '🖼️';
-                        fallback.style.fontSize = '44px';
+                        fallback.style.fontSize = 'calc(44px * var(--ui-scale))';
                         this.parentElement.appendChild(fallback);
                     };
                     imgWrapper.appendChild(img);
@@ -213,7 +213,7 @@
                     this.style.display = 'none';
                     const fallback = document.createElement('span');
                     fallback.textContent = '🖼️';
-                    fallback.style.fontSize = '44px';
+                    fallback.style.fontSize = 'calc(44px * var(--ui-scale))';
                     this.parentElement.appendChild(fallback);
                 };
                 imgWrapper.appendChild(img);
