@@ -4,7 +4,7 @@
             .question-text { font-size: 30px; padding: 0 12px; white-space: nowrap; }
             .gng-rules-text { font-size: 26px; }
             .food-card .food-name { font-size: 18px; }
-            .magnify-btn { width: 36px; height: 36px; font-size: 18px; }
+            .magnify-btn { width: 44px; height: 44px; font-size: 22px; }
             .score-display { font-size: 18px; padding: 0 12px; height: 44px; }
             .dropdown-wrapper label { font-size: 16px; }
             .dropdown-wrapper select { font-size: 16px; padding: 2px 4px; min-width: 40px; }
@@ -122,7 +122,7 @@
             .question-text { font-size: 24px; padding: 0 8px; }
             .gng-rules-text { font-size: 18px; padding: 0 10px; }
             .food-card .food-name { font-size: 14px; }
-            .magnify-btn { width: 30px; height: 30px; font-size: 14px; top: 4px; right: 5px; }
+            .magnify-btn { width: 44px; height: 44px; font-size: 22px; top: 4px; right: 5px; }
             .score-display { font-size: 14px; padding: 0 8px; height: 44px; }
             .score-display span { font-size: 16px; }
             .dropdown-wrapper { padding: 0 8px; height: 44px; }

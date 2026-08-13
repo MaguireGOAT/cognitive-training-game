@@ -1,6 +1,15 @@
         /* ================================================================
            N-back 遊戲專用樣式
            ================================================================ */
+        .nback-grid-wrapper {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 0;
+            overflow: hidden;
+        }
         .nback-image-container {
             width: min(80vw, calc(100vh - 180px), 850px);
             max-width: 100%;
@@ -14,8 +23,23 @@
             overflow: hidden;
             position: relative;
             transition: background 0.4s;
+            will-change: transform, opacity;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
+        }
+        .nback-image-container.is-exiting {
+            animation: nback-slide-out 240ms ease-in forwards;
+        }
+        .nback-image-container.is-entering {
+            animation: nback-slide-in 240ms ease-out;
+        }
+        @keyframes nback-slide-out {
+            from { transform: translateY(0) scale(1); opacity: 1; }
+            to { transform: translateY(-70vh) scale(0.92); opacity: 0; }
+        }
+        @keyframes nback-slide-in {
+            from { transform: translateY(24vh) scale(0.94); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
         }
         .nback-image-container img {
             width: 100%;

@@ -6,6 +6,7 @@
         const nbackGame = document.getElementById('nbackGame');
         const gngGame = document.getElementById('gngGame');
         const gngSettings = document.getElementById('gngSettings');
+        const differentGame = document.getElementById('differentGame');
         const shoppingGame = document.getElementById('shoppingGame');
         const shoppingSettings = document.getElementById('shoppingSettings');
         const foodCategorySelect = document.getElementById('foodCategorySelect');
@@ -14,6 +15,7 @@
         function goToMainMenu() {
             pauseNback();
             pauseGng();
+            pauseDifferent();
             pauseShopping();
             slideMenu.classList.remove('open');
             if (window.CognitiveRouter) {
@@ -30,6 +32,9 @@
                 window.CognitiveRouter.navigate('nbackGame');
             } else if (gameId === 'gng') {
                 window.CognitiveRouter.navigate('gngSettings');
+            } else if (gameId === 'different') {
+                pauseDifferent();
+                window.CognitiveRouter.navigate('differentGame');
             } else if (gameId === 'shopping') {
                 window.CognitiveRouter.navigate('shoppingSettings');
             }
@@ -38,6 +43,7 @@
         document.getElementById('gameFoodBtn').addEventListener('click', () => switchGame('food'));
         document.getElementById('gameNbackBtn').addEventListener('click', () => switchGame('nback'));
         document.getElementById('gameGngBtn').addEventListener('click', () => switchGame('gng'));
+        document.getElementById('gameDifferentBtn').addEventListener('click', () => switchGame('different'));
         document.getElementById('gameShoppingBtn').addEventListener('click', () => switchGame('shopping'));
 
         showNames = true;

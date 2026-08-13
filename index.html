@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/nback.css" />
     <link rel="stylesheet" href="css/gng.css" />
     <link rel="stylesheet" href="css/shopping.css" />
+    <link rel="stylesheet" href="css/different.css" />
     <link rel="stylesheet" href="css/responsive.css" />
     <link rel="stylesheet" href="css/unified.css" />
     <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('cognitiveAppTheme')==='dark'?'dark':'light');}catch(e){}</script>
@@ -197,6 +198,10 @@
                 <span class="icon">✅</span>
                 <span class="label">Go/No Go</span>
             </button>
+            <button class="category-btn" id="gameDifferentBtn">
+                <span class="icon">🔍</span>
+                <span class="label">找不同</span>
+            </button>
             <button class="category-btn" id="gameShoppingBtn">
                 <span class="icon">🛒</span>
                 <span class="label">買餸</span>
@@ -288,7 +293,7 @@
             </div>
         </div>
 
-        <div class="grid-wrapper" style="flex:1; display:flex; align-items:center; justify-content:center;">
+        <div id="nbackGridWrapper" class="grid-wrapper nback-grid-wrapper" style="flex:1; display:flex; align-items:center; justify-content:center;">
             <div class="nback-image-container" id="nbackImageContainer">
                 <img id="nbackImage" src="" alt="食物" />
                 <div class="nback-overlay" id="nbackOverlay"></div>
@@ -336,14 +341,6 @@
             <div class="right-group">
                 <div class="score-display" id="gngScoreDisplay">
                     得分&nbsp;<span id="gngScoreNum">0</span>
-                </div>
-                <div class="dropdown-wrapper" id="gngGameCountWrapper">
-                    <label for="gngGameCountSelect">顯示</label>
-                    <select id="gngGameCountSelect">
-                        <option value="1">1</option>
-                        <option value="2" selected>2</option>
-                        <option value="3">3</option>
-                    </select>
                 </div>
                 <button class="hamburger-btn" id="hamburgerBtnGng" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
             </div>
@@ -442,6 +439,45 @@
             <div style="margin-top:10px;">
                 <button id="gngStartBtn" style="width:100%; padding:14px; font-size:28px; font-weight:700; border:none; border-radius:40px; background:var(--highlight-correct); color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; box-shadow:var(--btn-shadow-correct); transition: background 0.2s, transform 0.15s, box-shadow 0.15s;">▶ 開始遊戲</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        找不同 game
+       ================================================================ -->
+    <div class="game-container app-screen" id="differentGame">
+        <div class="top-bar">
+            <div class="left-group">
+                <button class="back-btn" id="differentBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+            </div>
+            <div class="question-area">
+                <span class="question-text" id="differentQuestionText">🔍 找不同</span>
+            </div>
+            <div class="right-group">
+                <div class="score-display" id="differentScoreDisplay">
+                    得分&nbsp;<span id="differentScoreNum">0</span>
+                </div>
+                <div class="dropdown-wrapper">
+                    <label for="differentCountSelect">顯示</label>
+                    <select id="differentCountSelect">
+                        <option value="3">3</option>
+                        <option value="4" selected>4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                <span class="separator">|</span>
+                <button class="hamburger-btn" id="hamburgerBtnDifferent" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+            </div>
+        </div>
+
+        <div class="different-grid-wrapper" id="differentGridWrapper">
+            <div class="different-grid-container count-4" id="differentGridContainer"></div>
+        </div>
+
+        <div class="footer">
+            <span class="hint">🔍 找出與其他食物不同的一張</span>
+            <span class="round-info" id="differentRoundInfo">第 1 題</span>
         </div>
     </div>
 
@@ -690,6 +726,7 @@
     <script src="js/food/food.js"></script>
     <script src="js/food/nback.js"></script>
     <script src="js/food/gng.js"></script>
+    <script src="js/food/different.js"></script>
     <script src="js/food/shopping.js"></script>
     <script src="js/food/main.js"></script>
     <script>

@@ -16,8 +16,9 @@
             interval: 0,
             currentItem: null,
             matchPending: false,
-            showBlank: false,
-            blankFromTimer: false,
+            transitioning: false,
+            animationToken: 0,
+            transitionTimer: null,
         };
 
         const nbackImage = document.getElementById('nbackImage');
@@ -34,6 +35,8 @@
         const nbackNSelect = document.getElementById('nbackNSelect');
         const nbackBackBtn = document.getElementById('nbackBackBtn');
         const nbackMagnifyBtn = document.getElementById('nbackMagnifyBtn');
+        const NBACK_TARGET_RATIO = 0.25;
+        const NBACK_TRANSITION_MS = 240;
 
         function updateNbackInterval() {
             const maxDelay = 3000,
@@ -54,41 +57,83 @@
             }, nbackState.interval);
         }
 
+        function pickNbackRandomDifferent(excluded) {
+            const candidates = FOOD_DATA.filter(item => item.name !== excluded.name);
+            return candidates.length ? pickRandom(candidates) : pickRandom(FOOD_DATA);
+        }
+
+        // Planned-target sequence: pre-select ~25% match positions, then build
+        // each trial step by step and avoid accidental N-back matches.
         function generateNbackSequence(length = 50) {
             const seq = [];
-            for (let i = 0; i < length; i++) {
-                seq.push(pickRandom(FOOD_DATA));
+            const targetIndices = new Set();
+            const targetCount = Math.max(0, Math.floor((length - nbackState.n) * NBACK_TARGET_RATIO));
+            let safety = 0;
+            while (targetIndices.size < targetCount && safety < 500) {
+                targetIndices.add(nbackState.n + Math.floor(Math.random() * (length - nbackState.n)));
+                safety++;
             }
+
             for (let i = 0; i < length; i++) {
-                if (i >= nbackState.n && Math.random() < 0.3) {
+                if (i < nbackState.n) {
+                    seq[i] = pickRandom(FOOD_DATA);
+                } else if (targetIndices.has(i)) {
                     seq[i] = { ...seq[i - nbackState.n] };
+                } else {
+                    seq[i] = pickNbackRandomDifferent(seq[i - nbackState.n]);
                 }
             }
             return seq;
         }
 
+        function clearNbackTransition() {
+            nbackState.animationToken++;
+            if (nbackState.transitionTimer) {
+                clearTimeout(nbackState.transitionTimer);
+                nbackState.transitionTimer = null;
+            }
+            if (nbackImageContainer) {
+                nbackImageContainer.classList.remove('is-exiting', 'is-entering');
+            }
+            nbackState.transitioning = false;
+        }
+
+        function commitNbackItem(item, index) {
+            nbackImage.style.display = 'block';
+            nbackMagnifyBtn.style.display = 'flex';
+            nbackImage.style.backgroundColor = 'transparent';
+            nbackImage.src = item.image;
+            nbackImage.alt = '';
+            nbackImage.setAttribute('aria-label', item.name);
+            nbackOverlay.style.opacity = 0;
+            nbackOverlay.textContent = '';
+            nbackState.currentItem = item;
+            nbackState.matchPending = false;
+            nbackStepLabel.textContent = `#${index + 1}`;
+        }
+
         function startNback() {
             if (nbackState.isPlaying) return;
+            clearNbackTransition();
             nbackState.sequence = generateNbackSequence(50);
-            nbackState.currentIndex = -1;
+            nbackState.currentIndex = 0;
             nbackState.score = 0;
             nbackState.totalTrials = 0;
             nbackState.correctHits = 0;
             nbackState.falseAlarms = 0;
-            nbackState.showBlank = false;
             updateNbackScore();
             nbackState.isPlaying = true;
             nbackPlayBtn.classList.add('playing');
-            nbackState.matchPending = false;
-            nextNbackImage();
+            commitNbackItem(nbackState.sequence[0], 0);
+            resetNbackTimer();
         }
 
         function pauseNback() {
+            clearNbackTransition();
             nbackState.timerToken++;
             if (nbackState.timer) { clearInterval(nbackState.timer);
                 nbackState.timer = null; }
             nbackState.isPlaying = false;
-            nbackState.blankFromTimer = false;
             nbackPlayBtn.classList.remove('playing');
         }
 
@@ -101,44 +146,35 @@
         }
 
         function nextNbackImage(fromTimer = false) {
-            if (nbackState.showBlank && nbackState.n === 1) {
-                nbackImage.style.display = 'none';
-                nbackMagnifyBtn.style.display = 'none';
-                nbackOverlay.style.opacity = 0;
-                nbackState.showBlank = false;
-                nbackState.blankFromTimer = fromTimer;
-                nbackStepLabel.textContent = '—';
+            if (nbackState.transitioning) return;
+            holdNbackTimer();
+            nbackState.transitioning = true;
+            nbackState.matchPending = true;
+            const token = ++nbackState.animationToken;
+            nbackImageContainer.classList.remove('is-entering');
+            nbackImageContainer.classList.add('is-exiting');
+            nbackState.transitionTimer = setTimeout(() => {
+                if (token !== nbackState.animationToken) return;
+                nbackState.currentIndex++;
+                if (nbackState.currentIndex >= nbackState.sequence.length) {
+                    nbackState.sequence = generateNbackSequence(50);
+                    nbackState.currentIndex = 0;
+                }
+                const item = nbackState.sequence[nbackState.currentIndex];
+                nbackImageContainer.classList.remove('is-exiting');
+                nbackImageContainer.classList.add('is-entering');
+                commitNbackItem(item, nbackState.currentIndex);
+                nbackState.transitionTimer = setTimeout(() => {
+                    if (token !== nbackState.animationToken) return;
+                    nbackImageContainer.classList.remove('is-entering');
+                    nbackState.transitioning = false;
+                }, NBACK_TRANSITION_MS);
                 resetNbackTimer();
-                return;
-            }
-            nbackImage.style.display = 'block';
-            nbackMagnifyBtn.style.display = 'flex';
-            nbackImage.style.backgroundColor = 'transparent';
-            nbackState.currentIndex++;
-            if (nbackState.currentIndex >= nbackState.sequence.length) {
-                nbackState.sequence = generateNbackSequence(50);
-                nbackState.currentIndex = 0;
-            }
-            const item = nbackState.sequence[nbackState.currentIndex];
-            nbackImage.src = item.image;
-            nbackImage.alt = '';
-            nbackImage.setAttribute('aria-label', item.name);
-            nbackOverlay.style.opacity = 0;
-            nbackOverlay.textContent = '';
-            nbackState.currentItem = item;
-            nbackState.matchPending = false;
-            nbackState.blankFromTimer = false;
-            nbackStepLabel.textContent = `#${nbackState.currentIndex + 1}`;
-            if (nbackState.n === 1) {
-                nbackState.showBlank = true;
-            } else {
-                nbackState.showBlank = false;
-            }
-            resetNbackTimer();
+            }, NBACK_TRANSITION_MS);
         }
 
         function handleNbackMatch(isMatch) {
-            if (nbackState.currentIndex < 0 || nbackState.matchPending) return;
+            if (nbackState.currentIndex < 0 || nbackState.matchPending || nbackState.transitioning) return;
             const current = nbackState.currentItem;
             const targetIndex = nbackState.currentIndex - nbackState.n;
             if (targetIndex < 0) {
@@ -200,8 +236,6 @@
 
         function changeNbackN(newN) {
             nbackState.n = newN;
-            nbackState.showBlank = false;
-            nbackState.blankFromTimer = false;
             if (nbackState.isPlaying) {
                 pauseNback();
                 startNback();
@@ -213,7 +247,7 @@
         });
 
         nbackImageContainer.addEventListener('click', function() {
-            if (!nbackState.matchPending && !(!nbackState.showBlank && nbackState.blankFromTimer)) {
+            if (!nbackState.matchPending && !nbackState.transitioning) {
                 nextNbackImage();
             }
         });
@@ -266,13 +300,12 @@
 
         function prepareNbackGame() {
             pauseNback();
+            clearNbackTransition();
             if (nbackState.sequence.length === 0) {
                 nbackState.sequence = generateNbackSequence(50);
                 nbackState.currentIndex = 0;
                 nbackState.currentItem = nbackState.sequence[0];
                 nbackState.matchPending = false;
-                nbackState.showBlank = true;
-                nbackState.blankFromTimer = false;
                 nbackState.score = 0;
                 nbackState.totalTrials = 0;
                 nbackState.correctHits = 0;

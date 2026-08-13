@@ -7,7 +7,7 @@
             autoSwitch: false,
             switchType: 'swap',
             switchFreq: 10,
-            imageCount: 2,
+            imageCount: 1,
             speed: 5,
             isPlaying: false,
             sequence: [],
@@ -30,7 +30,6 @@
         const gngGoLabel = document.getElementById('gngGoLabel');
         const gngNoGoLabel = document.getElementById('gngNoGoLabel');
         const gngRuleText = document.getElementById('gngRuleText');
-        const gngGameCountSelect = document.getElementById('gngGameCountSelect');
         const gngPlayBtn = document.getElementById('gngPlayBtn');
         const gngSpeedDisplay = document.getElementById('gngSpeedDisplay');
         const gngSpeedDown = document.getElementById('gngSpeedDown');
@@ -419,10 +418,8 @@
             gngState.noGoCategory = gngNoGoCategory.value;
             gngState.switchType = gngSwitchType.value;
             gngState.switchFreq = parseInt(gngSwitchFreq.value, 10);
-            gngState.imageCount = parseInt(gngGameCountSelect.value, 10);
             gngState.roundCounter = 0;
             updateGngRuleDisplay(false);
-            document.getElementById('gngGameCountSelect').value = gngState.imageCount;
             pauseGng();
             gngState.score = 0;
             gngState.totalTrials = 0;
@@ -442,22 +439,6 @@
                 syncTopBarCentering();
                 nextGngImage();
             }
-        });
-
-        gngGameCountSelect.addEventListener('change', function() {
-            const newCount = parseInt(this.value, 10);
-            gngState.imageCount = newCount;
-            const seqLength = gngState.sequence.length || 50;
-            gngState.sequence = generateGngSequence(seqLength);
-            if (gngState.currentIndex < 0) {
-                gngState.currentIndex = 0;
-            }
-            if (gngState.currentIndex >= gngState.sequence.length) {
-                gngState.currentIndex = 0;
-            }
-            gngState.roundCounter = 0;
-            renderGngImage();
-            if (gngState.isPlaying && !gngState.timerPaused) resetGngTimer();
         });
 
         gngBackBtn.addEventListener('click', function() {
@@ -563,7 +544,6 @@
         });
 
         gngSpeedDisplay.textContent = gngState.speed;
-        gngGameCountSelect.value = gngState.imageCount;
         gngGoCategory.value = '水果';
         gngNoGoCategory.value = '全部';
         gngAutoToggle.textContent = '關閉';
