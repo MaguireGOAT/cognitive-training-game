@@ -40,10 +40,16 @@ const ASSET_PATHS = ${JSON.stringify(assets, null, 2)};
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    try {
-      await cache.addAll(ASSET_PATHS);
-    } catch (error) {
-      console.warn('Precache incomplete:', error);
+    const results = await Promise.allSettled(ASSET_PATHS.map(async (assetPath) => {
+      const response = await fetch(assetPath);
+      if (!response.ok) {
+        throw new Error(assetPath + ' returned ' + response.status);
+      }
+      await cache.put(assetPath, response);
+    }));
+    const failed = results.filter((result) => result.status === 'rejected');
+    if (failed.length > 0) {
+      console.warn('Precache incomplete:', failed.length + ' of ' + ASSET_PATHS.length + ' assets failed.');
     }
     await self.skipWaiting();
   })());

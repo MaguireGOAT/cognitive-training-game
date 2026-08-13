@@ -13,6 +13,7 @@ const swSource = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 const assetMatch = swSource.match(/const ASSET_PATHS = (\[[\s\S]*?\]);/);
 const expectedAssets = JSON.parse(assetMatch[1]).length;
 const sampleAsset = JSON.parse(assetMatch[1]).find((name) => name.startsWith('assets/food/'));
+const imageAssets = JSON.parse(assetMatch[1]).filter((name) => /\.(webp|png|svg)$/i.test(name));
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -210,13 +211,31 @@ async function main() {
 
     console.log('offline=' + JSON.stringify(offlineState));
 
+    const offlineImages = await evaluate(`(async () => {
+      const assets = ${JSON.stringify(imageAssets)};
+      const failures = [];
+      for (const asset of assets) {
+        const loaded = await new Promise((resolve) => {
+          const image = new Image();
+          image.onload = () => resolve(true);
+          image.onerror = () => resolve(false);
+          image.src = asset;
+        });
+        if (!loaded) failures.push(asset);
+      }
+      return { checked: assets.length, failures };
+    })()`);
+
+    console.log('offlineImages=' + JSON.stringify(offlineImages));
+
     const pass =
       swState.ok === true &&
       totalCached >= expectedAssets &&
       offlineState.title === '認知訓練' &&
       offlineState.homeVisible === true &&
       offlineState.controller === true &&
-      offlineState.imageLoaded === true;
+      offlineImages.checked === imageAssets.length &&
+      offlineImages.failures.length === 0;
 
     console.log('result=' + (pass ? 'PASS' : 'FAIL'));
     if (!pass) process.exitCode = 1;
