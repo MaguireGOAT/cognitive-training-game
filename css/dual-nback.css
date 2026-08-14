@@ -188,7 +188,7 @@
 #dualNbackGame .bottom-controls .center-group {
     min-width: 0;
 }
-.dual-match-controls {
+#dualNbackGame .bottom-controls .center-group.dual-match-controls {
     flex-wrap: wrap;
     justify-content: center;
     gap: calc(16px * var(--ui-scale)) calc(160px * var(--ui-scale));
@@ -284,7 +284,7 @@
     #dualNbackGame .bottom-controls .right-group {
         justify-content: center;
     }
-    .dual-match-controls {
+    #dualNbackGame .bottom-controls .center-group.dual-match-controls {
         order: 1;
         gap: calc(8px * var(--ui-scale)) calc(20px * var(--ui-scale));
     }
