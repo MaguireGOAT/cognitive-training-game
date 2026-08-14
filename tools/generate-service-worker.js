@@ -22,6 +22,8 @@ function collect(dir) {
     if (entry.isFile() && entry.name.endsWith('.html') && entry.name !== 'index.html') continue;
     const absolute = path.join(dir, entry.name);
     const relative = path.relative(root, absolute).split(path.sep).join('/');
+    // Legacy Windows TTS WAVs are no longer referenced by the N-back audio map.
+    if (entry.isFile() && relative.startsWith('assets/audio/nback/') && entry.name.endsWith('.wav')) continue;
     if (entry.isDirectory()) {
       collect(absolute);
     } else {

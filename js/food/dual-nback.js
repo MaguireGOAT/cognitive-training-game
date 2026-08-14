@@ -40,7 +40,7 @@
             colorPalette: '6',
             n: 1,
             speed: 5,
-            audioRate: 0.5,
+            audioRate: 1,
             isPlaying: false,
             sequences: {},
             currentIndex: -1,
@@ -263,7 +263,8 @@
             const audio = new Audio(src);
             audio.volume = 1;
             audio.preservesPitch = true;
-            audio.playbackRate = dualNbackState.audioRate || 0.5;
+            // Edge clips are generated at 0.5x, so play them at normal speed.
+            audio.playbackRate = dualNbackState.audioRate || 1;
             const playPromise = audio.play();
             if (playPromise && typeof playPromise.catch === 'function') {
                 playPromise.catch(function() {});
@@ -471,7 +472,7 @@
             dualNbackState.n = parseInt(dualNbackNSelect.value, 10) || 1;
             dualNbackState.positionGrid = dualPositionGridSelect.value || '3x3';
             dualNbackState.colorPalette = dualColorPaletteSelect.value || '6';
-            dualNbackState.audioRate = 0.5;
+            dualNbackState.audioRate = 1;
             dualNbackState.speed = 5;
             dualNbackSpeedDisplay.textContent = '5';
             dualNbackNSelect.value = String(dualNbackState.n);
