@@ -60,10 +60,10 @@
             gap: var(--large-menu-gap);
         }
         .app-screen#mainMenu .category-grid.game-select {
-            grid-template-columns: repeat(5, var(--large-menu-card));
+            grid-template-columns: repeat(4, var(--large-menu-card));
             grid-auto-rows: var(--large-menu-card);
             max-width: var(--large-menu-width);
-            width: var(--large-menu-width);
+            width: calc(4 * var(--large-menu-card) + 3 * var(--large-menu-gap));
         }
         #foodCategorySelect .category-grid.food-select {
             display: grid;
@@ -569,9 +569,9 @@
                 margin: 0 auto;
             }
             .app-screen#mainMenu .category-grid.game-select {
-                grid-template-columns: repeat(5, var(--large-menu-card));
+                grid-template-columns: repeat(4, var(--large-menu-card));
                 grid-auto-rows: var(--large-menu-card);
-                width: calc(5 * var(--large-menu-card) + 4 * var(--large-menu-gap));
+                width: calc(4 * var(--large-menu-card) + 3 * var(--large-menu-gap));
             }
             #foodCategorySelect .category-grid.food-select {
                 grid-template-columns: repeat(4, var(--large-menu-card));
@@ -683,6 +683,9 @@
                 grid-template-rows: none;
                 grid-auto-rows: auto;
                 align-content: center;
+            }
+            .app-screen#mainMenu .category-grid.game-select {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
             .app-screen#mainMenu .category-grid.game-select .category-btn,
             #foodCategorySelect .category-grid.food-select .category-btn {
