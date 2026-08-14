@@ -1,0 +1,313 @@
+/* ================================================================
+   Dual N-back: mode menu, settings, and game screen
+   ================================================================ */
+.app-screen#nbackModeSelect .category-grid.nback-mode-grid {
+    --large-menu-gap: calc(24px * var(--ui-scale));
+    --large-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(840px * var(--ui-scale)));
+    --large-menu-card: min(calc((var(--large-menu-width) - var(--large-menu-gap)) / 2),
+                           calc((100vh - calc(260px * var(--ui-scale))) / 2));
+    display: grid;
+    grid-template-columns: repeat(2, var(--large-menu-card));
+    grid-auto-rows: var(--large-menu-card);
+    width: calc(2 * var(--large-menu-card) + var(--large-menu-gap));
+    max-width: var(--large-menu-width);
+    margin: 0 auto;
+    align-content: center;
+}
+.app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn {
+    width: var(--large-menu-card);
+    height: var(--large-menu-card);
+    min-height: 0;
+    aspect-ratio: auto;
+    padding: calc(18px * var(--ui-scale)) calc(12px * var(--ui-scale));
+}
+.app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .icon {
+    font-size: calc(66px * var(--ui-scale));
+    margin-bottom: calc(12px * var(--ui-scale));
+}
+.app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .label {
+    font-size: calc(30px * var(--ui-scale));
+    line-height: 1.15;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+/* Dual N-back settings */
+#dualNbackSettings [style*="display:flex"] {
+    min-width: 0;
+}
+#dualNbackSettings [style*="display:flex"] > span {
+    font-size: calc(24px * var(--ui-scale)) !important;
+}
+#dualNbackSettings select {
+    font-size: calc(24px * var(--ui-scale)) !important;
+    min-width: 0;
+}
+#dualNbackSettings .dual-settings-hint {
+    font-size: calc(22px * var(--ui-scale));
+    font-weight: 700;
+    color: var(--muted-text);
+    text-align: center;
+    min-height: calc(32px * var(--ui-scale));
+}
+#dualStartBtn {
+    font-size: calc(30px * var(--ui-scale)) !important;
+}
+
+/* Dual N-back game */
+#dualNbackGame .dual-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(2px * var(--ui-scale)) 0;
+    overflow: hidden;
+    position: relative;
+}
+#dualNbackGame .dual-stage.correct-highlight {
+    box-shadow: inset 0 0 0 calc(6px * var(--ui-scale)) rgba(59, 168, 123, 0.45);
+}
+#dualNbackGame .dual-stage.wrong-flash {
+    box-shadow: inset 0 0 0 calc(6px * var(--ui-scale)) rgba(217, 90, 90, 0.45);
+}
+[data-theme="dark"] #dualNbackGame .dual-stage.correct-highlight {
+    box-shadow: inset 0 0 0 calc(6px * var(--ui-scale)) rgba(66, 165, 245, 0.45);
+}
+[data-theme="dark"] #dualNbackGame .dual-stage.wrong-flash {
+    box-shadow: inset 0 0 0 calc(6px * var(--ui-scale)) rgba(224, 107, 107, 0.45);
+}
+
+.dual-grid {
+    --dual-gap: calc(16px * var(--ui-scale));
+    --dual-edge: min(calc(100vw - calc(48px * var(--ui-scale))),
+                     calc(100vh - calc(190px * var(--ui-scale))));
+    --dual-cell: min(calc((var(--dual-edge) - (var(--cols) - 1) * var(--dual-gap)) / var(--cols)),
+                     calc((var(--dual-edge) - (var(--rows) - 1) * var(--dual-gap)) / var(--rows)));
+    width: calc(var(--dual-cell) * var(--cols) + (var(--cols) - 1) * var(--dual-gap));
+    height: calc(var(--dual-cell) * var(--rows) + (var(--rows) - 1) * var(--dual-gap));
+    display: grid;
+    grid-template-columns: repeat(var(--cols), var(--dual-cell));
+    grid-template-rows: repeat(var(--rows), var(--dual-cell));
+    gap: var(--dual-gap);
+    justify-content: center;
+    align-content: center;
+    margin: 0 auto;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dual-grid-cell {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: calc(18px * var(--ui-scale));
+    background: var(--card-bg);
+    border: calc(4px * var(--ui-scale)) solid transparent;
+    box-shadow: var(--card-shadow);
+    transition: background 0.3s, border-color 0.15s, box-shadow 0.15s;
+}
+.dual-grid-cell.active {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 calc(5px * var(--ui-scale)) rgba(30, 136, 229, 0.28);
+}
+.dual-grid-cell.position-only {
+    background: var(--nback-brown);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+.dual-grid-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: calc(4px * var(--ui-scale));
+    pointer-events: none;
+}
+
+.dual-card {
+    width: min(80vw, calc(100vh - calc(190px * var(--ui-scale))), calc(850px * var(--ui-scale)));
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--card-bg);
+    border-radius: calc(30px * var(--ui-scale));
+    box-shadow: var(--card-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+.dual-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: calc(6px * var(--ui-scale));
+    pointer-events: none;
+}
+
+.dual-grid.is-exiting,
+.dual-card.is-exiting {
+    animation: dual-nback-slide-out 240ms ease-in forwards;
+}
+.dual-grid.is-entering,
+.dual-card.is-entering {
+    animation: dual-nback-slide-in 240ms ease-out;
+}
+@keyframes dual-nback-slide-out {
+    from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-70vh) scale(0.92);
+        opacity: 0;
+    }
+}
+@keyframes dual-nback-slide-in {
+    from {
+        transform: translateY(24vh) scale(0.94);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.dual-step-label {
+    position: absolute;
+    top: calc(10px * var(--ui-scale));
+    left: calc(10px * var(--ui-scale));
+    z-index: 5;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: calc(4px * var(--ui-scale)) calc(12px * var(--ui-scale));
+    border-radius: calc(20px * var(--ui-scale));
+    font-size: calc(16px * var(--ui-scale));
+    font-weight: 600;
+    pointer-events: none;
+}
+
+#dualNbackGame .bottom-controls {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+}
+#dualNbackGame .bottom-controls .center-group {
+    min-width: 0;
+}
+.dual-match-controls {
+    flex-wrap: wrap;
+    row-gap: calc(8px * var(--ui-scale));
+}
+.dual-match-controls .dual-match-btn {
+    border: none;
+    border-radius: calc(40px * var(--ui-scale));
+    padding: calc(10px * var(--ui-scale)) calc(24px * var(--ui-scale));
+    font-size: calc(24px * var(--ui-scale));
+    font-weight: 700;
+    color: #fff;
+    background: var(--highlight-correct);
+    box-shadow: var(--btn-shadow-correct);
+    cursor: pointer;
+    transition: var(--btn-transition);
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    height: calc(56px * var(--ui-scale));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: calc(110px * var(--ui-scale));
+}
+.dual-match-controls .dual-match-btn:hover {
+    background: var(--btn-hover-correct);
+    transform: translateY(calc(-2px * var(--ui-scale)));
+    box-shadow: var(--btn-shadow-correct);
+}
+.dual-match-controls .dual-match-btn.correct-highlight {
+    background: #2f8a64;
+    box-shadow: var(--btn-shadow-correct);
+}
+.dual-match-controls .dual-match-btn.wrong-flash {
+    background: var(--highlight-wrong);
+    box-shadow: var(--btn-shadow-wrong);
+}
+[data-theme="dark"] .dual-match-controls .dual-match-btn {
+    background: #0d47a1;
+    box-shadow: var(--btn-shadow-correct);
+}
+[data-theme="dark"] .dual-match-controls .dual-match-btn:hover {
+    background: var(--btn-hover-correct);
+    box-shadow: var(--btn-shadow-correct);
+}
+[data-theme="dark"] .dual-match-controls .dual-match-btn.correct-highlight {
+    background: #1565c0;
+}
+[data-theme="dark"] .dual-match-controls .dual-match-btn.wrong-flash {
+    background: #b71c1c;
+    box-shadow: var(--btn-shadow-wrong);
+}
+
+#dualNbackGame .dual-channel-stats {
+    font-size: calc(16px * var(--ui-scale));
+    max-width: 100%;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+    .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
+        --large-menu-gap: calc(18px * var(--ui-scale));
+        --large-menu-card: auto;
+        width: 100%;
+        max-width: calc(760px * var(--ui-scale));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: auto;
+    }
+    .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn {
+        width: 100%;
+        height: auto;
+        min-height: calc(150px * var(--ui-scale));
+        aspect-ratio: 1 / 1;
+        padding: calc(20px * var(--ui-scale)) calc(12px * var(--ui-scale));
+    }
+    .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .icon {
+        font-size: clamp(calc(30px * var(--ui-scale)), 9vw, calc(66px * var(--ui-scale)));
+        margin-bottom: calc(8px * var(--ui-scale));
+    }
+    .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .label {
+        font-size: clamp(calc(15px * var(--ui-scale)), 4vw, calc(30px * var(--ui-scale)));
+    }
+
+    #dualNbackSettings [style*="display:flex"] [style*="display:flex"] {
+        flex-wrap: wrap;
+        row-gap: calc(8px * var(--ui-scale));
+    }
+    #dualNbackSettings [style*="display:flex"] [style*="display:flex"] > span {
+        max-width: 100%;
+    }
+    #dualNbackSettings select {
+        max-width: 100%;
+    }
+
+    #dualNbackGame .bottom-controls {
+        grid-template-columns: 1fr;
+        row-gap: calc(8px * var(--ui-scale));
+    }
+    #dualNbackGame .bottom-controls .left-group,
+    #dualNbackGame .bottom-controls .right-group {
+        justify-content: center;
+    }
+    .dual-match-controls {
+        order: 1;
+    }
+    .dual-match-controls .dual-match-btn {
+        min-width: calc(96px * var(--ui-scale));
+        padding: calc(8px * var(--ui-scale)) calc(16px * var(--ui-scale));
+        font-size: clamp(calc(16px * var(--ui-scale)), 4vw, calc(26px * var(--ui-scale)));
+    }
+}

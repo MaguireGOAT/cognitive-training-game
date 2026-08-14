@@ -1,6 +1,69 @@
         // 第三部分：N-back 記憶遊戲
         // =============================================================
 
+        const NBACK_TARGET_COUNT = 15;
+        const NBACK_MIN_PLANNED_GAP = 3;
+
+        function getNbackFoodId(item) {
+            return item.id || item.name;
+        }
+
+        function pickPlannedNbackIndices(length, n, targetCount, minGap) {
+            const start = n;
+            const end = Math.max(start, length - 1);
+            const usable = Math.max(1, end - start + 1);
+            const count = Math.max(0, Math.min(targetCount, usable));
+            if (count === 0) return [];
+
+            const step = usable / count;
+            const positions = [];
+            for (let k = 0; k < count; k++) {
+                const base = start + Math.round((k + 0.5) * step);
+                const lo = Math.max(start, k === 0 ? start : positions[k - 1] + minGap);
+                const hi = Math.min(end, k === count - 1 ? end : start + Math.round((k + 1.5) * step) - minGap);
+                const jitter = Math.max(0, Math.floor(Math.max(1, hi - lo + 1) * 0.28));
+                const min = Math.max(lo, base - jitter);
+                const max = Math.min(hi, base + jitter);
+                positions[k] = min + Math.floor(Math.random() * Math.max(1, max - min + 1));
+            }
+
+            for (let i = 1; i < positions.length; i++) {
+                if (positions[i] - positions[i - 1] < minGap) {
+                    positions[i] = Math.min(end, positions[i - 1] + minGap);
+                }
+            }
+            return positions;
+        }
+
+        function generateNbackStream(choices, n, length, plannedIndices, valueOf, cloneValue) {
+            const planned = new Set(plannedIndices);
+            const seq = [];
+            for (let i = 0; i < length; i++) {
+                if (i < n) {
+                    seq[i] = cloneValue ? cloneValue(pickRandom(choices)) : pickRandom(choices);
+                    continue;
+                }
+                if (planned.has(i)) {
+                    seq[i] = cloneValue ? cloneValue(seq[i - n]) : seq[i - n];
+                    continue;
+                }
+                const previous = seq[i - n];
+                const candidates = choices.filter(candidate => valueOf(candidate) !== valueOf(previous));
+                seq[i] = cloneValue
+                    ? cloneValue(candidates.length ? pickRandom(candidates) : pickRandom(choices))
+                    : (candidates.length ? pickRandom(candidates) : pickRandom(choices));
+            }
+            return seq;
+        }
+
+        window.CognitiveNbackSequence = {
+            targetCount: NBACK_TARGET_COUNT,
+            minGap: NBACK_MIN_PLANNED_GAP,
+            pickPlannedIndices: pickPlannedNbackIndices,
+            generateStream: generateNbackStream,
+            foodId: getNbackFoodId
+        };
+
         const nbackState = {
             n: 1,
             speed: 5,
@@ -35,7 +98,6 @@
         const nbackNSelect = document.getElementById('nbackNSelect');
         const nbackBackBtn = document.getElementById('nbackBackBtn');
         const nbackMagnifyBtn = document.getElementById('nbackMagnifyBtn');
-        const NBACK_TARGET_RATIO = 0.25;
         const NBACK_TRANSITION_MS = 240;
 
         function updateNbackInterval() {
@@ -57,33 +119,23 @@
             }, nbackState.interval);
         }
 
-        function pickNbackRandomDifferent(excluded) {
-            const candidates = FOOD_DATA.filter(item => item.name !== excluded.name);
-            return candidates.length ? pickRandom(candidates) : pickRandom(FOOD_DATA);
-        }
-
-        // Planned-target sequence: pre-select ~25% match positions, then build
+        // Planned-target sequence: pre-select 15 spread-out match positions, then build
         // each trial step by step and avoid accidental N-back matches.
         function generateNbackSequence(length = 50) {
-            const seq = [];
-            const targetIndices = new Set();
-            const targetCount = Math.max(0, Math.floor((length - nbackState.n) * NBACK_TARGET_RATIO));
-            let safety = 0;
-            while (targetIndices.size < targetCount && safety < 500) {
-                targetIndices.add(nbackState.n + Math.floor(Math.random() * (length - nbackState.n)));
-                safety++;
-            }
-
-            for (let i = 0; i < length; i++) {
-                if (i < nbackState.n) {
-                    seq[i] = pickRandom(FOOD_DATA);
-                } else if (targetIndices.has(i)) {
-                    seq[i] = { ...seq[i - nbackState.n] };
-                } else {
-                    seq[i] = pickNbackRandomDifferent(seq[i - nbackState.n]);
-                }
-            }
-            return seq;
+            const plannedIndices = pickPlannedNbackIndices(
+                length,
+                nbackState.n,
+                NBACK_TARGET_COUNT,
+                NBACK_MIN_PLANNED_GAP
+            );
+            return generateNbackStream(
+                FOOD_DATA,
+                nbackState.n,
+                length,
+                plannedIndices,
+                getNbackFoodId,
+                item => ({ ...item })
+            );
         }
 
         function clearNbackTransition() {

@@ -13,6 +13,7 @@
         const slideMenu = document.getElementById('slideMenu');
 
         function goToMainMenu() {
+            if (typeof window.pauseDualNback === 'function') window.pauseDualNback();
             pauseNback();
             pauseGng();
             pauseDifferent();
@@ -29,7 +30,7 @@
                 window.CognitiveRouter.navigate('foodCategorySelect');
             } else if (gameId === 'nback') {
                 pauseNback();
-                window.CognitiveRouter.navigate('nbackGame');
+                window.CognitiveRouter.navigate('nbackModeSelect');
             } else if (gameId === 'gng') {
                 window.CognitiveRouter.navigate('gngSettings');
             } else if (gameId === 'different') {

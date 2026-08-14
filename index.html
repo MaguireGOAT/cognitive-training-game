@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/reality.css" />
     <link rel="stylesheet" href="css/food.css" />
     <link rel="stylesheet" href="css/nback.css" />
+    <link rel="stylesheet" href="css/dual-nback.css" />
     <link rel="stylesheet" href="css/gng.css" />
     <link rel="stylesheet" href="css/shopping.css" />
     <link rel="stylesheet" href="css/different.css" />
@@ -201,7 +202,7 @@
             </button>
             <button class="category-btn" id="gameNbackBtn">
                 <span class="icon">🧩</span>
-                <span class="label">N-back 記憶</span>
+                <span class="label">N-back</span>
             </button>
             <button class="category-btn" id="gameGngBtn">
                 <span class="icon">✅</span>
@@ -331,6 +332,158 @@
                 <button class="notmatch-btn" id="nbackNotMatchBtn">❌ 不相同</button>
             </div>
             <div class="right-group"></div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        N-back mode selection
+       ================================================================ -->
+    <div class="menu-overlay app-screen" id="nbackModeSelect">
+        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+            <button class="back-btn" id="nbackModeBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+        </div>
+        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000;">
+            <button class="hamburger-btn" id="hamburgerBtnNbackMode" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+        </div>
+        <div class="menu-header" style="margin-top:calc(20px * var(--ui-scale));">
+            <div class="menu-title">🧩 N-back</div>
+        </div>
+        <div class="menu-subtitle">選擇模式</div>
+        <div class="category-grid nback-mode-grid">
+            <button class="category-btn" id="singleNbackBtn">
+                <span class="icon">🔢</span>
+                <span class="label">單一 N-back</span>
+            </button>
+            <button class="category-btn" id="dualNbackBtn">
+                <span class="icon">🧠</span>
+                <span class="label">雙重 N-back</span>
+            </button>
+        </div>
+        <div class="menu-footer"></div>
+    </div>
+
+    <!-- ================================================================
+        Dual N-back settings
+       ================================================================ -->
+    <div class="menu-overlay app-screen" id="dualNbackSettings">
+        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+            <button class="back-btn" id="dualNbackSettingsBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+        </div>
+        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000;">
+            <button class="hamburger-btn" id="hamburgerBtnDualNbackSettings" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+        </div>
+        <div class="menu-header" style="margin-top:calc(20px * var(--ui-scale));">
+            <div class="menu-title">🧠 雙重 N-back 設定</div>
+        </div>
+        <div class="menu-subtitle">選擇兩個頻道</div>
+        <div style="max-width:calc(620px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
+            <div style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
+                <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">頻道一</span>
+                <select id="dualChannel1Select" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="">請選擇</option>
+                    <option value="image">圖片</option>
+                    <option value="position">位置</option>
+                    <option value="color">顏色</option>
+                    <option value="audio">聲音</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
+                <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">頻道二</span>
+                <select id="dualChannel2Select" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="">請選擇</option>
+                    <option value="image">圖片</option>
+                    <option value="position">位置</option>
+                    <option value="color">顏色</option>
+                    <option value="audio">聲音</option>
+                </select>
+            </div>
+            <div id="dualPositionSettings" class="hidden" style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
+                <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">位置格數</span>
+                <select id="dualPositionGridSelect" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="">請選擇</option>
+                    <option value="2x1">2 x 1</option>
+                    <option value="3x1">3 x 1</option>
+                    <option value="2x2">2 x 2</option>
+                    <option value="3x2">3 x 2</option>
+                    <option value="3x3">3 x 3</option>
+                </select>
+            </div>
+            <div id="dualColorSettings" class="hidden" style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
+                <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">顏色組合</span>
+                <select id="dualColorPaletteSelect" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="">請選擇</option>
+                    <option value="8">8 色</option>
+                    <option value="6">6 色</option>
+                    <option value="3">3 色</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
+                <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">N</span>
+                <select id="dualNSelect" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
+                    <option value="1">N=1</option>
+                    <option value="2">N=2</option>
+                    <option value="3">N=3</option>
+                </select>
+            </div>
+            <div class="dual-settings-hint" id="dualSettingsHint">請選擇兩個不同頻道</div>
+            <div style="margin-top:calc(10px * var(--ui-scale));">
+                <button id="dualStartBtn" style="width:100%; padding:calc(14px * var(--ui-scale)); font-size:calc(28px * var(--ui-scale)); font-weight:700; border:none; border-radius:calc(40px * var(--ui-scale)); background:var(--highlight-correct); color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; box-shadow:var(--btn-shadow-correct); transition: background 0.2s, transform 0.15s, box-shadow 0.15s; opacity:0.45;" disabled>▶ 開始遊戲</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+        Dual N-back game
+       ================================================================ -->
+    <div class="game-container app-screen" id="dualNbackGame">
+        <div class="top-bar">
+            <div class="left-group">
+                <button class="back-btn" id="dualNbackBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
+            </div>
+            <div class="question-area">
+                <span class="question-text" id="dualNbackQuestionText">🧠 雙重 N-back</span>
+            </div>
+            <div class="right-group">
+                <div class="score-display" id="dualNbackScoreDisplay">
+                    得分&nbsp;<span id="dualNbackScoreNum">0</span>
+                </div>
+                <select class="nback-n-select" id="dualNbackNSelect">
+                    <option value="1">N=1</option>
+                    <option value="2">N=2</option>
+                    <option value="3">N=3</option>
+                </select>
+                <span class="separator">|</span>
+                <button class="hamburger-btn" id="hamburgerBtnDualNback" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
+            </div>
+        </div>
+
+        <div class="dual-stage" id="dualNbackStage">
+            <div class="dual-grid hidden" id="dualNbackGrid"></div>
+            <div class="dual-card hidden" id="dualNbackCard">
+                <img id="dualNbackImage" src="" alt="食物" />
+            </div>
+            <div class="dual-step-label" id="dualNbackStepLabel">#0</div>
+        </div>
+
+        <div class="bottom-controls">
+            <div class="left-group">
+                <div class="speed-control">
+                    <button class="speed-btn" id="dualNbackSpeedDown">◀</button>
+                    <span class="speed-display" id="dualNbackSpeedDisplay">5</span>
+                    <button class="speed-btn" id="dualNbackSpeedUp">▶</button>
+                </div>
+                <button class="play-btn" id="dualNbackPlayBtn">
+                    <span class="play-icon">
+                        <span class="triangle"></span>
+                        <span class="pause-bar left"></span>
+                        <span class="pause-bar right"></span>
+                    </span>
+                </button>
+            </div>
+            <div class="center-group dual-match-controls" id="dualNbackMatchButtons"></div>
+            <div class="right-group">
+                <div class="score-display dual-channel-stats" id="dualNbackChannelStats">--</div>
+            </div>
         </div>
     </div>
 
@@ -754,6 +907,8 @@
     <script src="js/food/ui.js"></script>
     <script src="js/food/food.js"></script>
     <script src="js/food/nback.js"></script>
+    <script src="js/food/nback-audio-map.js"></script>
+    <script src="js/food/dual-nback.js"></script>
     <script src="js/food/gng.js"></script>
     <script src="js/food/different.js"></script>
     <script src="js/food/shopping.js"></script>

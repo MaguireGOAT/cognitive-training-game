@@ -559,13 +559,41 @@
                 max-width: 100%;
                 overflow-wrap: anywhere;
             }
+            .app-screen#mainMenu .category-grid.game-select,
+            #foodCategorySelect .category-grid.food-select {
+                --large-menu-gap: calc(18px * var(--ui-scale));
+                --large-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
+                --large-menu-card: calc((var(--large-menu-width) - 4 * var(--large-menu-gap)) / 5);
+                gap: var(--large-menu-gap);
+                max-width: 100%;
+                margin: 0 auto;
+            }
+            .app-screen#mainMenu .category-grid.game-select {
+                grid-template-columns: repeat(5, var(--large-menu-card));
+                grid-auto-rows: var(--large-menu-card);
+                width: calc(5 * var(--large-menu-card) + 4 * var(--large-menu-gap));
+            }
+            #foodCategorySelect .category-grid.food-select {
+                grid-template-columns: repeat(4, var(--large-menu-card));
+                grid-template-rows: repeat(2, var(--large-menu-card));
+                width: calc(4 * var(--large-menu-card) + 3 * var(--large-menu-gap));
+            }
+            .app-screen#mainMenu .category-grid.game-select .category-btn,
+            #foodCategorySelect .category-grid.food-select .category-btn {
+                min-width: 0;
+                max-width: 100%;
+            }
             .app-screen#mainMenu .category-grid.game-select .category-btn .icon,
             #foodCategorySelect .category-grid.food-select .category-btn .icon {
-                font-size: clamp(calc(38px * var(--ui-scale)), 11vw, calc(66px * var(--ui-scale)));
+                font-size: clamp(calc(30px * var(--ui-scale)), 8vw, calc(56px * var(--ui-scale)));
+                margin-bottom: calc(8px * var(--ui-scale));
             }
             .app-screen#mainMenu .category-grid.game-select .category-btn .label,
             #foodCategorySelect .category-grid.food-select .category-btn .label {
-                font-size: clamp(calc(18px * var(--ui-scale)), 5vw, calc(30px * var(--ui-scale)));
+                font-size: clamp(calc(16px * var(--ui-scale)), 4vw, calc(28px * var(--ui-scale)));
+                min-width: 0;
+                max-width: 100%;
+                overflow-wrap: anywhere;
             }
             .question-text {
                 font-size: clamp(calc(20px * var(--ui-scale)), 5.5vw, calc(36px * var(--ui-scale)));
@@ -646,6 +674,24 @@
         }
 
         @media (max-width: 640px) {
+            .app-screen#mainMenu .category-grid.game-select,
+            #foodCategorySelect .category-grid.food-select {
+                --large-menu-card: auto;
+                width: 100%;
+                max-width: calc(900px * var(--ui-scale));
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-rows: none;
+                grid-auto-rows: auto;
+                align-content: center;
+            }
+            .app-screen#mainMenu .category-grid.game-select .category-btn,
+            #foodCategorySelect .category-grid.food-select .category-btn {
+                width: 100%;
+                height: auto;
+                min-height: calc(110px * var(--ui-scale));
+                aspect-ratio: 1 / 1;
+                padding: calc(20px * var(--ui-scale)) calc(12px * var(--ui-scale));
+            }
             .shopping-list-card.name-only .food-name,
             .shopping-order-card.name-only .food-name {
                 font-size: clamp(calc(30px * var(--ui-scale)), 8vw, calc(76px * var(--ui-scale)));
@@ -673,5 +719,12 @@
             }
             .shopping-memory-time-suffix.active {
                 max-width: 5em;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .app-screen#mainMenu .category-grid.game-select,
+            #foodCategorySelect .category-grid.food-select {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }

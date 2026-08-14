@@ -127,6 +127,10 @@
         document.getElementById('overlay').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.classList.remove('active');
+                if (typeof finishDualNbackInstruction === 'function' && window.dualNbackInstructionPending) {
+                    finishDualNbackInstruction();
+                    return;
+                }
                 if (typeof finishNbackInstruction === 'function' && window.nbackInstructionPending) {
                     finishNbackInstruction();
                     return;
