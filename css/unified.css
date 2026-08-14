@@ -391,9 +391,15 @@
             min-width: 0;
         }
         .portrait-lock-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.35em;
+            height: 1.35em;
             font-size: min(calc(96px * var(--ui-scale)), 22vw);
             line-height: 1;
-            animation: portraitLockTurn 1.2s ease-in-out infinite alternate;
+            transform-origin: 50% 50%;
+            animation: portraitLockTurn 2.4s linear infinite;
         }
         .portrait-lock-title {
             font-size: min(calc(56px * var(--ui-scale)), 10vw);
@@ -408,8 +414,8 @@
             white-space: nowrap;
         }
         @keyframes portraitLockTurn {
-            0% { transform: rotate(-90deg); }
-            100% { transform: rotate(0deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* ================================================================
