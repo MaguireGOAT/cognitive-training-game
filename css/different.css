@@ -27,7 +27,7 @@
     --h-gaps: calc(28px * var(--ui-scale));
     --v-gaps: calc(0px * var(--ui-scale));
     --card-max: calc(560px * var(--ui-scale));
-    --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)),
+    --card: min(calc((100vw - calc(24px * var(--ui-scale)) - (var(--cols) - 1) * var(--h-gaps)) / var(--cols)),
                 calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)),
                 var(--card-max));
     grid-template-columns: repeat(var(--cols), var(--card));
@@ -39,7 +39,7 @@
     --h-gaps: calc(32px * var(--ui-scale));
     --v-gaps: calc(0px * var(--ui-scale));
     --card-max: calc(520px * var(--ui-scale));
-    --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)),
+    --card: min(calc((100vw - calc(24px * var(--ui-scale)) - (var(--cols) - 1) * var(--h-gaps)) / var(--cols)),
                 calc((100vh - calc(210px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)),
                 var(--card-max));
     grid-template-columns: repeat(var(--cols), var(--card));
@@ -51,7 +51,7 @@
     --h-gaps: calc(20px * var(--ui-scale));
     --v-gaps: calc(18px * var(--ui-scale));
     --card-max: calc(620px * var(--ui-scale));
-    --card: min(calc((100vw - calc(24px * var(--ui-scale)) - calc(40px * var(--ui-scale))) / var(--cols)),
+    --card: min(calc((100vw - calc(24px * var(--ui-scale)) - (var(--cols) - 1) * var(--h-gaps)) / var(--cols)),
                 calc((100vh - calc(180px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)),
                 var(--card-max));
 }
@@ -61,7 +61,7 @@
     --h-gaps: calc(20px * var(--ui-scale));
     --v-gaps: calc(18px * var(--ui-scale));
     --card-max: calc(620px * var(--ui-scale));
-    --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)),
+    --card: min(calc((100vw - calc(24px * var(--ui-scale)) - (var(--cols) - 1) * var(--h-gaps)) / var(--cols)),
                 calc((100vh - calc(180px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)),
                 var(--card-max));
     grid-template-columns: repeat(var(--cols), var(--card));
