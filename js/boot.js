@@ -12,6 +12,7 @@
     var pendingUpdate = false;
     var pendingUpdateReload = false;
     var reloading = false;
+    var startupUpdateTimeoutMs = 8000;
 
     function setProgress(loaded, total) {
         if (!bootProgress || !total) return;
@@ -159,6 +160,47 @@
         }
     }
 
+    function waitForStartupUpdateCheck(registration) {
+        return new Promise(function (resolve) {
+            if (navigator.onLine === false) {
+                resolve(false);
+                return;
+            }
+            var activeWorker = registration.active;
+            var settled = false;
+            var timer = setTimeout(finish, startupUpdateTimeoutMs);
+
+            function finish(found) {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timer);
+                registration.removeEventListener('updatefound', onFound);
+                resolve(!!found);
+            }
+
+            function onFound() {
+                if (registration.installing || registration.waiting) {
+                    finish(true);
+                }
+            }
+
+            registration.addEventListener('updatefound', onFound);
+            try {
+                registration.update().then(function () {
+                    if (registration.installing || registration.waiting || registration.active !== activeWorker) {
+                        finish(true);
+                        return;
+                    }
+                    finish(false);
+                }).catch(function () {
+                    finish(false);
+                });
+            } catch (error) {
+                finish(false);
+            }
+        });
+    }
+
     function start(callback) {
         if (ready) {
             callback();
@@ -199,9 +241,14 @@
             }
 
             if (registration.active) {
-                complete();
-                startUpdateCheck(registration);
-                return;
+                return waitForStartupUpdateCheck(registration).then(function (found) {
+                    if (found) {
+                        return finishWorkerUpdate(registration, hadController);
+                    }
+                    complete();
+                    startUpdateCheck(registration);
+                    return null;
+                });
             }
 
             return new Promise(function (resolve) {

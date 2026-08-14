@@ -206,4 +206,34 @@
                     refreshSettingsFromStorage();
                 }
             });
+
+            function isPortraitViewport() {
+                if (window.matchMedia && window.matchMedia('(orientation: portrait)').matches) {
+                    return true;
+                }
+                return window.innerHeight > window.innerWidth;
+            }
+
+            function updatePortraitLock() {
+                var overlay = document.getElementById('portraitLock');
+                if (!overlay) return;
+                var portrait = isPortraitViewport();
+                overlay.classList.toggle('active', portrait);
+                overlay.setAttribute('aria-hidden', portrait ? 'false' : 'true');
+                if (portrait && window.screen && window.screen.orientation &&
+                    typeof window.screen.orientation.lock === 'function') {
+                    window.screen.orientation.lock('landscape').catch(function () {});
+                }
+            }
+
+            updatePortraitLock();
+            if (window.matchMedia) {
+                var portraitQuery = window.matchMedia('(orientation: portrait)');
+                if (portraitQuery.addEventListener) {
+                    portraitQuery.addEventListener('change', updatePortraitLock);
+                } else if (portraitQuery.addListener) {
+                    portraitQuery.addListener(updatePortraitLock);
+                }
+            }
+            window.addEventListener('resize', updatePortraitLock);
         })();

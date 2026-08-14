@@ -361,3 +361,311 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.12); }
         }
+
+        /* ================================================================
+           Portrait lock
+           ================================================================ */
+        .portrait-lock {
+            position: fixed;
+            inset: 0;
+            z-index: 11000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: calc(28px * var(--ui-scale));
+            background: var(--container-bg);
+            color: var(--text-color);
+            text-align: center;
+            overflow: hidden;
+        }
+        .portrait-lock.active {
+            display: flex;
+        }
+        .portrait-lock-content {
+            width: 100%;
+            max-width: calc(720px * var(--ui-scale));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: calc(22px * var(--ui-scale));
+            min-width: 0;
+        }
+        .portrait-lock-icon {
+            font-size: min(calc(96px * var(--ui-scale)), 22vw);
+            line-height: 1;
+            animation: portraitLockTurn 1.2s ease-in-out infinite alternate;
+        }
+        .portrait-lock-title {
+            font-size: min(calc(56px * var(--ui-scale)), 10vw);
+            font-weight: 800;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .portrait-lock-sub {
+            font-size: min(calc(30px * var(--ui-scale)), 6vw);
+            color: var(--muted-text);
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        @keyframes portraitLockTurn {
+            0% { transform: rotate(-90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* ================================================================
+           Small-screen text overflow protection
+           Shrink first; wrap only when the text still cannot fit.
+           ================================================================ */
+        html,
+        body {
+            overflow-x: hidden;
+        }
+        .app-screen {
+            max-width: 100vw;
+        }
+        .menu-overlay {
+            overflow-x: hidden;
+        }
+
+        .top-bar {
+            width: 100%;
+            min-width: 0;
+        }
+        .top-bar .left-group,
+        .top-bar .right-group,
+        .top-bar .question-area {
+            min-width: 0;
+        }
+        .top-bar .left-group,
+        .top-bar .right-group {
+            flex-shrink: 1;
+            max-width: 100%;
+        }
+        .top-bar .question-area {
+            max-width: 100%;
+        }
+        .question-text,
+        .gng-rules-text {
+            min-width: 0;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+
+        .category-btn,
+        .food-card,
+        .shopping-list-card,
+        .shopping-recall-card,
+        .different-card,
+        .gng-card,
+        .nback-image-container {
+            min-width: 0;
+        }
+        .category-btn .label,
+        .food-card .food-name,
+        .shopping-list-card .food-name,
+        .shopping-recall-card .food-name,
+        .different-card .food-name,
+        .gng-card .food-name {
+            min-width: 0;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+
+        .message-box {
+            width: min(88vw, calc(760px * var(--ui-scale)));
+            min-width: 0;
+            max-width: 92vw;
+            padding-right: calc(24px * var(--ui-scale));
+            padding-left: calc(24px * var(--ui-scale));
+            overflow: hidden;
+        }
+        .message-box .msg-text,
+        .message-box .msg-sub {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+
+        .slide-menu {
+            max-width: 88vw;
+        }
+        .slide-menu .menu-item {
+            min-width: 0;
+        }
+        .slide-menu .menu-item .state-badge {
+            flex-shrink: 0;
+        }
+
+        #realitySettings > div[style*="display:flex"],
+        #gngSettings > div[style*="display:flex"],
+        #shoppingSettings > div[style*="display:flex"] {
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+        #shoppingSettings #shoppingMemoryTimeLabel {
+            flex-wrap: wrap;
+            max-width: 100%;
+            overflow: visible;
+        }
+
+        .reality-info,
+        .reality-duo,
+        .reality-time-page,
+        .reality-location-block {
+            min-width: 0;
+            max-width: 100%;
+        }
+        .reality-value,
+        .reality-label {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+
+        .grid-container,
+        .shopping-list-grid,
+        .shopping-recall-grid,
+        .different-grid-container {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        @media (max-width: 900px) {
+            .menu-overlay {
+                padding-right: calc(12px * var(--ui-scale));
+                padding-left: calc(12px * var(--ui-scale));
+            }
+            #home .menu-title,
+            #mainMenu .menu-title {
+                font-size: clamp(calc(30px * var(--ui-scale)), 9vw, calc(56px * var(--ui-scale)));
+            }
+            #home .menu-title .brain,
+            #mainMenu .menu-title .brain {
+                font-size: clamp(calc(30px * var(--ui-scale)), 9vw, calc(56px * var(--ui-scale)));
+            }
+            #home .menu-subtitle,
+            #mainMenu .menu-subtitle {
+                font-size: clamp(calc(16px * var(--ui-scale)), 4.5vw, calc(28px * var(--ui-scale)));
+            }
+            .menu-title {
+                max-width: 100%;
+                overflow-wrap: anywhere;
+            }
+            .menu-subtitle {
+                max-width: 100%;
+                overflow-wrap: anywhere;
+            }
+            .app-screen#mainMenu .category-grid.game-select .category-btn .icon,
+            #foodCategorySelect .category-grid.food-select .category-btn .icon {
+                font-size: clamp(calc(38px * var(--ui-scale)), 11vw, calc(66px * var(--ui-scale)));
+            }
+            .app-screen#mainMenu .category-grid.game-select .category-btn .label,
+            #foodCategorySelect .category-grid.food-select .category-btn .label {
+                font-size: clamp(calc(18px * var(--ui-scale)), 5vw, calc(30px * var(--ui-scale)));
+            }
+            .question-text {
+                font-size: clamp(calc(20px * var(--ui-scale)), 5.5vw, calc(36px * var(--ui-scale)));
+                line-height: 1.2;
+                height: auto;
+                padding-right: calc(10px * var(--ui-scale));
+                padding-left: calc(10px * var(--ui-scale));
+                white-space: normal;
+                text-align: center;
+            }
+            .gng-rules-text {
+                font-size: clamp(calc(18px * var(--ui-scale)), 5vw, calc(32px * var(--ui-scale)));
+                line-height: 1.2;
+                height: auto;
+                padding-right: calc(10px * var(--ui-scale));
+                padding-left: calc(10px * var(--ui-scale));
+                white-space: normal;
+                text-align: center;
+            }
+            .message-box .msg-text,
+            .message-box .msg-text.extra-large,
+            .message-box .msg-text.victory {
+                font-size: clamp(calc(26px * var(--ui-scale)), 7vw, calc(76px * var(--ui-scale)));
+                line-height: 1.2;
+            }
+            .message-box .msg-sub {
+                font-size: clamp(calc(16px * var(--ui-scale)), 4vw, calc(24px * var(--ui-scale)));
+            }
+            .message-box .btn-group .btn-option {
+                font-size: clamp(calc(16px * var(--ui-scale)), 4.5vw, calc(28px * var(--ui-scale)));
+                padding-right: calc(16px * var(--ui-scale));
+                padding-left: calc(16px * var(--ui-scale));
+                min-width: calc(88px * var(--ui-scale));
+            }
+            .message-box .btn-next {
+                font-size: clamp(calc(16px * var(--ui-scale)), 4.5vw, calc(28px * var(--ui-scale)));
+                padding-right: calc(16px * var(--ui-scale));
+                padding-left: calc(16px * var(--ui-scale));
+            }
+            #gngSettings > div[style*="display:flex"] > span,
+            #shoppingSettings > div[style*="display:flex"] > span,
+            #realitySettings > div[style*="display:flex"] > span {
+                font-size: clamp(calc(15px * var(--ui-scale)), 4vw, calc(22px * var(--ui-scale))) !important;
+                max-width: 62%;
+            }
+            #gngSettings select,
+            #shoppingSettings select,
+            #realitySettings select,
+            #gngAutoToggle {
+                font-size: clamp(calc(13px * var(--ui-scale)), 3.5vw, calc(20px * var(--ui-scale))) !important;
+                max-width: 62%;
+            }
+            #shoppingMemoryTimeLabel {
+                font-size: clamp(calc(13px * var(--ui-scale)), 3.5vw, calc(22px * var(--ui-scale))) !important;
+            }
+            .reality-value {
+                font-size: clamp(calc(40px * var(--ui-scale)), 18vw, calc(140px * var(--ui-scale)));
+            }
+            .reality-label {
+                font-size: clamp(calc(20px * var(--ui-scale)), 7vw, calc(40px * var(--ui-scale)));
+            }
+            .reality-time-digits {
+                font-size: clamp(calc(30px * var(--ui-scale)), 14vw, 1.32em);
+            }
+            .reality-weather-icon {
+                font-size: clamp(calc(34px * var(--ui-scale)), 11vw, calc(140px * var(--ui-scale)));
+            }
+            .reality-duo .reality-info {
+                padding-right: calc(14px * var(--ui-scale));
+                padding-left: calc(14px * var(--ui-scale));
+            }
+            #palm .menu-label {
+                font-size: calc(14px * var(--ui-scale));
+            }
+            #palm select {
+                max-width: calc(130px * var(--ui-scale));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .shopping-list-card.name-only .food-name,
+            .shopping-order-card.name-only .food-name {
+                font-size: clamp(calc(30px * var(--ui-scale)), 8vw, calc(76px * var(--ui-scale)));
+            }
+            .food-card .food-name,
+            .shopping-list-card .food-name,
+            .shopping-recall-card .food-name,
+            .different-card .food-name {
+                font-size: clamp(calc(14px * var(--ui-scale)), 4vw, calc(38px * var(--ui-scale)));
+            }
+            .top-bar .right-group {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                row-gap: calc(4px * var(--ui-scale));
+            }
+            .top-bar .right-group > * {
+                flex-shrink: 1;
+                min-width: 0;
+            }
+            .dropdown-wrapper {
+                max-width: 100%;
+            }
+            .dropdown-wrapper select {
+                max-width: calc(90px * var(--ui-scale));
+            }
+            .shopping-memory-time-suffix.active {
+                max-width: 5em;
+            }
+        }
