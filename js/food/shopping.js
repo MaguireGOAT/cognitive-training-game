@@ -21,6 +21,10 @@
             timer: null,
             timerToken: 0,
             countdown: 0,
+            orderIndex: 0,
+            orderMemoryComplete: false,
+            orderTransitionTimer: null,
+            orderTransitionToken: 0,
             roundLocked: false,
             roundCompletePending: false,
             timeoutPending: false,
@@ -38,9 +42,13 @@
         const shoppingPhaseText = document.getElementById('shoppingPhaseText');
         const shoppingListView = document.getElementById('shoppingListView');
         const shoppingRecallView = document.getElementById('shoppingRecallView');
+        const shoppingOrderView = document.getElementById('shoppingOrderView');
         const shoppingListGrid = document.getElementById('shoppingListGrid');
         const shoppingListHint = document.getElementById('shoppingListHint');
         const shoppingRecallGrid = document.getElementById('shoppingRecallGrid');
+        const shoppingOrderItem = document.getElementById('shoppingOrderItem');
+        const shoppingOrderIndicator = document.getElementById('shoppingOrderIndicator');
+        const shoppingOrderLightbulb = document.getElementById('shoppingOrderLightbulb');
         const shoppingScoreNum = document.getElementById('shoppingScoreNum');
         const shoppingProgress = document.getElementById('shoppingProgress');
         const shoppingTimer = document.getElementById('shoppingTimer');
@@ -52,10 +60,14 @@
         const shoppingListDisplayMode = document.getElementById('shoppingListDisplayMode');
         const shoppingListCount = document.getElementById('shoppingListCount');
         const shoppingMemoryTime = document.getElementById('shoppingMemoryTime');
+        const shoppingMemoryTimeLabel = document.getElementById('shoppingMemoryTimeLabel');
+        const shoppingMemoryTimeSuffix = document.getElementById('shoppingMemoryTimeSuffix');
         const shoppingChoiceCount = document.getElementById('shoppingChoiceCount');
         const shoppingOrderRequired = document.getElementById('shoppingOrderRequired');
         const shoppingRecallTime = document.getElementById('shoppingRecallTime');
         const shoppingSaveSettingsBtn = document.getElementById('shoppingSaveSettingsBtn');
+
+        let shoppingOrderBulbHideTimer = null;
 
         const shoppingPreferences = window.CognitivePrefs ? CognitivePrefs.load(
             'cognitiveShoppingPrefs',
@@ -70,7 +82,7 @@
             {
                 listDisplayMode: ['image', 'name'],
                 listCount: [2, 3, 4, 5, 6],
-                memoryTime: ['5', '10', '15', '20', 'manual'],
+                memoryTime: ['1', '3', '5', '10', '15', '20', 'manual'],
                 choiceCount: [4, 6, 8],
                 orderRequired: 'boolean',
                 recallTime: ['0', '15', '30', '45', '60']
@@ -85,6 +97,94 @@
             shoppingOrderRequired.value = String(shoppingPreferences.orderRequired);
             shoppingRecallTime.value = shoppingPreferences.recallTime;
         }
+
+        const STANDARD_MEMORY_OPTIONS = [
+            ['5', '5 秒'],
+            ['10', '10 秒'],
+            ['15', '15 秒'],
+            ['20', '20 秒'],
+            ['manual', '手動']
+        ];
+        const ORDER_MEMORY_OPTIONS = [
+            ['1', '1 秒'],
+            ['3', '3 秒'],
+            ['5', '5 秒'],
+            ['manual', '手動']
+        ];
+
+        function setShoppingOrderLightbulbInitial(orderMode) {
+            const bulb = shoppingOrderLightbulb;
+            if (!bulb) return;
+
+            if (shoppingOrderBulbHideTimer) {
+                clearTimeout(shoppingOrderBulbHideTimer);
+                shoppingOrderBulbHideTimer = null;
+            }
+            bulb.classList.remove('visible', 'exit', 'flash');
+            bulb.classList.toggle('hidden', !orderMode);
+            if (orderMode) bulb.classList.add('visible');
+        }
+
+        function showShoppingOrderLightbulb() {
+            const bulb = shoppingOrderLightbulb;
+            if (!bulb) return;
+
+            if (shoppingOrderBulbHideTimer) {
+                clearTimeout(shoppingOrderBulbHideTimer);
+                shoppingOrderBulbHideTimer = null;
+            }
+            bulb.classList.remove('exit', 'flash', 'hidden');
+            void bulb.offsetWidth;
+            bulb.classList.add('visible');
+        }
+
+        function hideShoppingOrderLightbulb() {
+            const bulb = shoppingOrderLightbulb;
+            if (!bulb) return;
+
+            if (shoppingOrderBulbHideTimer) {
+                clearTimeout(shoppingOrderBulbHideTimer);
+                shoppingOrderBulbHideTimer = null;
+            }
+            if (bulb.classList.contains('hidden')) return;
+
+            bulb.classList.remove('visible', 'exit', 'flash');
+            void bulb.offsetWidth;
+            bulb.classList.add('exit');
+
+            shoppingOrderBulbHideTimer = window.setTimeout(function() {
+                bulb.classList.add('hidden');
+                bulb.classList.remove('exit');
+                shoppingOrderBulbHideTimer = null;
+            }, 450);
+        }
+
+        function updateShoppingMemoryOptions(animateBulb) {
+            const orderMode = shoppingOrderRequired.value === 'true';
+            const options = orderMode ? ORDER_MEMORY_OPTIONS : STANDARD_MEMORY_OPTIONS;
+            const currentValue = shoppingMemoryTime.value;
+            const validValues = options.map(option => option[0]);
+            shoppingMemoryTime.innerHTML = options.map(option =>
+                `<option value="${option[0]}">${option[1]}</option>`
+            ).join('');
+            shoppingMemoryTime.value = validValues.includes(currentValue) ? currentValue : 'manual';
+            if (shoppingMemoryTimeSuffix) {
+                shoppingMemoryTimeSuffix.classList.toggle('active', orderMode);
+                shoppingMemoryTimeSuffix.setAttribute('aria-hidden', orderMode ? 'false' : 'true');
+            }
+            if (animateBulb) {
+                showShoppingOrderLightbulb();
+            } else {
+                setShoppingOrderLightbulbInitial(orderMode);
+            }
+        }
+
+        shoppingOrderRequired.addEventListener('change', function() {
+            updateShoppingMemoryOptions(true);
+        });
+        shoppingMemoryTime.addEventListener('click', hideShoppingOrderLightbulb);
+        shoppingMemoryTime.addEventListener('change', hideShoppingOrderLightbulb);
+        updateShoppingMemoryOptions(shoppingOrderRequired.value === 'true');
 
         if (shoppingSaveSettingsBtn) {
             shoppingSaveSettingsBtn.addEventListener('click', function() {
@@ -185,6 +285,143 @@
             });
         }
 
+        function renderShoppingOrderItem(index) {
+            const item = shoppingState.list[index];
+            if (!item) return;
+            const showImage = shoppingState.listDisplayMode !== 'name';
+            const showName = shoppingState.listDisplayMode === 'name' || (showImage && showNames);
+            shoppingOrderItem.innerHTML = '';
+            const card = document.createElement('div');
+            card.className = 'shopping-order-card';
+            if (!showImage) card.classList.add('name-only');
+
+            if (showImage) {
+                const magnifyBtn = document.createElement('button');
+                magnifyBtn.className = 'magnify-btn';
+                magnifyBtn.textContent = '🔍';
+                magnifyBtn.title = '放大圖片';
+                magnifyBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openMagnify(item.image, item.name, showName);
+                });
+                card.appendChild(magnifyBtn);
+
+                const imgWrapper = document.createElement('div');
+                imgWrapper.className = 'food-image';
+                const img = document.createElement('img');
+                img.src = item.image;
+                img.alt = item.name;
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    const fallback = document.createElement('span');
+                    fallback.textContent = '🖼️';
+                    fallback.style.fontSize = 'calc(72px * var(--ui-scale))';
+                    this.parentElement.appendChild(fallback);
+                };
+                imgWrapper.appendChild(img);
+                card.appendChild(imgWrapper);
+            }
+
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'food-name';
+            nameSpan.textContent = item.name;
+            card.appendChild(nameSpan);
+            shoppingOrderItem.appendChild(card);
+            applyNameVisibility();
+        }
+
+        const ORDER_INDICATOR_MS = 1500;
+
+        function stopOrderTransition() {
+            shoppingState.orderTransitionToken++;
+            if (shoppingState.orderTransitionTimer) {
+                clearTimeout(shoppingState.orderTransitionTimer);
+                shoppingState.orderTransitionTimer = null;
+            }
+        }
+
+        function showOrderItem(index) {
+            stopShoppingTimer();
+            stopOrderTransition();
+            if (index >= shoppingState.list.length) {
+                finishOrderMemory();
+                return;
+            }
+            shoppingState.orderIndex = index;
+            shoppingState.orderMemoryComplete = false;
+            shoppingManualStartBtn.classList.add('hidden');
+            shoppingOrderItem.innerHTML = '';
+            shoppingOrderIndicator.textContent = String(index + 1);
+            shoppingOrderIndicator.classList.remove('active');
+            void shoppingOrderIndicator.offsetWidth;
+            shoppingOrderIndicator.classList.add('active');
+
+            const token = ++shoppingState.orderTransitionToken;
+            shoppingState.orderTransitionTimer = setTimeout(function() {
+                if (token !== shoppingState.orderTransitionToken) return;
+                shoppingState.orderTransitionTimer = null;
+                const isLast = index === shoppingState.list.length - 1;
+                renderShoppingOrderItem(index);
+                if (shoppingState.listRevealMode === 'timer') {
+                    shoppingTimer.classList.remove('hidden');
+                    startShoppingCountdown(shoppingState.listSeconds, function() {
+                        showOrderItem(index + 1);
+                    });
+                } else {
+                    shoppingTimer.classList.add('hidden');
+                    updateShoppingTimer();
+                    shoppingManualStartBtn.textContent = isLast ? '▶ 開始揀選' : '下一張';
+                    if (isLast) shoppingState.orderMemoryComplete = true;
+                    shoppingManualStartBtn.classList.remove('hidden');
+                }
+            }, ORDER_INDICATOR_MS);
+        }
+
+        function finishOrderMemory() {
+            shoppingState.orderMemoryComplete = true;
+            stopShoppingTimer();
+            stopOrderTransition();
+            shoppingOrderItem.innerHTML = '';
+            shoppingOrderIndicator.classList.remove('active');
+            shoppingManualStartBtn.classList.add('hidden');
+            shoppingTimer.classList.add('hidden');
+            if (shoppingState.listRevealMode === 'timer') {
+                showShoppingRecallIntro();
+            } else {
+                shoppingManualStartBtn.textContent = '▶ 開始揀選';
+                shoppingManualStartBtn.classList.remove('hidden');
+                shoppingPhaseText.textContent = '已記住，開始揀選';
+            }
+        }
+
+        function showShoppingOrderPhase(startFlow) {
+            stopShoppingTimer();
+            stopOrderTransition();
+            shoppingState.phase = 'order';
+            shoppingState.roundLocked = false;
+            shoppingState.timeoutPending = false;
+            shoppingState.completedNames = [];
+            shoppingState.nextOrderIndex = 0;
+            shoppingListView.classList.add('hidden');
+            shoppingRecallView.classList.add('hidden');
+            shoppingOrderView.classList.remove('hidden');
+            shoppingManualStartBtn.classList.add('hidden');
+            shoppingTimer.classList.toggle('hidden', shoppingState.listRevealMode !== 'timer');
+            shoppingPhaseText.textContent = '按順序逐一記住圖片';
+            shoppingProgress.classList.add('hidden');
+            shoppingOrderItem.innerHTML = '';
+            shoppingOrderIndicator.classList.remove('active');
+            clearShoppingFeedback();
+            syncTopBarCentering();
+            if (startFlow) {
+                shoppingState.orderMemoryComplete = false;
+                shoppingState.orderIndex = 0;
+                showOrderItem(0);
+            } else {
+                updateShoppingTimer();
+            }
+        }
+
         function renderShoppingRecallGrid() {
             const count = shoppingState.gridItems.length;
             shoppingRecallGrid.className = `shopping-recall-grid count-${count}`;
@@ -256,7 +493,7 @@
         }
 
         function updateShoppingTimer() {
-            const active = shoppingState.phase === 'list' || shoppingState.phase === 'recall';
+            const active = shoppingState.phase === 'list' || shoppingState.phase === 'order' || shoppingState.phase === 'recall';
             if (active && shoppingState.timer) {
                 shoppingTimer.textContent = `⏱ ${shoppingState.countdown} 秒`;
                 shoppingTimer.classList.toggle('alert', shoppingState.countdown <= 5);
@@ -292,6 +529,7 @@
 
         function showShoppingListPhase(startTimer = true, renderList = true) {
             stopShoppingTimer();
+            stopOrderTransition();
             shoppingState.phase = 'list';
             shoppingState.roundLocked = false;
             shoppingState.timeoutPending = false;
@@ -299,6 +537,10 @@
             shoppingState.nextOrderIndex = 0;
             shoppingListView.classList.remove('hidden');
             shoppingRecallView.classList.add('hidden');
+            shoppingOrderView.classList.add('hidden');
+            shoppingOrderItem.innerHTML = '';
+            shoppingOrderIndicator.classList.remove('active');
+            shoppingManualStartBtn.textContent = '▶ 開始揀選';
             shoppingManualStartBtn.classList.toggle('hidden', shoppingState.listRevealMode !== 'manual');
             shoppingTimer.classList.toggle('hidden', shoppingState.listRevealMode !== 'timer');
             shoppingPhaseText.textContent = `📋 購物清單（${shoppingState.list.length} 樣）`;
@@ -328,16 +570,27 @@
             shoppingState.introPending = true;
             const renderBeforeIntro = shoppingState.introShownOnce;
             shoppingState.introShownOnce = true;
-            showShoppingListPhase(false, renderBeforeIntro);
-            shoppingState.continueIntro = function() {
-                shoppingState.introPending = false;
-                shoppingState.continueIntro = null;
-                showShoppingListPhase(true);
-            };
-            const timed = shoppingState.listRevealMode === 'timer';
-            const title = timed
-                ? `記住清單，${shoppingState.listSeconds} 秒後開始揀選`
-                : '記住清單，準備好後按<br><span class="start-hint">「開始揀選」</span>';
+            let title;
+            if (shoppingState.orderRequired) {
+                showShoppingOrderPhase(false);
+                shoppingState.continueIntro = function() {
+                    shoppingState.introPending = false;
+                    shoppingState.continueIntro = null;
+                    showShoppingOrderPhase(true);
+                };
+                title = '按順序逐一記住圖片';
+            } else {
+                showShoppingListPhase(false, renderBeforeIntro);
+                shoppingState.continueIntro = function() {
+                    shoppingState.introPending = false;
+                    shoppingState.continueIntro = null;
+                    showShoppingListPhase(true);
+                };
+                const timed = shoppingState.listRevealMode === 'timer';
+                title = timed
+                    ? `記住清單，${shoppingState.listSeconds} 秒後開始揀選`
+                    : '記住清單，準備好後按<br><span class="start-hint">「開始揀選」</span>';
+            }
             showCustomMessage(
                 title,
                 '',
@@ -368,9 +621,13 @@
 
         function startShoppingRecall() {
             stopShoppingTimer();
+            stopOrderTransition();
             shoppingState.phase = 'recall';
             shoppingListView.classList.add('hidden');
+            shoppingOrderView.classList.add('hidden');
             shoppingRecallView.classList.remove('hidden');
+            shoppingOrderItem.innerHTML = '';
+            shoppingOrderIndicator.classList.remove('active');
             shoppingManualStartBtn.classList.add('hidden');
             shoppingTimer.classList.toggle('hidden', !shoppingState.recallTimed);
             shoppingPhaseText.textContent = '揀選清單中的食物';
@@ -533,7 +790,13 @@
 
         function pauseShopping() {
             stopShoppingTimer();
+            stopOrderTransition();
             clearShoppingFeedback();
+            shoppingState.orderIndex = 0;
+            shoppingState.orderMemoryComplete = false;
+            shoppingOrderItem.innerHTML = '';
+            shoppingOrderIndicator.classList.remove('active');
+            shoppingOrderView.classList.add('hidden');
             shoppingState.roundLocked = false;
             shoppingState.roundCompletePending = false;
             shoppingState.timeoutPending = false;
@@ -544,8 +807,17 @@
         }
 
         shoppingManualStartBtn.addEventListener('click', function() {
-            if (shoppingState.phase !== 'list') return;
-            startShoppingRecall();
+            if (shoppingState.phase === 'list') {
+                startShoppingRecall();
+                return;
+            }
+            if (shoppingState.phase === 'order') {
+                if (shoppingState.orderMemoryComplete) {
+                    startShoppingRecall();
+                    return;
+                }
+                showOrderItem(shoppingState.orderIndex + 1);
+            }
         });
 
         shoppingNameToggleBtn.addEventListener('click', function() {

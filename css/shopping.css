@@ -147,6 +147,177 @@
             margin: 0;
         }
 
+        /* 順序模式：逐一記住 */
+        .shopping-order-panel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .shopping-order-item {
+            width: min(88vw, calc(820px * var(--ui-scale)));
+            height: min(88%, calc(820px * var(--ui-scale)));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .shopping-order-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            border: calc(4px * var(--ui-scale)) solid transparent;
+            border-radius: calc(28px * var(--ui-scale));
+            box-shadow: var(--card-shadow);
+            padding: calc(10px * var(--ui-scale));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 0;
+            overflow: hidden;
+            animation: shoppingOrderItemIn 0.35s ease;
+        }
+        .shopping-order-card .food-image {
+            flex: 1 1 auto;
+            min-height: 0;
+            width: 100%;
+            position: relative;
+            border-radius: calc(22px * var(--ui-scale));
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+        .shopping-order-card .food-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: calc(10px * var(--ui-scale));
+            border-radius: calc(22px * var(--ui-scale));
+            pointer-events: none;
+        }
+        .shopping-order-card .food-name {
+            font-size: calc(38px * var(--ui-scale));
+            font-weight: 800;
+            color: var(--text-color);
+            line-height: 1.2;
+            margin-top: calc(6px * var(--ui-scale));
+            max-height: calc(56px * var(--ui-scale));
+            overflow: hidden;
+            opacity: 1;
+            text-align: center;
+            flex-shrink: 0;
+            transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.3s ease, padding 0.3s, color 0.4s;
+        }
+        .shopping-order-card.name-only {
+            justify-content: center;
+        }
+        .shopping-order-card.name-only .food-name {
+            font-size: calc(76px * var(--ui-scale));
+            max-height: none;
+            margin: 0;
+        }
+        #shoppingGame.hide-names .shopping-order-card .food-name {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+        #shoppingGame.hide-names .shopping-order-card.name-only .food-name {
+            max-height: none;
+            opacity: 1;
+            margin: 0;
+        }
+        .shopping-order-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 20;
+            width: min(calc(250px * var(--ui-scale)), 68vw);
+            height: min(calc(250px * var(--ui-scale)), 68vw);
+            border-radius: 50%;
+            background: var(--control-bg);
+            color: var(--text-color);
+            font-size: min(calc(132px * var(--ui-scale)), 34vw);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 calc(12px * var(--ui-scale)) calc(30px * var(--ui-scale)) rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: none;
+        }
+        .shopping-order-indicator.active {
+            animation: shoppingOrderIndicator 1.5s ease forwards;
+        }
+        @keyframes shoppingOrderIndicator {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+            8% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            86% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            94% { opacity: 1; transform: translate(-50%, -50%) scale(0.86); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+        }
+        @keyframes shoppingOrderItemIn {
+            0% { opacity: 0; transform: scale(0.96); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .shopping-order-lightbulb {
+            position: relative;
+            display: inline-block;
+            margin-left: calc(4px * var(--ui-scale));
+            font-size: calc(30px * var(--ui-scale));
+            line-height: 1;
+            cursor: help;
+            transform-origin: 50% 50%;
+            will-change: transform;
+        }
+        .shopping-memory-time-label {
+            display: inline-flex;
+            align-items: baseline;
+            overflow: hidden;
+        }
+        .shopping-memory-time-suffix {
+            display: inline-block;
+            max-width: 0;
+            opacity: 0;
+            transform: translateX(calc(-10px * var(--ui-scale)));
+            white-space: nowrap;
+            overflow: hidden;
+            transition:
+                max-width 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.5s ease,
+                transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .shopping-memory-time-suffix.active {
+            max-width: 6em;
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .shopping-order-lightbulb.visible {
+            animation: shoppingOrderLightbulbEnter 0.7s cubic-bezier(0.34, 1.3, 0.64, 1) both,
+                       shoppingOrderLightbulbIdle 3s ease-in-out 0.7s infinite;
+        }
+        .shopping-order-lightbulb.exit {
+            animation: shoppingOrderLightbulbExit 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes shoppingOrderLightbulbEnter {
+            0% { opacity: 0; transform: scale(0); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes shoppingOrderLightbulbIdle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.14); }
+        }
+        @keyframes shoppingOrderLightbulbExit {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
         /* 回饋提示 */
         .shopping-feedback {
             position: absolute;

@@ -39,6 +39,7 @@
             CATEGORY_NAMES.forEach(c => foodState.categoryCompleted[c] = false);
             foodState.score = 0;
             foodState.round = 0;
+            foodState.currentCategory = '';
             updateFoodScore();
             updateFoodMenuButtons();
         }
@@ -64,11 +65,11 @@
         }
 
         function generateQuestion() {
+            const prevCat = foodState.currentCategory;
             let targetCat = foodState.gameMode;
             if (targetCat === 'random') {
                 const availableCats = CATEGORY_NAMES.filter(cat => !foodState.categoryCompleted[cat]);
                 if (availableCats.length === 0) { showVictoryScreen(); return; }
-                const prevCat = foodState.currentCategory;
                 let candidates = availableCats.filter(c => c !== prevCat);
                 if (candidates.length === 0) candidates = availableCats;
                 targetCat = pickRandom(candidates);
@@ -147,6 +148,11 @@
                 card.classList.remove('correct-highlight', 'wrong-highlight', 'disabled');
             });
             hideOverlay();
+            if (foodState.gameMode === 'random') {
+                if (prevCat !== targetCat) showFoodGameIntro();
+            } else if (prevCat === '') {
+                showFoodGameIntro();
+            }
         }
 
         function renderFoodGrid(items) {
@@ -357,6 +363,7 @@
             foodState.gameMode = mode;
             foodState.score = 0;
             foodState.round = 0;
+            foodState.currentCategory = '';
             updateFoodScore();
             hideOverlay();
             updateFoodMenuButtons();
@@ -364,13 +371,11 @@
                 window.CognitiveRouter.navigate('foodGame');
                 nextFoodRound();
                 syncTopBarCentering();
-                showFoodGameIntro();
             } else {
                 document.getElementById('foodGame').style.display = 'flex';
                 document.getElementById('foodCategorySelect').classList.add('hidden');
                 syncTopBarCentering();
                 nextFoodRound();
-                showFoodGameIntro();
             }
         }
 

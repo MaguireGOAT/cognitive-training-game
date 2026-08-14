@@ -258,15 +258,3 @@
             user-select: none;
             transition: color 0.4s;
         }
-
-        /* 按壓動畫 (通用) */
-        @keyframes press-icon {
-            0% { transform: scale(1); }
-            50% { transform: scale(0.92); }
-            100% { transform: scale(1); }
-        }
-        button.pressed,
-        .category-btn.pressed,
-        .menu-item.pressed {
-            animation: var(--press-anim);
-        }

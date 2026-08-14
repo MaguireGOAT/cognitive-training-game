@@ -159,14 +159,43 @@
         });
 
         // ---- 通用按壓動畫 ----
-        document.addEventListener('pointerdown', function(e) {
-            const target = e.target.closest('button, .category-btn, .menu-item');
+        const pressSelectors = 'button, [role="button"], .category-btn, .menu-item, .food-card, .different-card, .shopping-list-card, .reality-dot';
+        const pressedByPointer = new Map();
+
+        function isPressDisabled(target) {
+            return target.disabled || target.classList.contains('disabled');
+        }
+
+        function releasePressed(e) {
+            const target = pressedByPointer.get(e.pointerId);
             if (!target) return;
+            pressedByPointer.delete(e.pointerId);
             target.classList.remove('pressed');
-            void target.offsetWidth;
+        }
+
+        document.addEventListener('pointerdown', function(e) {
+            const target = e.target.closest(pressSelectors);
+            if (!target || isPressDisabled(target)) return;
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            pressedByPointer.set(e.pointerId, target);
             target.classList.add('pressed');
-            setTimeout(() => target.classList.remove('pressed'), 150);
         });
+
+        document.addEventListener('pointerout', function(e) {
+            const target = pressedByPointer.get(e.pointerId);
+            if (!target) return;
+            const related = e.relatedTarget;
+            if (!related || !target.contains(related)) target.classList.remove('pressed');
+        });
+
+        document.addEventListener('pointerover', function(e) {
+            const target = pressedByPointer.get(e.pointerId);
+            if (target && target.contains(e.target)) target.classList.add('pressed');
+        });
+
+        document.addEventListener('pointerup', releasePressed);
+        document.addEventListener('pointercancel', releasePressed);
+        document.addEventListener('lostpointercapture', releasePressed);
 
         window.addEventListener('resize', syncTopBarCentering);
         if (window.ResizeObserver) {

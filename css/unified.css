@@ -294,6 +294,19 @@
             background: var(--btn-bg);
         }
 
+        /* Physical button press: depth plus scale while held. */
+        button.pressed:not(:disabled):not(.disabled),
+        [role="button"].pressed:not(.disabled),
+        .category-btn.pressed:not(.disabled):not(.completed),
+        .menu-item.pressed:not(.disabled),
+        .food-card.pressed:not(.disabled),
+        .different-card.pressed:not(.disabled),
+        .shopping-list-card.pressed:not(.disabled),
+        .reality-dot.pressed:not(.disabled) {
+            transform: translateY(calc(4px * var(--ui-scale))) scale(0.96) !important;
+            box-shadow: 0 calc(1px * var(--ui-scale)) 0 rgba(0, 0, 0, 0.18) !important;
+        }
+
         /* Startup preload screen shown only while the first cache is being built
            or while an update is being installed. */
         .boot-loader {
@@ -316,14 +329,17 @@
             padding: calc(28px * var(--ui-scale));
         }
         .boot-loader-brain {
-            font-size: calc(132px * var(--ui-scale));
-            line-height: 1;
+            width: calc(132px * var(--ui-scale));
+            height: calc(132px * var(--ui-scale));
+            display: block;
             user-select: none;
-            animation: boot-brain-pulse 1.7s cubic-bezier(0.34, 1.35, 0.64, 1) infinite;
+            pointer-events: none;
+            animation: boot-brain-pulse 3.5s ease-in-out infinite;
             transform-origin: 50% 55%;
         }
         .boot-loader-track {
-            width: min(78vw, calc(440px * var(--ui-scale)));
+            width: 50vw;
+            max-width: none;
             height: calc(22px * var(--ui-scale));
             border-radius: calc(30px * var(--ui-scale));
             background: var(--control-bg);
@@ -338,10 +354,10 @@
             background: #00c800;
             transition: width 0.16s linear;
         }
+        [data-theme="dark"] .boot-loader-progress {
+            background: var(--highlight-correct);
+        }
         @keyframes boot-brain-pulse {
-            0%, 100% { transform: scale(1) rotate(-2deg); }
-            22% { transform: scale(1.18) rotate(3deg); }
-            48% { transform: scale(0.94) rotate(-2deg); }
-            72% { transform: scale(1.09) rotate(1deg); }
-            88% { transform: scale(0.98) rotate(0deg); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
         }

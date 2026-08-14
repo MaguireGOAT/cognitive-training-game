@@ -31,7 +31,7 @@
 
     <div id="bootLoader" class="boot-loader" role="status" aria-label="Loading">
         <div class="boot-loader-content">
-            <div class="boot-loader-brain" aria-hidden="true">🧠</div>
+            <img class="boot-loader-brain" src="assets/loader-brain.webp" alt="" aria-hidden="true" draggable="false" />
             <div class="boot-loader-track">
                 <div id="bootLoaderProgress" class="boot-loader-progress"></div>
             </div>
@@ -527,6 +527,13 @@
                     <div class="shopping-recall-grid" id="shoppingRecallGrid"></div>
                 </div>
             </div>
+
+            <div class="shopping-view hidden" id="shoppingOrderView">
+                <div class="shopping-order-panel">
+                    <div class="shopping-order-indicator" id="shoppingOrderIndicator">1</div>
+                    <div class="shopping-order-item" id="shoppingOrderItem"></div>
+                </div>
+            </div>
         </div>
 
         <div class="bottom-controls">
@@ -574,7 +581,12 @@
                 </select>
             </div>
             <div style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
-                <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">⏳ 記憶時間</span>
+                <span style="display:flex; align-items:center; gap:calc(6px * var(--ui-scale));">
+                    <span id="shoppingMemoryTimeLabel" class="shopping-memory-time-label" style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">
+                        <span class="shopping-memory-time-base">⏳ 記憶時間</span><span id="shoppingMemoryTimeSuffix" class="shopping-memory-time-suffix" aria-hidden="true">（每張）</span>
+                    </span>
+                    <span id="shoppingOrderLightbulb" class="shopping-order-lightbulb hidden" title="選擇已變更" aria-hidden="true">💡</span>
+                </span>
                 <select id="shoppingMemoryTime" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
                     <option value="5">5 秒</option>
                     <option value="10">10 秒</option>

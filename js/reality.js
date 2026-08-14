@@ -191,6 +191,7 @@
             }
             realitySwipe = null;
             if (realityStage) realityStage.classList.remove('reality-dragging');
+            if (realityStage) realityStage.classList.remove('reality-bounce');
             withoutRealityTransitions(function() {
                 document.querySelectorAll('.reality-page').forEach(page => {
                     page.classList.remove(
@@ -294,6 +295,53 @@
                 fitRealityText();
                 realityTransitionTimer = null;
             }, 330);
+        }
+
+        function bounceRealityPage(fromDx) {
+            const pages = getRealityPageNames();
+            const currentPage = getRealityPageByIndex(realityState.currentPageIndex);
+            if (!currentPage) return;
+            clearRealityTransition();
+
+            document.querySelectorAll('.reality-page').forEach(page => {
+                if (pages.includes(page.dataset.page)) {
+                    page.classList.remove('hidden');
+                    page.classList.remove('active');
+                    page.style.opacity = '0';
+                    page.style.pointerEvents = 'none';
+                    page.style.transform = '';
+                } else {
+                    page.style.opacity = '0';
+                    page.style.pointerEvents = 'none';
+                }
+            });
+
+            currentPage.style.opacity = '1';
+            currentPage.classList.add('active');
+            currentPage.style.pointerEvents = 'auto';
+            currentPage.style.transform = 'translate3d(' + fromDx + 'px, 0, 0)';
+
+            if (realityStage) realityStage.classList.add('reality-dragging');
+            void currentPage.offsetWidth;
+            if (realityStage) realityStage.classList.remove('reality-dragging');
+
+            if (realityStage) realityStage.classList.add('reality-bounce');
+            currentPage.style.transform = 'translate3d(0, 0, 0)';
+
+            const token = ++realityTransitionToken;
+            realityTransitionTimer = setTimeout(function() {
+                if (token !== realityTransitionToken) return;
+                clearRealityDragStyles();
+                document.querySelectorAll('.reality-page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                currentPage.classList.add('active');
+                realityVisiblePage = currentPage;
+                updateRealityNav();
+                updateRealityDots();
+                fitRealityText();
+                realityTransitionTimer = null;
+            }, 420);
         }
 
         function renderRealityBoard() {
@@ -411,6 +459,7 @@
         function clearRealityDragStyles() {
             realitySwipe = null;
             if (realityStage) realityStage.classList.remove('reality-dragging');
+            if (realityStage) realityStage.classList.remove('reality-bounce');
             withoutRealityTransitions(function() {
                 document.querySelectorAll('.reality-page').forEach(page => {
                     page.style.transform = '';
@@ -470,10 +519,27 @@
             }
 
             e.preventDefault();
-            const threshold = Math.max(50, width / 4);
+            const elapsed = Math.max(1, performance.now() - swipe.startTime);
+            const averageVelocity = Math.abs(dx) / elapsed;
+            const sinceLastMove = Math.max(1, performance.now() - swipe.lastTime);
+            const lastMoveVelocity = Math.abs(e.clientX - swipe.lastX) / sinceLastMove;
+            const velocity = Math.max(
+                Math.abs(swipe.velocity || 0),
+                averageVelocity,
+                lastMoveVelocity
+            );
+            const distanceThreshold = Math.max(36, width * 0.12);
+            const velocityThreshold = 0.55;
             let targetIndex = swipe.startIndex;
-            if (dx <= -threshold && targetIndex < pages.length - 1) targetIndex++;
-            else if (dx >= threshold && targetIndex > 0) targetIndex--;
+            if (dx <= -distanceThreshold && targetIndex < pages.length - 1) targetIndex++;
+            else if (dx >= distanceThreshold && targetIndex > 0) targetIndex--;
+            else if (dx < -12 && targetIndex < pages.length - 1 && velocity >= velocityThreshold) targetIndex++;
+            else if (dx > 12 && targetIndex > 0 && velocity >= velocityThreshold) targetIndex--;
+
+            if (targetIndex === swipe.startIndex) {
+                bounceRealityPage(dx);
+                return;
+            }
 
             animateRealityPageTo(swipe.startIndex, targetIndex, dx);
         }
@@ -490,6 +556,10 @@
                     startIndex: realityState.currentPageIndex,
                     width: realityStage.clientWidth || window.innerWidth,
                     currentDx: 0,
+                    startTime: performance.now(),
+                    lastX: e.clientX,
+                    lastTime: performance.now(),
+                    velocity: 0,
                     dragging: false
                 };
                 try {
@@ -502,6 +572,12 @@
                 if (!realitySwipe || e.pointerId !== realitySwipe.id) return;
                 const dx = e.clientX - realitySwipe.startX;
                 const dy = e.clientY - realitySwipe.startY;
+                const now = performance.now();
+                const dt = Math.max(1, now - realitySwipe.lastTime);
+                const instant = (e.clientX - realitySwipe.lastX) / dt;
+                realitySwipe.velocity = realitySwipe.velocity * 0.6 + instant * 0.4;
+                realitySwipe.lastX = e.clientX;
+                realitySwipe.lastTime = now;
                 if (!realitySwipe.dragging) {
                     if (Math.abs(dx) < 8 || Math.abs(dx) <= Math.abs(dy)) return;
                     realitySwipe.dragging = true;
