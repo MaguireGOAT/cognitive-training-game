@@ -4,6 +4,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const outputPath = path.join(root, 'sw.js');
 const ignored = new Set([
+  'AGENTS.md',
   'sw.js',
   '.git',
   '.gitignore',

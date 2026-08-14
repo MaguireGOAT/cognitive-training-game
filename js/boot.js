@@ -10,6 +10,8 @@
     var registrationRef = null;
     var bootTimer = null;
     var pendingUpdate = false;
+    var pendingUpdateReload = false;
+    var reloading = false;
 
     function setProgress(loaded, total) {
         if (!bootProgress || !total) return;
@@ -23,6 +25,12 @@
 
     function hideLoader() {
         if (bootLoader) bootLoader.classList.add('hidden');
+    }
+
+    function reloadForUpdate() {
+        if (reloading) return;
+        reloading = true;
+        window.location.reload();
     }
 
     function complete() {
@@ -112,15 +120,26 @@
         return null;
     }
 
-    function installPendingUpdate(registration) {
+    function installPendingUpdate(registration, shouldReload) {
         pendingUpdate = false;
+        pendingUpdateReload = false;
         showLoader();
-        waitForInstall(registration)
+        finishWorkerUpdate(registration, shouldReload)
+            .catch(complete);
+    }
+
+    function finishWorkerUpdate(registration, shouldReload) {
+        return waitForInstall(registration)
             .then(function () {
                 return waitForActive(registration);
             })
-            .then(complete)
-            .catch(complete);
+            .then(function () {
+                if (shouldReload && registration.active && registration.active.state === 'activated') {
+                    reloadForUpdate();
+                    return;
+                }
+                complete();
+            });
     }
 
     function startUpdateCheck(registration) {
@@ -130,9 +149,10 @@
             var current = getCurrentScreen();
             if (current && current !== 'home') {
                 pendingUpdate = true;
+                pendingUpdateReload = !!navigator.serviceWorker.controller;
                 return;
             }
-            installPendingUpdate(registration);
+            installPendingUpdate(registration, !!navigator.serviceWorker.controller);
         });
         if (registration.active && navigator.onLine !== false) {
             registration.update().catch(function () {});
@@ -149,6 +169,7 @@
         started = true;
 
         showLoader();
+        var hadController = !!navigator.serviceWorker.controller;
 
         if (!('serviceWorker' in navigator)) {
             complete();
@@ -168,17 +189,13 @@
             if (window.CognitiveRouter && window.CognitiveRouter.registerEnter) {
                 window.CognitiveRouter.registerEnter('home', function () {
                     if (pendingUpdate && registrationRef) {
-                        installPendingUpdate(registrationRef);
+                        installPendingUpdate(registrationRef, pendingUpdateReload);
                     }
                 });
             }
 
             if (registration.installing || registration.waiting) {
-                return waitForInstall(registration)
-                    .then(function () {
-                        return waitForActive(registration);
-                    })
-                    .then(complete);
+                return finishWorkerUpdate(registration, hadController);
             }
 
             if (registration.active) {
@@ -202,11 +219,7 @@
                 registration.addEventListener('updatefound', onFound);
             }).then(function () {
                 if (registration.installing || registration.waiting) {
-                    return waitForInstall(registration)
-                        .then(function () {
-                            return waitForActive(registration);
-                        })
-                        .then(complete);
+                    return finishWorkerUpdate(registration, hadController);
                 }
                 complete();
                 return null;
