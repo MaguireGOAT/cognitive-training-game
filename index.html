@@ -59,6 +59,10 @@
                 <span class="icon">🍽️</span>
                 <span class="label">食物遊戲</span>
             </button>
+            <button class="category-btn home-link" data-router-target="nbackModeSelect">
+                <span class="icon">🧩</span>
+                <span class="label">N-back</span>
+            </button>
             <button class="category-btn home-link" data-router-target="palm">
                 <span class="icon">👍</span>
                 <span class="label">手掌跳飛機</span>
@@ -199,10 +203,6 @@
             <button class="category-btn" id="gameFoodBtn">
                 <span class="icon">❓</span>
                 <span class="label">食物分類</span>
-            </button>
-            <button class="category-btn" id="gameNbackBtn">
-                <span class="icon">🧩</span>
-                <span class="label">N-back</span>
             </button>
             <button class="category-btn" id="gameGngBtn">
                 <span class="icon">✅</span>
@@ -415,7 +415,6 @@
                     <option value="3">3 色</option>
                 </select>
             </div>
-            <div class="dual-settings-hint" id="dualSettingsHint">請選擇兩個不同模態</div>
             <div style="margin-top:calc(10px * var(--ui-scale));">
                 <button id="dualStartBtn" style="width:100%; padding:calc(14px * var(--ui-scale)); font-size:calc(28px * var(--ui-scale)); font-weight:700; border:none; border-radius:calc(40px * var(--ui-scale)); background:var(--highlight-correct); color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; box-shadow:var(--btn-shadow-correct); transition: background 0.2s, transform 0.15s, box-shadow 0.15s; opacity:0.45;" disabled>▶ 開始遊戲</button>
             </div>

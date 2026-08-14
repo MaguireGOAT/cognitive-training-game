@@ -81,7 +81,6 @@
         const dualPositionGridSelect = document.getElementById('dualPositionGridSelect');
         const dualColorSettings = document.getElementById('dualColorSettings');
         const dualColorPaletteSelect = document.getElementById('dualColorPaletteSelect');
-        const dualSettingsHint = document.getElementById('dualSettingsHint');
         const dualStartBtn = document.getElementById('dualStartBtn');
 
         let dualFeedbackTimer = null;
@@ -452,21 +451,9 @@
             if (needsPosition && !dualPositionGridSelect.value) dualPositionGridSelect.value = '3x3';
             if (needsColor && !dualColorPaletteSelect.value) dualColorPaletteSelect.value = '6';
 
-            let hint = '請選擇兩個不同模態';
-            let valid = false;
-            if (channel1 && channel2) {
-                if (channel1 === channel2) {
-                    hint = '兩個模態不可相同';
-                } else if (needsPosition && !dualPositionGridSelect.value) {
-                    hint = '請選擇位置格數';
-                } else if (needsColor && !dualColorPaletteSelect.value) {
-                    hint = '請選擇顏色組合';
-                } else {
-                    hint = '';
-                    valid = true;
-                }
-            }
-            dualSettingsHint.textContent = hint;
+            const valid = Boolean(channel1 && channel2 && channel1 !== channel2 &&
+                (!needsPosition || dualPositionGridSelect.value) &&
+                (!needsColor || dualColorPaletteSelect.value));
             dualStartBtn.disabled = !valid;
             dualStartBtn.style.opacity = valid ? '1' : '0.45';
         }

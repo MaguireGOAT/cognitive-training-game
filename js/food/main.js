@@ -28,9 +28,6 @@
             if (!window.CognitiveRouter) return;
             if (gameId === 'food') {
                 window.CognitiveRouter.navigate('foodCategorySelect');
-            } else if (gameId === 'nback') {
-                pauseNback();
-                window.CognitiveRouter.navigate('nbackModeSelect');
             } else if (gameId === 'gng') {
                 window.CognitiveRouter.navigate('gngSettings');
             } else if (gameId === 'different') {
@@ -42,7 +39,6 @@
         }
 
         document.getElementById('gameFoodBtn').addEventListener('click', () => switchGame('food'));
-        document.getElementById('gameNbackBtn').addEventListener('click', () => switchGame('nback'));
         document.getElementById('gameGngBtn').addEventListener('click', () => switchGame('gng'));
         document.getElementById('gameDifferentBtn').addEventListener('click', () => switchGame('different'));
         document.getElementById('gameShoppingBtn').addEventListener('click', () => switchGame('shopping'));
