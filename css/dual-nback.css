@@ -1,20 +1,29 @@
-/* ================================================================
-   Dual N-back: mode menu, settings, and game screen
-   ================================================================ */
-.app-screen#nbackModeSelect .category-grid.nback-mode-grid {
-    --large-menu-gap: calc(24px * var(--ui-scale));
-    --large-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
-    --large-menu-card: min(calc((var(--large-menu-width) - var(--large-menu-gap)) / 2),
-                           calc((100vh - calc(300px * var(--ui-scale))) / 2));
+        /* ================================================================
+           Dual N-back: mode menu, settings, and game screen
+           ================================================================ */
+        #nbackModeSelect {
+            gap: calc(18px * var(--ui-scale));
+        }
+        #nbackModeSelect .menu-header {
+            margin-bottom: calc(4px * var(--ui-scale));
+        }
+        #nbackModeSelect .menu-subtitle {
+            margin-bottom: calc(24px * var(--ui-scale));
+        }
+        .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
+            --large-menu-gap: calc(24px * var(--ui-scale));
+            --large-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
+            --large-menu-card: min(calc((var(--large-menu-width) - var(--large-menu-gap)) / 2),
+                                   calc((100vh - calc(300px * var(--ui-scale))) / 2));
     display: grid;
     grid-template-columns: repeat(2, var(--large-menu-card));
     grid-auto-rows: var(--large-menu-card);
     width: calc(2 * var(--large-menu-card) + var(--large-menu-gap));
     max-width: var(--large-menu-width);
-    margin: auto;
-    align-content: center;
-    justify-content: center;
-}
+            margin: 0 auto calc(10px * var(--ui-scale));
+            align-content: center;
+            justify-content: center;
+        }
 .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn {
     width: var(--large-menu-card);
     height: var(--large-menu-card);
@@ -38,9 +47,12 @@
 #dualNbackSettings [style*="display:flex"] {
     min-width: 0;
 }
-#dualNbackSettings [style*="display:flex"] > span {
-    font-size: calc(24px * var(--ui-scale)) !important;
-}
+        #dualNbackSettings [style*="display:flex"] > span {
+            font-size: calc(24px * var(--ui-scale)) !important;
+        }
+        #dualNbackSettings .menu-header {
+            margin-top: auto !important;
+        }
 #dualNbackSettings select {
     font-size: calc(24px * var(--ui-scale)) !important;
     min-width: 0;
@@ -67,17 +79,23 @@
     overflow: hidden;
     position: relative;
 }
-#dualNbackGame .dual-stage.correct-highlight {
-    box-shadow: inset 0 0 0 calc(6px * var(--ui-scale)) rgba(59, 168, 123, 0.45);
+.dual-grid.correct-highlight .dual-grid-cell.active,
+.dual-card.correct-highlight {
+    outline: calc(6px * var(--ui-scale)) solid rgba(59, 168, 123, 0.55);
+    outline-offset: calc(2px * var(--ui-scale));
 }
-#dualNbackGame .dual-stage.wrong-flash {
-    box-shadow: inset 0 0 0 calc(6px * var(--ui-scale)) rgba(217, 90, 90, 0.45);
+.dual-grid.wrong-flash .dual-grid-cell.active,
+.dual-card.wrong-flash {
+    outline: calc(6px * var(--ui-scale)) solid rgba(217, 90, 90, 0.55);
+    outline-offset: calc(2px * var(--ui-scale));
 }
-[data-theme="dark"] #dualNbackGame .dual-stage.correct-highlight {
-    box-shadow: inset 0 0 0 calc(6px * var(--ui-scale)) rgba(66, 165, 245, 0.45);
+[data-theme="dark"] .dual-grid.correct-highlight .dual-grid-cell.active,
+[data-theme="dark"] .dual-card.correct-highlight {
+    outline-color: rgba(66, 165, 245, 0.75);
 }
-[data-theme="dark"] #dualNbackGame .dual-stage.wrong-flash {
-    box-shadow: inset 0 0 0 calc(6px * var(--ui-scale)) rgba(224, 107, 107, 0.45);
+[data-theme="dark"] .dual-grid.wrong-flash .dual-grid-cell.active,
+[data-theme="dark"] .dual-card.wrong-flash {
+    outline-color: rgba(224, 107, 107, 0.75);
 }
 
 .dual-grid {
@@ -121,6 +139,9 @@
     border-color: rgba(255, 255, 255, 0.25);
 }
 [data-theme="dark"] .dual-grid-cell:not(.active) {
+    background: #9e9e9e;
+}
+[data-theme="dark"] .dual-grid-cell.active {
     background: #0d47a1;
 }
 .dual-grid-cell img {
@@ -155,36 +176,7 @@
     pointer-events: none;
 }
 [data-theme="dark"] .dual-card:not(.color-card) {
-    background: #0d47a1;
-}
-
-.dual-grid.is-exiting,
-.dual-card.is-exiting {
-    animation: dual-nback-slide-out 240ms ease-in forwards;
-}
-.dual-grid.is-entering,
-.dual-card.is-entering {
-    animation: dual-nback-slide-in 240ms ease-out;
-}
-@keyframes dual-nback-slide-out {
-    from {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-    to {
-        transform: translateY(-70vh) scale(0.92);
-        opacity: 0;
-    }
-}
-@keyframes dual-nback-slide-in {
-    from {
-        transform: translateY(24vh) scale(0.94);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
+    background: #9e9e9e;
 }
 
 #dualNbackGame .bottom-controls {
@@ -195,7 +187,7 @@
 }
 .dual-match-controls {
     flex-wrap: wrap;
-    gap: calc(8px * var(--ui-scale)) calc(40px * var(--ui-scale));
+    gap: calc(16px * var(--ui-scale)) calc(80px * var(--ui-scale));
 }
 .dual-match-controls .dual-match-btn {
     border: none;
@@ -243,13 +235,6 @@
 [data-theme="dark"] .dual-match-controls .dual-match-btn.wrong-flash {
     background: #b71c1c;
     box-shadow: var(--btn-shadow-wrong);
-}
-
-#dualNbackGame .dual-channel-stats {
-    font-size: calc(16px * var(--ui-scale));
-    max-width: 100%;
-    text-align: right;
-    overflow-wrap: anywhere;
 }
 
 @media (max-width: 640px) {

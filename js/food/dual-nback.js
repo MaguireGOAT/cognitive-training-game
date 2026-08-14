@@ -2,7 +2,6 @@
         // =============================================================
 
         const DUAL_NBACK_SEQUENCE_LENGTH = 50;
-        const DUAL_NBACK_TRANSITION_MS = 240;
 
         const DUAL_CHANNEL_LABELS = {
             image: '圖片',
@@ -41,26 +40,17 @@
             colorPalette: '6',
             n: 1,
             speed: 5,
-            audioRate: 0.7,
+            audioRate: 0.5,
             isPlaying: false,
             sequences: {},
             currentIndex: -1,
             currentItems: {},
             matchLocked: {},
             score: 0,
-            channelScore: {
-                image: 0,
-                position: 0,
-                color: 0,
-                audio: 0
-            },
             totalTrials: 0,
             timer: null,
             timerToken: 0,
             interval: 0,
-            transitioning: false,
-            transitionTimer: null,
-            animationToken: 0,
             audio: null,
             instructionPending: false
         };
@@ -79,7 +69,6 @@
         const dualNbackSpeedUp = document.getElementById('dualNbackSpeedUp');
         const dualNbackNSelect = document.getElementById('dualNbackNSelect');
         const dualNbackMatchButtons = document.getElementById('dualNbackMatchButtons');
-        const dualNbackChannelStats = document.getElementById('dualNbackChannelStats');
         const dualNbackBackBtn = document.getElementById('dualNbackBackBtn');
         const dualNbackSettingsBackBtn = document.getElementById('dualNbackSettingsBackBtn');
         const nbackModeBackBtn = document.getElementById('nbackModeBackBtn');
@@ -92,9 +81,6 @@
         const dualPositionGridSelect = document.getElementById('dualPositionGridSelect');
         const dualColorSettings = document.getElementById('dualColorSettings');
         const dualColorPaletteSelect = document.getElementById('dualColorPaletteSelect');
-        const dualAudioSettings = document.getElementById('dualAudioSettings');
-        const dualAudioRateSelect = document.getElementById('dualAudioRateSelect');
-        const dualNSelect = document.getElementById('dualNSelect');
         const dualSettingsHint = document.getElementById('dualSettingsHint');
         const dualStartBtn = document.getElementById('dualStartBtn');
 
@@ -208,17 +194,6 @@
             }
         }
 
-        function clearDualNbackTransition() {
-            dualNbackState.animationToken++;
-            if (dualNbackState.transitionTimer) {
-                clearTimeout(dualNbackState.transitionTimer);
-                dualNbackState.transitionTimer = null;
-            }
-            dualNbackGrid.classList.remove('is-exiting', 'is-entering');
-            dualNbackCard.classList.remove('is-exiting', 'is-entering');
-            dualNbackState.transitioning = false;
-        }
-
         function getDualVisibleContent() {
             return dualNbackState.channels.indexOf('position') !== -1 ? dualNbackGrid : dualNbackCard;
         }
@@ -289,7 +264,7 @@
             const audio = new Audio(src);
             audio.volume = 1;
             audio.preservesPitch = true;
-            audio.playbackRate = dualNbackState.audioRate || 0.7;
+            audio.playbackRate = dualNbackState.audioRate || 0.5;
             const playPromise = audio.play();
             if (playPromise && typeof playPromise.catch === 'function') {
                 playPromise.catch(function() {});
@@ -317,41 +292,22 @@
                 renderDualCard();
             }
             if (playAudio) playDualNbackAudio();
-            updateDualNbackStats();
         }
 
         function nextDualNbackTrial() {
-            if (dualNbackState.transitioning || !dualNbackState.channels.length) return;
+            if (!dualNbackState.channels.length) return;
             holdDualNbackTimer();
-            const visible = getDualVisibleContent();
-            dualNbackState.transitioning = true;
-            const token = ++dualNbackState.animationToken;
-            visible.classList.remove('is-entering');
-            visible.classList.add('is-exiting');
-
-            dualNbackState.transitionTimer = setTimeout(function() {
-                if (token !== dualNbackState.animationToken) return;
-                dualNbackState.currentIndex++;
-                if (dualNbackState.currentIndex >= DUAL_NBACK_SEQUENCE_LENGTH) {
-                    buildDualSequences();
-                    dualNbackState.currentIndex = 0;
-                }
-                commitDualNbackTrial(dualNbackState.currentIndex, true);
-                visible.classList.remove('is-exiting');
-                visible.classList.add('is-entering');
-
-                dualNbackState.transitionTimer = setTimeout(function() {
-                    if (token !== dualNbackState.animationToken) return;
-                    visible.classList.remove('is-entering');
-                    dualNbackState.transitioning = false;
-                }, DUAL_NBACK_TRANSITION_MS);
-                resetDualNbackTimer();
-            }, DUAL_NBACK_TRANSITION_MS);
+            dualNbackState.currentIndex++;
+            if (dualNbackState.currentIndex >= DUAL_NBACK_SEQUENCE_LENGTH) {
+                buildDualSequences();
+                dualNbackState.currentIndex = 0;
+            }
+            commitDualNbackTrial(dualNbackState.currentIndex, true);
+            resetDualNbackTimer();
         }
 
         function pauseDual() {
             holdDualNbackTimer();
-            clearDualNbackTransition();
             dualNbackState.isPlaying = false;
             dualNbackPlayBtn.classList.remove('playing');
             if (dualNbackState.audio) {
@@ -366,17 +322,10 @@
                 pauseDual();
                 return;
             }
-            clearDualNbackTransition();
             buildDualSequences();
             dualNbackState.currentIndex = 0;
             dualNbackState.score = 0;
             dualNbackState.totalTrials = 0;
-            dualNbackState.channelScore = {
-                image: 0,
-                position: 0,
-                color: 0,
-                audio: 0
-            };
             dualNbackState.isPlaying = true;
             dualNbackPlayBtn.classList.add('playing');
             commitDualNbackTrial(0, true);
@@ -385,11 +334,12 @@
         }
 
         function flashDualNbackFeedback(correct, channel) {
-            dualNbackStage.classList.remove('correct-highlight', 'wrong-flash');
+            const visible = getDualVisibleContent();
+            visible.classList.remove('correct-highlight', 'wrong-flash');
             clearTimeout(dualFeedbackTimer);
-            dualNbackStage.classList.add(correct ? 'correct-highlight' : 'wrong-flash');
+            visible.classList.add(correct ? 'correct-highlight' : 'wrong-flash');
             dualFeedbackTimer = setTimeout(function() {
-                dualNbackStage.classList.remove('correct-highlight', 'wrong-flash');
+                visible.classList.remove('correct-highlight', 'wrong-flash');
             }, 600);
 
             const btn = dualNbackMatchButtons.querySelector(`[data-channel="${channel}"]`);
@@ -404,7 +354,6 @@
 
         function handleDualNbackMatch(channel) {
             if (dualNbackState.currentIndex < 0 ||
-                dualNbackState.transitioning ||
                 dualNbackState.matchLocked[channel]) return;
 
             const targetIndex = dualNbackState.currentIndex - dualNbackState.n;
@@ -419,28 +368,16 @@
             dualNbackState.totalTrials++;
             if (correct) {
                 dualNbackState.score++;
-                dualNbackState.channelScore[channel]++;
                 if (sfxEnabled) playCorrectSound();
             } else {
                 if (sfxEnabled) playWrongSound();
             }
             updateDualNbackScore();
-            updateDualNbackStats();
             flashDualNbackFeedback(correct, channel);
         }
 
         function updateDualNbackScore() {
             dualNbackScoreNum.textContent = dualNbackState.score;
-        }
-
-        function updateDualNbackStats() {
-            if (!dualNbackState.channels.length) {
-                dualNbackChannelStats.textContent = '--';
-                return;
-            }
-            dualNbackChannelStats.textContent = dualNbackState.channels
-                .map(channel => `${DUAL_CHANNEL_LABELS[channel]} ${dualNbackState.channelScore[channel]}`)
-                .join(' · ');
         }
 
         function changeDualNbackSpeed(delta) {
@@ -471,18 +408,11 @@
             const wasPlaying = dualNbackState.isPlaying;
             if (wasPlaying) pauseDual();
             dualNbackState.n = newN;
-            dualNSelect.value = String(newN);
             dualNbackNSelect.value = String(newN);
             buildDualSequences();
             dualNbackState.currentIndex = 0;
             dualNbackState.score = 0;
             dualNbackState.totalTrials = 0;
-            dualNbackState.channelScore = {
-                image: 0,
-                position: 0,
-                color: 0,
-                audio: 0
-            };
             updateDualNbackScore();
             commitDualNbackTrial(0, false);
             showDualNbackInstruction();
@@ -515,21 +445,18 @@
             const channel2 = dualChannel2Select.value;
             const needsPosition = channel1 === 'position' || channel2 === 'position';
             const needsColor = channel1 === 'color' || channel2 === 'color';
-            const needsAudio = channel1 === 'audio' || channel2 === 'audio';
 
             dualPositionSettings.classList.toggle('hidden', !needsPosition);
             dualColorSettings.classList.toggle('hidden', !needsColor);
-            dualAudioSettings.classList.toggle('hidden', !needsAudio);
 
             if (needsPosition && !dualPositionGridSelect.value) dualPositionGridSelect.value = '3x3';
             if (needsColor && !dualColorPaletteSelect.value) dualColorPaletteSelect.value = '6';
-            if (needsAudio && !dualAudioRateSelect.value) dualAudioRateSelect.value = '0.7';
 
-            let hint = '請選擇兩個不同頻道';
+            let hint = '請選擇兩個不同模態';
             let valid = false;
             if (channel1 && channel2) {
                 if (channel1 === channel2) {
-                    hint = '兩個頻道不可相同';
+                    hint = '兩個模態不可相同';
                 } else if (needsPosition && !dualPositionGridSelect.value) {
                     hint = '請選擇位置格數';
                 } else if (needsColor && !dualColorPaletteSelect.value) {
@@ -554,15 +481,14 @@
             if (needsColor && !dualColorPaletteSelect.value) return;
 
             dualNbackState.channels = [channel1, channel2];
-            dualNbackState.n = parseInt(dualNSelect.value, 10) || 1;
+            dualNbackState.n = parseInt(dualNbackNSelect.value, 10) || 1;
             dualNbackState.positionGrid = dualPositionGridSelect.value || '3x3';
             dualNbackState.colorPalette = dualColorPaletteSelect.value || '6';
-            dualNbackState.audioRate = parseFloat(dualAudioRateSelect.value) || 0.7;
+            dualNbackState.audioRate = 0.5;
             dualNbackState.speed = 5;
             dualNbackSpeedDisplay.textContent = '5';
             dualNbackNSelect.value = String(dualNbackState.n);
             buildDualMatchButtons();
-            updateDualNbackStats();
 
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.navigate('dualNbackGame');
@@ -576,26 +502,19 @@
             dualNbackState.currentIndex = 0;
             dualNbackState.score = 0;
             dualNbackState.totalTrials = 0;
-            dualNbackState.channelScore = {
-                image: 0,
-                position: 0,
-                color: 0,
-                audio: 0
-            };
             updateDualNbackScore();
             commitDualNbackTrial(0, false);
-            updateDualNbackStats();
             showDualNbackInstruction();
         }
 
         dualNbackPlayBtn.addEventListener('click', startDual);
 
         dualNbackCard.addEventListener('click', function() {
-            if (!dualNbackState.transitioning) nextDualNbackTrial();
+            nextDualNbackTrial();
         });
 
         dualNbackGrid.addEventListener('click', function() {
-            if (!dualNbackState.transitioning) nextDualNbackTrial();
+            nextDualNbackTrial();
         });
 
         dualNbackSpeedDown.addEventListener('click', function() { changeDualNbackSpeed(-1); });

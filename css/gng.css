@@ -193,8 +193,10 @@
         }
         .play-btn:focus-visible { outline: calc(3px * var(--ui-scale)) solid #ffb300; outline-offset: calc(2px * var(--ui-scale)); }
         .play-btn:hover { background: #6D4C41; }
-        [data-theme="dark"] .play-btn { background: #8D6E63; }
-        [data-theme="dark"] .play-btn:hover { background: #A1887F; }
+        [data-theme="dark"] .speed-control { border-color: var(--primary-blue); }
+        [data-theme="dark"] .speed-btn { color: var(--primary-blue); }
+        [data-theme="dark"] .play-btn { background: var(--btn-bg); }
+        [data-theme="dark"] .play-btn:hover { background: #1565c0; }
         .play-btn .play-icon {
             display: flex;
             align-items: center;
