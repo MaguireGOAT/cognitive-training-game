@@ -8,9 +8,10 @@
             return item.id || item.name;
         }
 
-        function pickPlannedNbackIndices(length, n, targetCount, minGap) {
+        function pickPlannedNbackIndices(length, n, targetCount, minGap, excludeIndices) {
             const start = n;
             const end = Math.max(start, length - 1);
+            const excluded = new Set(excludeIndices || []);
             const usable = Math.max(1, end - start + 1);
             const count = Math.max(0, Math.min(targetCount, usable));
             if (count === 0) return [];
@@ -24,13 +25,19 @@
                 const jitter = Math.max(0, Math.floor(Math.max(1, hi - lo + 1) * 0.28));
                 const min = Math.max(lo, base - jitter);
                 const max = Math.min(hi, base + jitter);
-                positions[k] = min + Math.floor(Math.random() * Math.max(1, max - min + 1));
+                const candidates = [];
+                for (let value = min; value <= max; value++) {
+                    if (!excluded.has(value)) candidates.push(value);
+                }
+                if (!candidates.length) return [];
+                positions[k] = candidates[Math.floor(Math.random() * candidates.length)];
             }
 
             for (let i = 1; i < positions.length; i++) {
-                if (positions[i] - positions[i - 1] < minGap) {
-                    positions[i] = Math.min(end, positions[i - 1] + minGap);
-                }
+                let adjusted = Math.max(positions[i], positions[i - 1] + minGap);
+                while (adjusted <= end && excluded.has(adjusted)) adjusted++;
+                if (adjusted > end) return [];
+                positions[i] = adjusted;
             }
             return positions;
         }

@@ -20,16 +20,6 @@
         };
 
         const DUAL_COLOR_PALETTES = {
-            '8': [
-                { name: '紅色', css: '#e53935' },
-                { name: '橙色', css: '#fb8c00' },
-                { name: '黃色', css: '#fdd835' },
-                { name: '綠色', css: '#43a047' },
-                { name: '藍色', css: '#1e88e5' },
-                { name: '紫色', css: '#8e24aa' },
-                { name: '黑色', css: '#212121' },
-                { name: '白色', css: '#f5f5f5' }
-            ],
             '6': [
                 { name: '紅色', css: '#e53935' },
                 { name: '橙色', css: '#fb8c00' },
@@ -48,9 +38,10 @@
         const dualNbackState = {
             channels: [],
             positionGrid: '3x3',
-            colorPalette: '8',
+            colorPalette: '6',
             n: 1,
             speed: 5,
+            audioRate: 0.7,
             isPlaying: false,
             sequences: {},
             currentIndex: -1,
@@ -81,7 +72,6 @@
         const dualNbackGrid = document.getElementById('dualNbackGrid');
         const dualNbackCard = document.getElementById('dualNbackCard');
         const dualNbackImage = document.getElementById('dualNbackImage');
-        const dualNbackStepLabel = document.getElementById('dualNbackStepLabel');
         const dualNbackScoreNum = document.getElementById('dualNbackScoreNum');
         const dualNbackPlayBtn = document.getElementById('dualNbackPlayBtn');
         const dualNbackSpeedDisplay = document.getElementById('dualNbackSpeedDisplay');
@@ -90,7 +80,6 @@
         const dualNbackNSelect = document.getElementById('dualNbackNSelect');
         const dualNbackMatchButtons = document.getElementById('dualNbackMatchButtons');
         const dualNbackChannelStats = document.getElementById('dualNbackChannelStats');
-        const dualNbackQuestionText = document.getElementById('dualNbackQuestionText');
         const dualNbackBackBtn = document.getElementById('dualNbackBackBtn');
         const dualNbackSettingsBackBtn = document.getElementById('dualNbackSettingsBackBtn');
         const nbackModeBackBtn = document.getElementById('nbackModeBackBtn');
@@ -103,6 +92,8 @@
         const dualPositionGridSelect = document.getElementById('dualPositionGridSelect');
         const dualColorSettings = document.getElementById('dualColorSettings');
         const dualColorPaletteSelect = document.getElementById('dualColorPaletteSelect');
+        const dualAudioSettings = document.getElementById('dualAudioSettings');
+        const dualAudioRateSelect = document.getElementById('dualAudioRateSelect');
         const dualNSelect = document.getElementById('dualNSelect');
         const dualSettingsHint = document.getElementById('dualSettingsHint');
         const dualStartBtn = document.getElementById('dualStartBtn');
@@ -132,22 +123,53 @@
                 return Array.from({ length: grid.cols * grid.rows }, (_, index) => index);
             }
             if (channel === 'color') {
-                return DUAL_COLOR_PALETTES[dualNbackState.colorPalette] || DUAL_COLOR_PALETTES['8'];
+                return DUAL_COLOR_PALETTES[dualNbackState.colorPalette] || DUAL_COLOR_PALETTES['6'];
             }
             return [];
+        }
+
+        function pickDualPlannedIndices(length, n, targetCount, minGap, used) {
+            const excluded = new Set(used || []);
+            for (let attempt = 0; attempt < 80; attempt++) {
+                const indices = window.CognitiveNbackSequence.pickPlannedIndices(
+                    length,
+                    n,
+                    targetCount,
+                    minGap,
+                    excluded
+                );
+                if (indices.length === targetCount && indices.every(index => !excluded.has(index))) {
+                    return indices;
+                }
+            }
+
+            const indices = [];
+            let cursor = n;
+            while (indices.length < targetCount && cursor < length) {
+                if (!excluded.has(cursor)) {
+                    indices.push(cursor);
+                    cursor += minGap;
+                } else {
+                    cursor++;
+                }
+            }
+            return indices;
         }
 
         function buildDualSequences() {
             dualNbackState.sequences = {};
             if (!window.CognitiveNbackSequence) return;
+            const used = new Set();
             dualNbackState.channels.forEach(channel => {
                 const choices = getDualChannelChoices(channel);
-                const plannedIndices = window.CognitiveNbackSequence.pickPlannedIndices(
+                const plannedIndices = pickDualPlannedIndices(
                     DUAL_NBACK_SEQUENCE_LENGTH,
                     dualNbackState.n,
                     window.CognitiveNbackSequence.targetCount,
-                    window.CognitiveNbackSequence.minGap
+                    window.CognitiveNbackSequence.minGap,
+                    used
                 );
+                plannedIndices.forEach(index => used.add(index));
                 dualNbackState.sequences[channel] = window.CognitiveNbackSequence.generateStream(
                     choices,
                     dualNbackState.n,
@@ -266,6 +288,8 @@
             }
             const audio = new Audio(src);
             audio.volume = 1;
+            audio.preservesPitch = true;
+            audio.playbackRate = dualNbackState.audioRate || 0.7;
             const playPromise = audio.play();
             if (playPromise && typeof playPromise.catch === 'function') {
                 playPromise.catch(function() {});
@@ -292,7 +316,6 @@
             } else {
                 renderDualCard();
             }
-            dualNbackStepLabel.textContent = `#${index + 1}`;
             if (playAudio) playDualNbackAudio();
             updateDualNbackStats();
         }
@@ -492,12 +515,15 @@
             const channel2 = dualChannel2Select.value;
             const needsPosition = channel1 === 'position' || channel2 === 'position';
             const needsColor = channel1 === 'color' || channel2 === 'color';
+            const needsAudio = channel1 === 'audio' || channel2 === 'audio';
 
             dualPositionSettings.classList.toggle('hidden', !needsPosition);
             dualColorSettings.classList.toggle('hidden', !needsColor);
+            dualAudioSettings.classList.toggle('hidden', !needsAudio);
 
             if (needsPosition && !dualPositionGridSelect.value) dualPositionGridSelect.value = '3x3';
-            if (needsColor && !dualColorPaletteSelect.value) dualColorPaletteSelect.value = '8';
+            if (needsColor && !dualColorPaletteSelect.value) dualColorPaletteSelect.value = '6';
+            if (needsAudio && !dualAudioRateSelect.value) dualAudioRateSelect.value = '0.7';
 
             let hint = '請選擇兩個不同頻道';
             let valid = false;
@@ -509,7 +535,7 @@
                 } else if (needsColor && !dualColorPaletteSelect.value) {
                     hint = '請選擇顏色組合';
                 } else {
-                    hint = '可以開始遊戲';
+                    hint = '';
                     valid = true;
                 }
             }
@@ -530,11 +556,11 @@
             dualNbackState.channels = [channel1, channel2];
             dualNbackState.n = parseInt(dualNSelect.value, 10) || 1;
             dualNbackState.positionGrid = dualPositionGridSelect.value || '3x3';
-            dualNbackState.colorPalette = dualColorPaletteSelect.value || '8';
+            dualNbackState.colorPalette = dualColorPaletteSelect.value || '6';
+            dualNbackState.audioRate = parseFloat(dualAudioRateSelect.value) || 0.7;
             dualNbackState.speed = 5;
             dualNbackSpeedDisplay.textContent = '5';
             dualNbackNSelect.value = String(dualNbackState.n);
-            dualNbackQuestionText.textContent = '🧠 雙重 N-back';
             buildDualMatchButtons();
             updateDualNbackStats();
 
