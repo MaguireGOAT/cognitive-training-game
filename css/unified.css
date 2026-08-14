@@ -50,16 +50,18 @@
             font-size: calc(28px * var(--ui-scale));
         }
 
-        /* Shared large tile sizing for the food game mode menu and food categories. */
+        /* Shared large tile sizing for the home, food game mode menu, and food categories. */
         .app-screen#mainMenu .category-grid.game-select,
-        #foodCategorySelect .category-grid.food-select {
+        #foodCategorySelect .category-grid.food-select,
+        #home .home-grid {
             --large-menu-gap: calc(24px * var(--ui-scale));
             --large-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
             --large-menu-card: min(calc((var(--large-menu-width) - calc(96px * var(--ui-scale))) / 5),
                                    calc((100vh - calc(300px * var(--ui-scale))) / 2));
             gap: var(--large-menu-gap);
         }
-        .app-screen#mainMenu .category-grid.game-select {
+        .app-screen#mainMenu .category-grid.game-select,
+        #home .home-grid {
             grid-template-columns: repeat(4, var(--large-menu-card));
             grid-auto-rows: var(--large-menu-card);
             max-width: var(--large-menu-width);
@@ -75,7 +77,8 @@
             align-content: center;
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn,
-        #foodCategorySelect .category-grid.food-select .category-btn {
+        #foodCategorySelect .category-grid.food-select .category-btn,
+        #home .home-grid .category-btn {
             width: var(--large-menu-card);
             height: var(--large-menu-card);
             min-height: 0;
@@ -83,12 +86,14 @@
             padding: calc(18px * var(--ui-scale)) calc(12px * var(--ui-scale));
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn .icon,
-        #foodCategorySelect .category-grid.food-select .category-btn .icon {
+        #foodCategorySelect .category-grid.food-select .category-btn .icon,
+        #home .home-grid .category-btn .icon {
             font-size: calc(66px * var(--ui-scale));
             margin-bottom: calc(12px * var(--ui-scale));
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn .label,
-        #foodCategorySelect .category-grid.food-select .category-btn .label {
+        #foodCategorySelect .category-grid.food-select .category-btn .label,
+        #home .home-grid .category-btn .label {
             font-size: calc(30px * var(--ui-scale));
             line-height: 1.15;
         }
@@ -560,7 +565,8 @@
                 overflow-wrap: anywhere;
             }
             .app-screen#mainMenu .category-grid.game-select,
-            #foodCategorySelect .category-grid.food-select {
+            #foodCategorySelect .category-grid.food-select,
+            #home .home-grid {
                 --large-menu-gap: calc(18px * var(--ui-scale));
                 --large-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
                 --large-menu-card: calc((var(--large-menu-width) - 4 * var(--large-menu-gap)) / 5);
@@ -568,7 +574,8 @@
                 max-width: 100%;
                 margin: 0 auto;
             }
-            .app-screen#mainMenu .category-grid.game-select {
+            .app-screen#mainMenu .category-grid.game-select,
+            #home .home-grid {
                 grid-template-columns: repeat(4, var(--large-menu-card));
                 grid-auto-rows: var(--large-menu-card);
                 width: calc(4 * var(--large-menu-card) + 3 * var(--large-menu-gap));
@@ -579,17 +586,20 @@
                 width: calc(4 * var(--large-menu-card) + 3 * var(--large-menu-gap));
             }
             .app-screen#mainMenu .category-grid.game-select .category-btn,
-            #foodCategorySelect .category-grid.food-select .category-btn {
+            #foodCategorySelect .category-grid.food-select .category-btn,
+            #home .home-grid .category-btn {
                 min-width: 0;
                 max-width: 100%;
             }
             .app-screen#mainMenu .category-grid.game-select .category-btn .icon,
-            #foodCategorySelect .category-grid.food-select .category-btn .icon {
+            #foodCategorySelect .category-grid.food-select .category-btn .icon,
+            #home .home-grid .category-btn .icon {
                 font-size: clamp(calc(30px * var(--ui-scale)), 8vw, calc(56px * var(--ui-scale)));
                 margin-bottom: calc(8px * var(--ui-scale));
             }
             .app-screen#mainMenu .category-grid.game-select .category-btn .label,
-            #foodCategorySelect .category-grid.food-select .category-btn .label {
+            #foodCategorySelect .category-grid.food-select .category-btn .label,
+            #home .home-grid .category-btn .label {
                 font-size: clamp(calc(16px * var(--ui-scale)), 4vw, calc(28px * var(--ui-scale)));
                 min-width: 0;
                 max-width: 100%;
@@ -675,7 +685,8 @@
 
         @media (max-width: 640px) {
             .app-screen#mainMenu .category-grid.game-select,
-            #foodCategorySelect .category-grid.food-select {
+            #foodCategorySelect .category-grid.food-select,
+            #home .home-grid {
                 --large-menu-card: auto;
                 width: 100%;
                 max-width: calc(900px * var(--ui-scale));
@@ -684,11 +695,13 @@
                 grid-auto-rows: auto;
                 align-content: center;
             }
-            .app-screen#mainMenu .category-grid.game-select {
+            .app-screen#mainMenu .category-grid.game-select,
+            #home .home-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
             .app-screen#mainMenu .category-grid.game-select .category-btn,
-            #foodCategorySelect .category-grid.food-select .category-btn {
+            #foodCategorySelect .category-grid.food-select .category-btn,
+            #home .home-grid .category-btn {
                 width: 100%;
                 height: auto;
                 min-height: calc(110px * var(--ui-scale));
@@ -727,7 +740,8 @@
 
         @media (max-width: 360px) {
             .app-screen#mainMenu .category-grid.game-select,
-            #foodCategorySelect .category-grid.food-select {
+            #foodCategorySelect .category-grid.food-select,
+            #home .home-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
