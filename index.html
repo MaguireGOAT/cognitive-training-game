@@ -29,6 +29,15 @@
 </head>
 <body>
 
+    <div id="bootLoader" class="boot-loader" role="status" aria-label="Loading">
+        <div class="boot-loader-content">
+            <div class="boot-loader-brain" aria-hidden="true">🧠</div>
+            <div class="boot-loader-track">
+                <div id="bootLoaderProgress" class="boot-loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- ================================================================
         Home
        ================================================================ -->
@@ -729,6 +738,7 @@
     <script src="js/food/different.js"></script>
     <script src="js/food/shopping.js"></script>
     <script src="js/food/main.js"></script>
+    <script src="js/boot.js"></script>
     <script>
         (function () {
             'use strict';
@@ -741,17 +751,10 @@
                     }
                 });
             }
-            window.CognitiveRouter.initialize('home');
-        })();
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('sw.js').catch(function (error) {
-                    console.warn('Service worker registration failed:', error);
-                });
+            window.CognitiveBoot.start(function () {
+                window.CognitiveRouter.initialize('home');
             });
-        }
+        })();
     </script>
 </body>
 </html>

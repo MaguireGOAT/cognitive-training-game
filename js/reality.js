@@ -158,7 +158,7 @@
                 dot.className = 'reality-dot' + (index === realityState.currentPageIndex ? ' active' : '');
                 dot.setAttribute('aria-label', `第 ${index + 1} 頁`);
                 dot.addEventListener('click', () => {
-                    showRealityPage(index, index === realityState.currentPageIndex ? 0 : (index > realityState.currentPageIndex ? 1 : -1));
+                    animateRealityPageTo(realityState.currentPageIndex, index, 0);
                 });
                 realityDots.appendChild(dot);
             });
@@ -167,6 +167,21 @@
         let realityTransitionToken = 0;
         let realityTransitionTimer = null;
         let realityVisiblePage = null;
+        let realitySwipe = null;
+
+        function withoutRealityTransitions(callback) {
+            if (realityStage) realityStage.classList.add('reality-clearing');
+            try {
+                callback();
+                if (realityStage) void realityStage.offsetWidth;
+                document.querySelectorAll('.reality-page').forEach(page => {
+                    void getComputedStyle(page).transform;
+                    void getComputedStyle(page).opacity;
+                });
+            } finally {
+                if (realityStage) realityStage.classList.remove('reality-clearing');
+            }
+        }
 
         function clearRealityTransition() {
             realityTransitionToken++;
@@ -176,57 +191,109 @@
             }
             realitySwipe = null;
             if (realityStage) realityStage.classList.remove('reality-dragging');
-            document.querySelectorAll('.reality-page').forEach(page => {
-                page.classList.remove(
-                    'slide-in-left', 'slide-in-right', 'slide-out-left', 'slide-out-right',
-                    'dismissed-left', 'dismissed-right'
-                );
-                page.style.transform = '';
-                page.style.opacity = '';
-                page.style.pointerEvents = '';
+            withoutRealityTransitions(function() {
+                document.querySelectorAll('.reality-page').forEach(page => {
+                    page.classList.remove(
+                        'slide-in-left', 'slide-in-right', 'slide-out-left', 'slide-out-right',
+                        'dismissed-left', 'dismissed-right'
+                    );
+                    page.style.transform = '';
+                    page.style.opacity = '';
+                    page.style.pointerEvents = '';
+                });
+                setRealityPageVisibility();
             });
-            setRealityPageVisibility();
         }
 
-        function showRealityPage(index, direction) {
+        function getRealityPageByIndex(index) {
+            const pages = getRealityPageNames();
+            if (index < 0 || index >= pages.length) return null;
+            return document.querySelector('.reality-page[data-page="' + pages[index] + '"]');
+        }
+
+        function showRealityPage(index) {
             const pages = getRealityPageNames();
             if (index < 0 || index >= pages.length) return;
-            const oldPage = realityVisiblePage || document.querySelector('.reality-page.active');
-            const newPage = document.querySelector('.reality-page[data-page="' + pages[index] + '"]');
-            if (!newPage) return;
-
-            realityState.currentPageIndex = index;
             clearRealityTransition();
+            realityState.currentPageIndex = index;
             document.querySelectorAll('.reality-page').forEach(page => {
                 page.classList.remove('active');
             });
-
-            if (oldPage && oldPage !== newPage && (direction === 1 || direction === -1)) {
-                const token = ++realityTransitionToken;
-                const movingForward = direction === 1;
-                oldPage.classList.add('active', movingForward ? 'slide-out-left' : 'slide-out-right');
-                newPage.classList.add('active', movingForward ? 'slide-in-right' : 'slide-in-left');
-                updateRealityNav();
-                updateRealityDots();
-                fitRealityText();
-                realityTransitionTimer = setTimeout(function() {
-                    if (token !== realityTransitionToken) return;
-                    oldPage.classList.remove('active', 'slide-out-left', 'slide-out-right');
-                    oldPage.classList.add(movingForward ? 'dismissed-left' : 'dismissed-right');
-                    newPage.classList.remove('slide-in-left', 'slide-in-right');
-                    realityVisiblePage = newPage;
-                    realityTransitionTimer = null;
-                }, 320);
-                return;
-            }
-
-            document.querySelectorAll('.reality-page').forEach(page => {
-                page.classList.toggle('active', page === newPage);
-            });
-            realityVisiblePage = newPage;
+            const page = getRealityPageByIndex(index);
+            if (!page) return;
+            page.classList.add('active');
+            realityVisiblePage = page;
             updateRealityNav();
             updateRealityDots();
             fitRealityText();
+        }
+
+        function animateRealityPageTo(startIndex, targetIndex, fromDx) {
+            const pages = getRealityPageNames();
+            if (targetIndex < 0 || targetIndex >= pages.length) return;
+            clearRealityTransition();
+
+            const startPage = getRealityPageByIndex(startIndex);
+            const targetPage = getRealityPageByIndex(targetIndex);
+            if (!startPage || !targetPage) return;
+
+            realityState.currentPageIndex = targetIndex;
+            updateRealityNav();
+            updateRealityDots();
+
+            if (startIndex === targetIndex || startPage === targetPage) {
+                targetPage.classList.add('active');
+                realityVisiblePage = targetPage;
+                fitRealityText();
+                return;
+            }
+
+            const width = realityStage ? (realityStage.clientWidth || window.innerWidth) : window.innerWidth;
+            const direction = targetIndex > startIndex ? 1 : -1;
+            const targetStartX = fromDx + direction * width;
+            const startEndX = -direction * width;
+
+            document.querySelectorAll('.reality-page').forEach(page => {
+                if (pages.includes(page.dataset.page)) {
+                    page.classList.remove('hidden');
+                    page.classList.remove('active');
+                    page.style.opacity = '0';
+                    page.style.pointerEvents = 'none';
+                    page.style.transform = '';
+                } else {
+                    page.style.opacity = '0';
+                    page.style.pointerEvents = 'none';
+                }
+            });
+
+            startPage.style.opacity = '1';
+            targetPage.style.opacity = '1';
+            targetPage.classList.add('active');
+            startPage.style.transform = 'translate3d(' + fromDx + 'px, 0, 0)';
+            targetPage.style.transform = 'translate3d(' + targetStartX + 'px, 0, 0)';
+
+            if (realityStage) realityStage.classList.add('reality-dragging');
+            if (startPage) void getComputedStyle(startPage).transform;
+            if (realityStage) realityStage.classList.remove('reality-dragging');
+            if (startPage) void getComputedStyle(startPage).transform;
+
+            startPage.style.transform = 'translate3d(' + startEndX + 'px, 0, 0)';
+            targetPage.style.transform = 'translate3d(0, 0, 0)';
+
+            const token = ++realityTransitionToken;
+            realityTransitionTimer = setTimeout(function() {
+                if (token !== realityTransitionToken) return;
+                clearRealityDragStyles();
+                document.querySelectorAll('.reality-page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                targetPage.classList.add('active');
+                realityVisiblePage = targetPage;
+                updateRealityNav();
+                updateRealityDots();
+                fitRealityText();
+                realityTransitionTimer = null;
+            }, 330);
         }
 
         function renderRealityBoard() {
@@ -334,20 +401,25 @@
         realityBackBtn.addEventListener('click', function () {
             if (window.CognitiveRouter) window.CognitiveRouter.goBack();
         });
-        realityPrevBtn.addEventListener('click', () => showRealityPage(realityState.currentPageIndex - 1, -1));
-        realityNextBtn.addEventListener('click', () => showRealityPage(realityState.currentPageIndex + 1, 1));
-
-        let realitySwipe = null;
+        realityPrevBtn.addEventListener('click', () => {
+            animateRealityPageTo(realityState.currentPageIndex, realityState.currentPageIndex - 1, 0);
+        });
+        realityNextBtn.addEventListener('click', () => {
+            animateRealityPageTo(realityState.currentPageIndex, realityState.currentPageIndex + 1, 0);
+        });
 
         function clearRealityDragStyles() {
             realitySwipe = null;
             if (realityStage) realityStage.classList.remove('reality-dragging');
-            document.querySelectorAll('.reality-page').forEach(page => {
-                page.style.transform = '';
-                page.style.opacity = '';
-                page.style.pointerEvents = '';
+            withoutRealityTransitions(function() {
+                document.querySelectorAll('.reality-page').forEach(page => {
+                    page.style.transform = '';
+                    page.style.opacity = '';
+                    page.style.pointerEvents = '';
+                    page.style.zIndex = '';
+                });
+                setRealityPageVisibility();
             });
-            setRealityPageVisibility();
         }
 
         function updateRealityDragTransform() {
@@ -390,7 +462,6 @@
             const pages = getRealityPageNames();
             const width = swipe.width || realityStage.clientWidth || window.innerWidth;
             const dx = e.clientX - swipe.startX;
-            const dy = e.clientY - swipe.startY;
             realitySwipe = null;
 
             if (!swipe.dragging) {
@@ -404,58 +475,7 @@
             if (dx <= -threshold && targetIndex < pages.length - 1) targetIndex++;
             else if (dx >= threshold && targetIndex > 0) targetIndex--;
 
-            const movingForward = targetIndex > swipe.startIndex;
-            const movingBackward = targetIndex < swipe.startIndex;
-            const currentPage = document.querySelector('.reality-page[data-page="' + pages[swipe.startIndex] + '"]');
-            const targetPage = document.querySelector('.reality-page[data-page="' + pages[targetIndex] + '"]');
-
-            realityState.currentPageIndex = targetIndex;
-            updateRealityNav();
-            updateRealityDots();
-
-            document.querySelectorAll('.reality-page').forEach(page => {
-                if (pages.includes(page.dataset.page)) {
-                    page.classList.remove('hidden');
-                    page.style.opacity = '0';
-                    page.style.pointerEvents = 'none';
-                    page.classList.remove('active');
-                    page.style.transform = '';
-                }
-            });
-            if (currentPage) {
-                currentPage.style.opacity = '1';
-                currentPage.style.transform = movingForward
-                    ? 'translate3d(-' + width + 'px, 0, 0)'
-                    : movingBackward
-                        ? 'translate3d(' + width + 'px, 0, 0)'
-                        : 'translate3d(0, 0, 0)';
-            }
-            if (targetPage && targetPage !== currentPage) {
-                targetPage.style.opacity = '1';
-                targetPage.classList.add('active');
-                targetPage.style.transform = 'translate3d(0, 0, 0)';
-            } else if (targetPage) {
-                targetPage.classList.add('active');
-            }
-
-            if (realityStage) {
-                void realityStage.offsetWidth;
-                realityStage.classList.remove('reality-dragging');
-            }
-
-            const token = ++realityTransitionToken;
-            realityTransitionTimer = setTimeout(function() {
-                if (token !== realityTransitionToken) return;
-                clearRealityDragStyles();
-                document.querySelectorAll('.reality-page').forEach(page => {
-                    page.classList.remove('active');
-                });
-                if (targetPage) targetPage.classList.add('active');
-                realityVisiblePage = targetPage;
-                updateRealityNav();
-                updateRealityDots();
-                fitRealityText();
-            }, 320);
+            animateRealityPageTo(swipe.startIndex, targetIndex, dx);
         }
 
         if (realityStage) {

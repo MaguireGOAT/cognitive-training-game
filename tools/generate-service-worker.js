@@ -40,16 +40,52 @@ const ASSET_PATHS = ${JSON.stringify(assets, null, 2)};
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    const results = await Promise.allSettled(ASSET_PATHS.map(async (assetPath) => {
-      const response = await fetch(assetPath);
-      if (!response.ok) {
-        throw new Error(assetPath + ' returned ' + response.status);
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    let loaded = 0;
+    let failed = 0;
+    const failedPaths = [];
+
+    const notify = (done) => {
+      const payload = {
+        type: 'cognitive-precache-progress',
+        total: ASSET_PATHS.length,
+        loaded,
+        failed,
+        done
+      };
+      for (const client of clients) {
+        try {
+          client.postMessage(payload);
+        } catch (error) {
+          // A client may close while the first cache is being built.
+        }
       }
-      await cache.put(assetPath, response);
-    }));
-    const failed = results.filter((result) => result.status === 'rejected');
-    if (failed.length > 0) {
-      console.warn('Precache incomplete:', failed.length + ' of ' + ASSET_PATHS.length + ' assets failed.');
+    };
+
+    for (const assetPath of ASSET_PATHS) {
+      let succeeded = false;
+      for (let attempt = 0; attempt < 2 && !succeeded; attempt++) {
+        try {
+          const response = await fetch(assetPath, { cache: 'reload' });
+          if (!response.ok) {
+            throw new Error(assetPath + ' returned ' + response.status);
+          }
+          await cache.put(assetPath, response);
+          succeeded = true;
+        } catch (error) {
+          if (attempt === 1) {
+            failed++;
+            failedPaths.push(assetPath);
+          }
+        }
+      }
+      loaded++;
+      notify(false);
+    }
+
+    notify(true);
+    if (failedPaths.length > 0) {
+      console.warn('Precache incomplete:', failedPaths.length + ' of ' + ASSET_PATHS.length + ' assets failed.');
     }
     await self.skipWaiting();
   })());

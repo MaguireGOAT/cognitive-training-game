@@ -166,9 +166,6 @@
         }
 
         function showGngIntro() {
-            gngState.isPlaying = true;
-            gngState.timerPaused = true;
-            gngPlayBtn.classList.add('playing');
             window.gngIntroPending = true;
             showCustomMessage(
                 gngRuleText.textContent.trim(),
@@ -184,8 +181,6 @@
             if (!window.gngIntroPending) return;
             window.gngIntroPending = false;
             hideOverlay();
-            gngState.timerPaused = false;
-            resetGngTimer();
         }
 
         function isGngGo(items) {

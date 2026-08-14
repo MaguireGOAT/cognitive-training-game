@@ -90,6 +90,9 @@
         .reality-stage.reality-dragging .reality-page {
             transition: none;
         }
+        .reality-stage.reality-clearing .reality-page {
+            transition: none;
+        }
         .reality-page {
             position: absolute;
             inset: 0;
@@ -97,6 +100,7 @@
             align-items: center;
             justify-content: center;
             padding: calc(72px * var(--ui-scale)) calc(28px * var(--ui-scale)) calc(86px * var(--ui-scale));
+            background: var(--container-bg);
             opacity: 0;
             pointer-events: none;
             transform: translateX(0);
@@ -106,32 +110,6 @@
         .reality-page.active {
             opacity: 1;
             pointer-events: auto;
-        }
-        .reality-page.slide-in-left,
-        .reality-page.slide-in-right {
-            opacity: 0;
-        }
-        .reality-page.slide-out-left,
-        .reality-page.slide-out-right {
-            opacity: 1;
-        }
-        .reality-page.slide-in-left,
-        .reality-page.slide-out-right {
-            transform: translateX(-100%);
-        }
-        .reality-page.slide-in-right,
-        .reality-page.slide-out-left {
-            transform: translateX(100%);
-        }
-        .reality-page.dismissed-left {
-            opacity: 0;
-            transform: translateX(-100%);
-            transition: none;
-        }
-        .reality-page.dismissed-right {
-            opacity: 0;
-            transform: translateX(100%);
-            transition: none;
         }
         .reality-page.hidden {
             display: none;

@@ -293,3 +293,55 @@
             border-radius: 50%;
             background: var(--btn-bg);
         }
+
+        /* Startup preload screen shown only while the first cache is being built
+           or while an update is being installed. */
+        .boot-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--container-bg);
+        }
+        .boot-loader.hidden {
+            display: none;
+        }
+        .boot-loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: calc(34px * var(--ui-scale));
+            padding: calc(28px * var(--ui-scale));
+        }
+        .boot-loader-brain {
+            font-size: calc(132px * var(--ui-scale));
+            line-height: 1;
+            user-select: none;
+            animation: boot-brain-pulse 1.7s cubic-bezier(0.34, 1.35, 0.64, 1) infinite;
+            transform-origin: 50% 55%;
+        }
+        .boot-loader-track {
+            width: min(78vw, calc(440px * var(--ui-scale)));
+            height: calc(22px * var(--ui-scale));
+            border-radius: calc(30px * var(--ui-scale));
+            background: var(--control-bg);
+            border: calc(2px * var(--ui-scale)) solid var(--border-color);
+            overflow: hidden;
+            padding: calc(2px * var(--ui-scale));
+        }
+        .boot-loader-progress {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: #00c800;
+            transition: width 0.16s linear;
+        }
+        @keyframes boot-brain-pulse {
+            0%, 100% { transform: scale(1) rotate(-2deg); }
+            22% { transform: scale(1.18) rotate(3deg); }
+            48% { transform: scale(0.94) rotate(-2deg); }
+            72% { transform: scale(1.09) rotate(1deg); }
+            88% { transform: scale(0.98) rotate(0deg); }
+        }
