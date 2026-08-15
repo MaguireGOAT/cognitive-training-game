@@ -5,7 +5,7 @@
   "lang": "zh-TW",
   "start_url": "./index.html",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "landscape-primary",
   "background_color": "#f5f0e8",
   "theme_color": "#f5f0e8",
