@@ -67,7 +67,6 @@
     var currentLeft = null;
     var currentRight = null;
     var isPlaying = false;
-    var autoTimer = null;
     var speedLevel = 5;
     var initialized = false;
 
@@ -197,23 +196,36 @@
         rightGestures = rightBase;
     }
 
+    function getPalmSessionConfig() {
+        return {
+            mode: 'repeating',
+            intervalMs: getSpeedInterval(speedLevel),
+            tick: function () {
+                if (isPlaying) updateGame();
+            }
+        };
+    }
+
+    function startPalmSession() {
+        if (window.CognitiveSession) {
+            window.CognitiveSession.start(getPalmSessionConfig());
+        }
+    }
+
     function startAutoPlay() {
         if (isPlaying) return;
         isPlaying = true;
         playBtn.classList.add('playing');
         updateGame();
-        autoTimer = setInterval(function () {
-            updateGame();
-        }, getSpeedInterval(speedLevel));
+        startPalmSession();
     }
 
     function stopAutoPlay() {
         if (!isPlaying) return;
         isPlaying = false;
         playBtn.classList.remove('playing');
-        if (autoTimer) {
-            clearInterval(autoTimer);
-            autoTimer = null;
+        if (window.CognitiveSession) {
+            window.CognitiveSession.stop();
         }
     }
 
@@ -227,13 +239,7 @@
 
     function restartTimerIfPlaying() {
         if (!isPlaying) return;
-        if (autoTimer) {
-            clearInterval(autoTimer);
-            autoTimer = null;
-        }
-        autoTimer = setInterval(function () {
-            updateGame();
-        }, getSpeedInterval(speedLevel));
+        startPalmSession();
     }
 
     function changeSpeed(delta) {
