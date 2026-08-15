@@ -1,0 +1,370 @@
+(function (global) {
+    'use strict';
+
+    function createUpdateFlow(adapters) {
+        adapters = adapters || {};
+
+        var navigatorRef = adapters.navigator || {};
+        var locationRef = adapters.location || {};
+        var routerRef = adapters.router || null;
+        var loader = adapters.loader || {};
+        var consoleRef = adapters.console || (typeof console !== 'undefined' ? console : null);
+        var setTimeoutRef = adapters.setTimeout ||
+            (typeof setTimeout !== 'undefined' ? setTimeout : function () {
+                return 0;
+            });
+        var clearTimeoutRef = adapters.clearTimeout ||
+            (typeof clearTimeout !== 'undefined' ? clearTimeout : function () {});
+        var registerUrl = adapters.registerUrl || 'sw.js';
+        var startupUpdateTimeoutMs = adapters.startupUpdateTimeoutMs || 8000;
+        var installTimeoutMs = adapters.installTimeoutMs || 90000;
+        var firstInstallWaitMs = adapters.firstInstallWaitMs || 3000;
+
+        var started = false;
+        var ready = false;
+        var pendingCallbacks = [];
+        var readyResolvers = [];
+        var installWaiter = null;
+        var registrationRef = null;
+        var bootTimer = null;
+        var pendingUpdate = false;
+        var pendingUpdateReload = false;
+        var reloading = false;
+        var disposed = false;
+
+        function setProgress(loaded, total) {
+            if (typeof loader.setProgress !== 'function') return;
+            loader.setProgress(loaded, total);
+        }
+
+        function showLoader() {
+            if (typeof loader.show === 'function') loader.show();
+        }
+
+        function hideLoader() {
+            if (typeof loader.hide === 'function') loader.hide();
+        }
+
+        function reloadForUpdate() {
+            if (reloading) return;
+            reloading = true;
+            if (typeof locationRef.reload === 'function') locationRef.reload();
+        }
+
+        function complete() {
+            if (bootTimer && typeof clearTimeoutRef === 'function') {
+                clearTimeoutRef(bootTimer);
+                bootTimer = null;
+            }
+            hideLoader();
+            if (ready) return;
+            ready = true;
+            var callbacks = pendingCallbacks;
+            pendingCallbacks = [];
+            callbacks.forEach(function (callback) {
+                try {
+                    callback();
+                } catch (error) {
+                    if (consoleRef && typeof consoleRef.error === 'function') {
+                        consoleRef.error('App boot callback failed:', error);
+                    }
+                }
+            });
+            var resolvers = readyResolvers;
+            readyResolvers = [];
+            resolvers.forEach(function (resolve) {
+                resolve();
+            });
+        }
+
+        function onProgressMessage(event) {
+            var data = event && event.data;
+            if (!data || data.type !== 'cognitive-precache-progress') return;
+            setProgress(data.loaded, data.total);
+            if (data.done && installWaiter) {
+                var finish = installWaiter;
+                installWaiter = null;
+                finish();
+            }
+        }
+
+        function waitForInstall(registration) {
+            return new Promise(function (resolve) {
+                var worker = registration.installing || registration.waiting;
+                var settled = false;
+                var timeout = setTimeoutRef(finish, installTimeoutMs);
+
+                function finish() {
+                    if (settled) return;
+                    settled = true;
+                    if (typeof clearTimeoutRef === 'function') clearTimeoutRef(timeout);
+                    if (worker && typeof worker.removeEventListener === 'function') {
+                        worker.removeEventListener('statechange', onState);
+                    }
+                    if (installWaiter === finish) installWaiter = null;
+                    resolve();
+                }
+
+                function onState() {
+                    if (worker && (worker.state === 'activated' || worker.state === 'redundant')) {
+                        finish();
+                    }
+                }
+
+                if (installWaiter) {
+                    var previous = installWaiter;
+                    installWaiter = null;
+                    previous();
+                }
+                installWaiter = finish;
+                if (worker && typeof worker.addEventListener === 'function') {
+                    worker.addEventListener('statechange', onState);
+                }
+                if (!worker || worker.state === 'activated' || worker.state === 'redundant') {
+                    finish();
+                }
+            });
+        }
+
+        function waitForActive(registration) {
+            return new Promise(function (resolve) {
+                var worker = registration.installing || registration.waiting || registration.active;
+                if (!worker || worker.state === 'activated' || worker.state === 'redundant') {
+                    resolve();
+                    return;
+                }
+                worker.addEventListener('statechange', function onState() {
+                    if (worker.state === 'activated' || worker.state === 'redundant') {
+                        worker.removeEventListener('statechange', onState);
+                        resolve();
+                    }
+                });
+            });
+        }
+
+        function getCurrentScreen() {
+            if (routerRef && typeof routerRef.getCurrent === 'function') {
+                return routerRef.getCurrent();
+            }
+            return null;
+        }
+
+        function installPendingUpdate(registration, shouldReload) {
+            pendingUpdate = false;
+            pendingUpdateReload = false;
+            showLoader();
+            return finishWorkerUpdate(registration, shouldReload)
+                .catch(function () {
+                    complete();
+                });
+        }
+
+        function finishWorkerUpdate(registration, shouldReload) {
+            return waitForInstall(registration)
+                .then(function () {
+                    return waitForActive(registration);
+                })
+                .then(function () {
+                    if (shouldReload && registration.active && registration.active.state === 'activated') {
+                        reloadForUpdate();
+                        return;
+                    }
+                    complete();
+                });
+        }
+
+        function startUpdateCheck(registration) {
+            if (!registration || typeof registration.addEventListener !== 'function') return;
+            registration.addEventListener('updatefound', function () {
+                if (!(registration.installing || registration.waiting)) return;
+                var current = getCurrentScreen();
+                var hasController = !!(navigatorRef.serviceWorker && navigatorRef.serviceWorker.controller);
+                if (current && current !== 'home') {
+                    pendingUpdate = true;
+                    pendingUpdateReload = hasController;
+                    return;
+                }
+                installPendingUpdate(registration, hasController);
+            });
+            if (registration.active && navigatorRef.onLine !== false &&
+                typeof registration.update === 'function') {
+                registration.update().catch(function () {});
+            }
+        }
+
+        function waitForStartupUpdateCheck(registration) {
+            return new Promise(function (resolve) {
+                if (navigatorRef.onLine === false) {
+                    resolve(false);
+                    return;
+                }
+                var activeWorker = registration.active;
+                var settled = false;
+                var timer = setTimeoutRef(finish, startupUpdateTimeoutMs);
+
+                function finish(found) {
+                    if (settled) return;
+                    settled = true;
+                    if (typeof clearTimeoutRef === 'function') clearTimeoutRef(timer);
+                    if (typeof registration.removeEventListener === 'function') {
+                        registration.removeEventListener('updatefound', onFound);
+                    }
+                    resolve(!!found);
+                }
+
+                function onFound() {
+                    if (registration.installing || registration.waiting) {
+                        finish(true);
+                    }
+                }
+
+                if (typeof registration.addEventListener === 'function') {
+                    registration.addEventListener('updatefound', onFound);
+                }
+                try {
+                    registration.update().then(function () {
+                        if (registration.installing || registration.waiting || registration.active !== activeWorker) {
+                            finish(true);
+                            return;
+                        }
+                        finish(false);
+                    }).catch(function () {
+                        finish(false);
+                    });
+                } catch (error) {
+                    finish(false);
+                }
+            });
+        }
+
+        function start(callback) {
+            if (ready) {
+                if (typeof callback === 'function') callback();
+                return Promise.resolve();
+            }
+            if (typeof callback === 'function') pendingCallbacks.push(callback);
+            if (started) {
+                return new Promise(function (resolve) {
+                    readyResolvers.push(resolve);
+                });
+            }
+            started = true;
+
+            var bootPromise = new Promise(function (resolve) {
+                readyResolvers.push(resolve);
+            });
+
+            showLoader();
+            var hadController = !!(navigatorRef.serviceWorker && navigatorRef.serviceWorker.controller);
+
+            if (!navigatorRef.serviceWorker) {
+                complete();
+                return bootPromise;
+            }
+
+            if (typeof navigatorRef.serviceWorker.addEventListener === 'function') {
+                navigatorRef.serviceWorker.addEventListener('message', onProgressMessage);
+            }
+
+            if (navigatorRef.onLine === false && navigatorRef.serviceWorker.controller) {
+                complete();
+                return bootPromise;
+            }
+
+            navigatorRef.serviceWorker.register(registerUrl).then(function (registration) {
+                if (disposed) return null;
+                registrationRef = registration;
+
+                if (routerRef && typeof routerRef.registerEnter === 'function') {
+                    routerRef.registerEnter('home', function () {
+                        if (pendingUpdate && registrationRef) {
+                            installPendingUpdate(registrationRef, pendingUpdateReload);
+                        }
+                    });
+                }
+
+                if (registration.installing || registration.waiting) {
+                    return finishWorkerUpdate(registration, hadController);
+                }
+
+                if (registration.active) {
+                    return waitForStartupUpdateCheck(registration).then(function (found) {
+                        if (found) {
+                            return finishWorkerUpdate(registration, hadController);
+                        }
+                        complete();
+                        startUpdateCheck(registration);
+                        return null;
+                    });
+                }
+
+                return new Promise(function (resolve) {
+                    var timer = setTimeoutRef(function () {
+                        if (typeof registration.removeEventListener === 'function') {
+                            registration.removeEventListener('updatefound', onFound);
+                        }
+                        resolve();
+                    }, firstInstallWaitMs);
+
+                    function onFound() {
+                        if (typeof clearTimeoutRef === 'function') clearTimeoutRef(timer);
+                        if (typeof registration.removeEventListener === 'function') {
+                            registration.removeEventListener('updatefound', onFound);
+                        }
+                        resolve();
+                    }
+
+                    if (typeof registration.addEventListener === 'function') {
+                        registration.addEventListener('updatefound', onFound);
+                    }
+                }).then(function () {
+                    if (registration.installing || registration.waiting) {
+                        return finishWorkerUpdate(registration, hadController);
+                    }
+                    complete();
+                    return null;
+                });
+            }).catch(function () {
+                if (!disposed) complete();
+            });
+
+            bootTimer = setTimeoutRef(function () {
+                complete();
+            }, 90000);
+
+            return bootPromise;
+        }
+
+        function enterHome() {
+            if (pendingUpdate && registrationRef) {
+                installPendingUpdate(registrationRef, pendingUpdateReload);
+            }
+        }
+
+        function close() {
+            disposed = true;
+            if (navigatorRef.serviceWorker &&
+                typeof navigatorRef.serviceWorker.removeEventListener === 'function') {
+                navigatorRef.serviceWorker.removeEventListener('message', onProgressMessage);
+            }
+        }
+
+        return {
+            start: start,
+            enterHome: enterHome,
+            close: close
+        };
+    }
+
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = {
+            createUpdateFlow: createUpdateFlow
+        };
+    }
+
+    if (typeof global !== 'undefined') {
+        global.CognitiveUpdateFlow = {
+            createUpdateFlow: createUpdateFlow
+        };
+    }
+})(typeof window !== 'undefined' ? window : globalThis);
