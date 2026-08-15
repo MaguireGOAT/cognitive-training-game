@@ -1,34 +1,6 @@
         // 第三部分：N-back 記憶遊戲
         // =============================================================
 
-        const NBACK_MATCH_PROBABILITY = 0.25;
-
-        function getNbackFoodId(item) {
-            return item.id || item.name;
-        }
-
-        function generateNbackStream(choices, n, length, matchProbability, valueOf, cloneValue) {
-            const seq = [];
-            for (let i = 0; i < length; i++) {
-                if (i < n) {
-                    seq[i] = cloneValue ? cloneValue(pickRandom(choices)) : pickRandom(choices);
-                    continue;
-                }
-                if (Math.random() < matchProbability) {
-                    seq[i] = cloneValue ? cloneValue(seq[i - n]) : seq[i - n];
-                    continue;
-                }
-                seq[i] = cloneValue ? cloneValue(pickRandom(choices)) : pickRandom(choices);
-            }
-            return seq;
-        }
-
-        window.CognitiveNbackSequence = {
-            matchProbability: NBACK_MATCH_PROBABILITY,
-            generateStream: generateNbackStream,
-            foodId: getNbackFoodId
-        };
-
         const nbackState = {
             n: 1,
             speed: 5,
@@ -110,14 +82,13 @@
         // Brain Workshop-style random match generation: each trial has a set
         // probability of matching the stimulus N trials earlier.
         function generateNbackSequence(length = 50) {
-            return generateNbackStream(
-                FOOD_DATA,
-                nbackState.n,
+            return window.CognitiveSequence.generateStream({
+                choices: FOOD_DATA,
+                n: nbackState.n,
                 length,
-                NBACK_MATCH_PROBABILITY,
-                getNbackFoodId,
-                item => ({ ...item })
-            );
+                matchProbability: window.CognitiveSequence.matchProbability,
+                cloneValue: item => ({ ...item })
+            });
         }
 
         function clearNbackTransition() {

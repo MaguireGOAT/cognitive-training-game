@@ -113,18 +113,16 @@
 
         function buildDualSequences() {
             dualNbackState.sequences = {};
-            if (!window.CognitiveNbackSequence) return;
-            const matchProbability = window.CognitiveNbackSequence.matchProbability || 0.25;
+            if (!window.CognitiveSequence) return;
             dualNbackState.channels.forEach(channel => {
                 const choices = getDualChannelChoices(channel);
-                dualNbackState.sequences[channel] = window.CognitiveNbackSequence.generateStream(
-                    choices,
-                    dualNbackState.n,
-                    DUAL_NBACK_SEQUENCE_LENGTH,
-                    matchProbability,
-                    value => getDualChannelValue(channel, value),
-                    value => cloneDualChannelValue(channel, value)
-                );
+                dualNbackState.sequences[channel] = window.CognitiveSequence.generateStream({
+                    choices: choices,
+                    n: dualNbackState.n,
+                    length: DUAL_NBACK_SEQUENCE_LENGTH,
+                    matchProbability: window.CognitiveSequence.matchProbability,
+                    cloneValue: value => cloneDualChannelValue(channel, value)
+                });
             });
         }
 
