@@ -139,20 +139,16 @@
                 card.classList.add('correct-highlight');
                 Array.from(differentGridContainer.querySelectorAll('.different-card')).forEach(child => child.classList.add('disabled'));
                 CognitiveAudio.play('correct');
-                showCustomMessage(
-                    '✅ 正確！',
-                    getRandomEncourage(),
-                    [{
+                window.CognitiveMessage.show({
+                    title: '✅ 正確！',
+                    subtitle: getRandomEncourage(),
+                    buttons: [{
                         text: '下一題 ➜',
-                        class: 'btn-next',
-                        action: function() {
-                            hideOverlay();
-                            nextDifferentRound();
-                        }
+                        className: 'btn-next',
+                        action: nextDifferentRound
                     }],
-                    false,
-                    false
-                );
+                    pauseTimer: false
+                });
             } else {
                 CognitiveAudio.play('wrong');
                 card.classList.add('wrong-flash');
@@ -196,14 +192,12 @@
             differentState.round = 0;
             updateDifferentScore();
             generateDifferentRound();
-            showCustomMessage(
-                '找出與其他食物不同的一張',
-                '',
-                [],
-                false,
-                false,
-                true
-            );
+            window.CognitiveMessage.show({
+                title: '找出與其他食物不同的一張',
+                subtitle: '',
+                extraLarge: true,
+                pauseTimer: false
+            });
 
             if (window.CognitiveRouter) {
                 syncTopBarCentering();

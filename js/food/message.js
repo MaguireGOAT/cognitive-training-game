@@ -1,0 +1,171 @@
+(function (global) {
+    'use strict';
+
+    function createMessageController(adapters) {
+        adapters = adapters || {};
+
+        function getElement(id) {
+            if (typeof document === 'undefined') return null;
+            return document.getElementById(id);
+        }
+
+        var overlay = adapters.overlay || (typeof document !== 'undefined' ? document.getElementById('overlay') : null);
+        var getMsgIcon = adapters.getMsgIcon || function () {
+            return getElement('msgIcon');
+        };
+        var getMsgText = adapters.getMsgText || function () {
+            return getElement('msgText');
+        };
+        var getMsgSub = adapters.getMsgSub || function () {
+            return getElement('msgSub');
+        };
+        var getMsgButtons = adapters.getMsgButtons || function () {
+            return getElement('msgButtons');
+        };
+        var createElement = adapters.createElement || function (tag) {
+            if (typeof document === 'undefined') return null;
+            return document.createElement(tag);
+        };
+        var pauseTimer = adapters.pauseTimer || function () {
+            if (typeof window !== 'undefined' && typeof window.pauseGngTimer === 'function') {
+                window.pauseGngTimer();
+            }
+        };
+        var resumeTimer = adapters.resumeTimer || function () {
+            if (typeof window !== 'undefined' && typeof window.resumeGngTimer === 'function') {
+                window.resumeGngTimer();
+            }
+        };
+
+        var currentFlow = null;
+
+        function render(options) {
+            var icon = getMsgIcon();
+            var text = getMsgText();
+            var sub = getMsgSub();
+            var buttonHost = getMsgButtons();
+
+            if (icon) {
+                icon.textContent = options.icon !== undefined
+                    ? options.icon
+                    : (options.isVictory ? '🏆' : '');
+            }
+            if (text) {
+                if (options.titleHtml) {
+                    text.innerHTML = options.title || '';
+                } else {
+                    text.textContent = options.title || '';
+                }
+                text.className = 'msg-text' +
+                    (options.isVictory ? ' victory' : '') +
+                    (options.extraLarge ? ' extra-large' : '') +
+                    (options.textClass ? ' ' + options.textClass : '');
+            }
+            if (sub) {
+                sub.textContent = options.subtitle || '';
+                sub.classList.toggle('hidden', !options.subtitle);
+            }
+            if (buttonHost) {
+                buttonHost.innerHTML = '';
+                if (options.buttons && options.buttons.length) {
+                    var group = createElement('div');
+                    if (!group) return;
+                    group.className = 'btn-group';
+                    options.buttons.forEach(function (button) {
+                        var btn = createElement('button');
+                        if (!btn) return;
+                        btn.className = 'btn-option ' + (button.className || button.class || 'btn-stay');
+                        btn.textContent = button.text || '';
+                        btn.addEventListener('click', function (e) {
+                            if (e && e.stopPropagation) e.stopPropagation();
+                            handleButton(button);
+                        });
+                        group.appendChild(btn);
+                    });
+                    buttonHost.appendChild(group);
+                }
+            }
+        }
+
+        function closeFlow(flow, runDismiss) {
+            if (!flow || flow.closed) return;
+            flow.closed = true;
+            if (currentFlow === flow) {
+                currentFlow = null;
+                if (overlay) overlay.classList.remove('active');
+            }
+            if (flow.options.pauseTimer && typeof resumeTimer === 'function') {
+                resumeTimer();
+            }
+            if (runDismiss && !flow.consumed) {
+                flow.consumed = true;
+                if (typeof flow.options.onDismiss === 'function') {
+                    flow.options.onDismiss();
+                }
+            }
+        }
+
+        function show(options) {
+            if (currentFlow) closeFlow(currentFlow, false);
+            var flow = {
+                options: options || {},
+                closed: false,
+                consumed: false
+            };
+            currentFlow = flow;
+            render(flow.options);
+            if (overlay) overlay.classList.add('active');
+            if (flow.options.pauseTimer && typeof pauseTimer === 'function') {
+                pauseTimer();
+            }
+            return flow;
+        }
+
+        function dismiss() {
+            closeFlow(currentFlow, true);
+        }
+
+        function close() {
+            closeFlow(currentFlow, false);
+        }
+
+        function handleButton(button) {
+            var flow = currentFlow;
+            if (!flow) return;
+            flow.consumed = true;
+            if (typeof button.action === 'function') {
+                button.action();
+            }
+            if (currentFlow === flow) {
+                closeFlow(flow, false);
+            }
+        }
+
+        var api = {
+            show: show,
+            dismiss: dismiss,
+            close: close,
+            isActive: function () {
+                return currentFlow !== null;
+            }
+        };
+
+        if (overlay && overlay.addEventListener && adapters.attachBackdrop !== false) {
+            overlay.addEventListener('click', function (e) {
+                if (e.target === overlay) dismiss();
+            });
+        }
+
+        return api;
+    }
+
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = {
+            createMessageController: createMessageController
+        };
+    }
+
+    if (typeof window !== 'undefined') {
+        window.CognitiveMessage = createMessageController();
+    }
+})(typeof window !== 'undefined' ? window : globalThis);

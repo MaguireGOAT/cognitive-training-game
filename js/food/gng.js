@@ -183,26 +183,21 @@
             gngNoGoLabel.textContent = noGoDisplay;
             if (showPopup) {
                 const msg = `任務已變更：✅ ${goDisplay} → ❌ ${noGoDisplay}`;
-                showCustomMessage(msg, '請繼續作答！', [], false, true);
+                window.CognitiveMessage.show({
+                    title: msg,
+                    subtitle: '請繼續作答！',
+                    pauseTimer: true
+                });
             }
         }
 
         function showGngIntro() {
-            window.gngIntroPending = true;
-            showCustomMessage(
-                gngRuleText.textContent.trim(),
-                '',
-                [],
-                false,
-                false,
-                true
-            );
-        }
-
-        function finishGngIntro() {
-            if (!window.gngIntroPending) return;
-            window.gngIntroPending = false;
-            hideOverlay();
+            window.CognitiveMessage.show({
+                title: gngRuleText.textContent.trim(),
+                subtitle: '',
+                extraLarge: true,
+                pauseTimer: false
+            });
         }
 
         function isGngGo(items) {
@@ -523,14 +518,13 @@
             const goDisplay = currentGo === '全部' ? '全部' : currentGo;
             const noGoDisplay = currentNoGo === '全部' ? '全部' : currentNoGo;
 
-            showCustomMessage(
-                '🔄 立即切換任務',
-                `目前：✅ ${goDisplay} → ❌ ${noGoDisplay}`,
-                [{
+            window.CognitiveMessage.show({
+                title: '🔄 立即切換任務',
+                subtitle: `目前：✅ ${goDisplay} → ❌ ${noGoDisplay}`,
+                buttons: [{
                     text: '🎲 隨機變更',
-                    class: 'btn-stay',
+                    className: 'btn-stay',
                     action: function() {
-                        hideOverlay();
                         const allCats = ['全部', ...CATEGORY_NAMES];
                         const currentGo2 = gngState.goCategory;
                         const currentNoGo2 = gngState.noGoCategory;
@@ -564,9 +558,8 @@
                     }
                 }, {
                     text: '🔄 互換',
-                    class: 'btn-stay',
+                    className: 'btn-stay',
                     action: function() {
-                        hideOverlay();
                         const temp = gngState.goCategory;
                         gngState.goCategory = gngState.noGoCategory;
                         gngState.noGoCategory = temp;
@@ -576,9 +569,8 @@
                         resetGngTimer();
                     }
                 }],
-                false,
-                false
-            );
+                pauseTimer: false
+            });
         });
 
         gngSpeedDisplay.textContent = gngState.speed;
@@ -613,17 +605,16 @@
                 if (window.CognitivePrefs) {
                     CognitivePrefs.save('cognitiveGngPrefs', prefs);
                 }
-                showCustomMessage(
-                    '設定已儲存',
-                    '下次進入遊戲時會使用已儲存的偏好設定。',
-                    [{
+                window.CognitiveMessage.show({
+                    title: '設定已儲存',
+                    subtitle: '下次進入遊戲時會使用已儲存的偏好設定。',
+                    buttons: [{
                         text: '好的',
-                        class: 'btn-stay',
-                        action: function() { hideOverlay(); }
+                        className: 'btn-stay',
+                        action: function() {}
                     }],
-                    false,
-                    false
-                );
+                    pauseTimer: false
+                });
             });
         }
 

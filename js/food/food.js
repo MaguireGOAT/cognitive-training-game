@@ -228,24 +228,29 @@
         }
 
         function showAnswerMessage(type, icon, text, sub) {
-            const msgIcon = document.getElementById('msgIcon');
-            const msgText = document.getElementById('msgText');
-            const msgSub = document.getElementById('msgSub');
-            const msgBtns = document.getElementById('msgButtons');
-            msgIcon.textContent = icon;
-            msgText.textContent = text;
-            msgText.className = 'msg-text ' + (type === 'correct' ? 'correct' : 'wrong');
-            msgSub.textContent = sub || '';
-            msgBtns.innerHTML = '';
             if (type === 'correct') {
-                const nextBtn = document.createElement('button');
-                nextBtn.className = 'btn-next';
-                nextBtn.textContent = '下一題 ➜';
-                nextBtn.addEventListener('click', function(e) { e.stopPropagation();
-                    nextFoodRound(); });
-                msgBtns.appendChild(nextBtn);
+                window.CognitiveMessage.show({
+                    title: text,
+                    subtitle: sub,
+                    icon: icon,
+                    textClass: 'correct',
+                    buttons: [{
+                        text: '下一題 ➜',
+                        className: 'btn-next',
+                        action: nextFoodRound
+                    }],
+                    onDismiss: nextFoodRound,
+                    pauseTimer: false
+                });
+            } else {
+                window.CognitiveMessage.show({
+                    title: text,
+                    subtitle: sub,
+                    icon: icon,
+                    textClass: 'wrong',
+                    pauseTimer: false
+                });
             }
-            document.getElementById('overlay').classList.add('active');
         }
 
         function nextFoodRound() {
@@ -257,23 +262,23 @@
         function showCategoryComplete(category) {
             foodState.categoryCompleted[category] = true;
             updateFoodMenuButtons();
-            showCustomMessage(
-                `${CATEGORY_ICONS[category] || '🎉'} 你已認識所有「${category}」的食物！`,
-                '太棒了！繼續挑戰其他類別吧！',
-                [{ text: '返回選單', class: 'btn-stay', action: () => { hideOverlay();
-                        goToFoodCategorySelect(); } }]
-            );
+            window.CognitiveMessage.show({
+                title: `${CATEGORY_ICONS[category] || '🎉'} 你已認識所有「${category}」的食物！`,
+                subtitle: '太棒了！繼續挑戰其他類別吧！',
+                buttons: [{ text: '返回選單', className: 'btn-stay', action: goToFoodCategorySelect }]
+            });
         }
 
         function showVictoryScreen() {
-            showCustomMessage(
-                '🏆 恭喜你！',
-                '你已經認識了所有類別的所有食物！\n你是真正的食物大師！ 🎉',
-                [{ text: '🔄 重新開始', class: 'btn-restart', action: () => { hideOverlay();
-                        resetFoodProgress();
-                        goToFoodCategorySelect(); } }],
-                true
-            );
+            window.CognitiveMessage.show({
+                title: '🏆 恭喜你！',
+                subtitle: '你已經認識了所有類別的所有食物！\n你是真正的食物大師！ 🎉',
+                isVictory: true,
+                buttons: [{ text: '🔄 重新開始', className: 'btn-restart', action: function() {
+                    resetFoodProgress();
+                    goToFoodCategorySelect();
+                } }]
+            });
         }
 
         function buildFoodCategoryGrid() {
@@ -338,15 +343,12 @@
 
         function showFoodGameIntro() {
             const title = questionText.innerHTML.trim();
-            showCustomMessage(
-                title,
-                '',
-                [],
-                false,
-                false,
-                true,
-                true
-            );
+            window.CognitiveMessage.show({
+                title: title,
+                titleHtml: true,
+                extraLarge: true,
+                pauseTimer: false
+            });
         }
 
         function startFoodGame(mode) {

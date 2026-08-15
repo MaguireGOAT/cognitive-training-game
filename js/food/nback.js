@@ -238,20 +238,12 @@
         }
 
         function showNbackInstruction() {
-            window.nbackInstructionPending = true;
-            showCustomMessage(
-                `看看圖片與上 ${nbackState.n} 張是否相同`,
-                '',
-                [],
-                false,
-                false,
-                true
-            );
-        }
-
-        function finishNbackInstruction() {
-            window.nbackInstructionPending = false;
-            hideOverlay();
+            window.CognitiveMessage.show({
+                title: `看看圖片與上 ${nbackState.n} 張是否相同`,
+                subtitle: '',
+                extraLarge: true,
+                pauseTimer: false
+            });
         }
 
         function changeNbackN(newN) {
@@ -343,8 +335,6 @@
             nbackSpeedDisplay.textContent = nbackState.speed;
             showNbackInstruction();
         }
-
-        window.finishNbackInstruction = finishNbackInstruction;
 
         if (window.CognitiveRouter) {
             window.CognitiveRouter.registerEnter('nbackGame', prepareNbackGame);

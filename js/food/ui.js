@@ -1,40 +1,7 @@
         // ---- 共用彈窗 ----
-        function showCustomMessage(title, subtitle, buttons, isVictory = false, pauseTimer = true, extraLarge = false, titleHtml = false) {
-            const msgIcon = document.getElementById('msgIcon');
-            const msgText = document.getElementById('msgText');
-            const msgSub = document.getElementById('msgSub');
-            const msgBtns = document.getElementById('msgButtons');
-            msgIcon.textContent = isVictory ? '🏆' : '';
-            if (titleHtml) {
-                msgText.innerHTML = title;
-            } else {
-                msgText.textContent = title;
-            }
-            msgText.className = 'msg-text' + (isVictory ? ' victory' : '') + (extraLarge ? ' extra-large' : '');
-            msgSub.textContent = subtitle || '';
-            msgSub.classList.toggle('hidden', !subtitle);
-            msgBtns.innerHTML = '';
-            if (buttons && buttons.length > 0) {
-                const btnGroup = document.createElement('div');
-                btnGroup.className = 'btn-group';
-                buttons.forEach(b => {
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-option ' + (b.class || 'btn-stay');
-                    btn.textContent = b.text;
-                    btn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        if (b.action) b.action();
-                        if (pauseTimer && typeof resumeGngTimer === 'function') resumeGngTimer();
-                    });
-                    btnGroup.appendChild(btn);
-                });
-                msgBtns.appendChild(btnGroup);
-            }
-            document.getElementById('overlay').classList.add('active');
-            if (pauseTimer && typeof pauseGngTimer === 'function') pauseGngTimer();
+        function hideOverlay() {
+            if (window.CognitiveMessage) window.CognitiveMessage.close();
         }
-
-        function hideOverlay() { document.getElementById('overlay').classList.remove('active'); }
 
         // ---- 共用圖片放大 ----
         function openMagnify(src, name, showNameOverride) {
@@ -123,44 +90,6 @@
                 bar.classList.toggle('wrapped', !singleLine);
             });
         }
-
-        document.getElementById('overlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-                if (typeof finishDualNbackInstruction === 'function' && window.dualNbackInstructionPending) {
-                    finishDualNbackInstruction();
-                    return;
-                }
-                if (typeof finishNbackInstruction === 'function' && window.nbackInstructionPending) {
-                    finishNbackInstruction();
-                    return;
-                }
-                if (typeof finishGngIntro === 'function' && window.gngIntroPending) {
-                    finishGngIntro();
-                    return;
-                }
-                if (typeof resumeGngTimer === 'function') resumeGngTimer();
-                const foodGameVisible = !document.getElementById('foodGame').classList.contains('hidden');
-                const hasNextBtn = document.querySelector('#msgButtons .btn-next') !== null;
-                if (foodGameVisible && hasNextBtn && typeof nextFoodRound === 'function') {
-                    nextFoodRound();
-                }
-                const shoppingGameVisible = !document.getElementById('shoppingGame').classList.contains('hidden');
-                if (shoppingGameVisible && typeof shoppingState !== 'undefined') {
-                    if (shoppingState.recallIntroPending && typeof shoppingState.continueRecall === 'function') {
-                        shoppingState.continueRecall();
-                    } else if (shoppingState.introPending && typeof shoppingState.continueIntro === 'function') {
-                        shoppingState.continueIntro();
-                    } else if (shoppingState.roundCompletePending && typeof startShoppingRound === 'function') {
-                        shoppingState.roundCompletePending = false;
-                        startShoppingRound();
-                    } else if (shoppingState.timeoutPending && typeof showShoppingListPhase === 'function') {
-                        shoppingState.timeoutPending = false;
-                        beginShoppingListPhase();
-                    }
-                }
-            }
-        });
 
         // ---- 通用按壓動畫 ----
         const pressSelectors = 'button, [role="button"], .category-btn, .menu-item, .food-card, .different-card, .shopping-list-card, .reality-dot';

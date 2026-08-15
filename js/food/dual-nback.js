@@ -48,8 +48,7 @@
             matchLocked: {},
             score: 0,
             totalTrials: 0,
-            interval: 0,
-            instructionPending: false
+            interval: 0
         };
 
         const dualNbackGame = document.getElementById('dualNbackGame');
@@ -366,16 +365,12 @@
 
         function showDualNbackInstruction() {
             const labels = dualNbackState.channels.map(channel => DUAL_CHANNEL_LABELS[channel]);
-            dualNbackState.instructionPending = true;
-            window.dualNbackInstructionPending = true;
-            showCustomMessage(
-                `看看${labels.join('和')}與上 ${dualNbackState.n} 張是否相同`,
-                '',
-                [],
-                false,
-                false,
-                true
-            );
+            window.CognitiveMessage.show({
+                title: `看看${labels.join('和')}與上 ${dualNbackState.n} 張是否相同`,
+                subtitle: '',
+                extraLarge: true,
+                pauseTimer: false
+            });
         }
 
         function changeDualNbackN(newN) {
@@ -392,14 +387,6 @@
             commitDualNbackTrial(0, false);
             showDualNbackInstruction();
         }
-
-        function finishDualNbackInstruction() {
-            dualNbackState.instructionPending = false;
-            window.dualNbackInstructionPending = false;
-            hideOverlay();
-        }
-
-        window.finishDualNbackInstruction = finishDualNbackInstruction;
 
         function buildDualMatchButtons() {
             dualNbackMatchButtons.innerHTML = '';

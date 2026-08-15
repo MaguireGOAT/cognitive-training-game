@@ -25,14 +25,9 @@
             orderTransitionTimer: null,
             orderTransitionToken: 0,
             roundLocked: false,
-            roundCompletePending: false,
-            timeoutPending: false,
-            recallIntroPending: false,
             feedbackTimer: null,
             wrongFlashTimer: null,
-            introShownOnce: false,
-            continueIntro: null,
-            continueRecall: null,
+            introShownOnce: false
         };
 
         const shoppingGameScreen = document.getElementById('shoppingGame');
@@ -198,17 +193,16 @@
                 if (window.CognitivePrefs) {
                     CognitivePrefs.save('cognitiveShoppingPrefs', prefs);
                 }
-                showCustomMessage(
-                    '設定已儲存',
-                    '下次進入遊戲時會使用已儲存的偏好設定。',
-                    [{
+                window.CognitiveMessage.show({
+                    title: '設定已儲存',
+                    subtitle: '下次進入遊戲時會使用已儲存的偏好設定。',
+                    buttons: [{
                         text: '好的',
-                        class: 'btn-stay',
-                        action: function() { hideOverlay(); }
+                        className: 'btn-stay',
+                        action: function() {}
                     }],
-                    false,
-                    false
-                );
+                    pauseTimer: false
+                });
             });
         }
 
@@ -398,7 +392,6 @@
             stopOrderTransition();
             shoppingState.phase = 'order';
             shoppingState.roundLocked = false;
-            shoppingState.timeoutPending = false;
             shoppingState.completedNames = [];
             shoppingState.nextOrderIndex = 0;
             shoppingListView.classList.add('hidden');
@@ -555,7 +548,6 @@
             stopOrderTransition();
             shoppingState.phase = 'list';
             shoppingState.roundLocked = false;
-            shoppingState.timeoutPending = false;
             shoppingState.completedNames = [];
             shoppingState.nextOrderIndex = 0;
             shoppingListView.classList.remove('hidden');
@@ -590,56 +582,40 @@
         }
 
         function beginShoppingListPhase() {
-            shoppingState.introPending = true;
             const renderBeforeIntro = shoppingState.introShownOnce;
             shoppingState.introShownOnce = true;
             let title;
+            let onDismiss;
             if (shoppingState.orderRequired) {
                 showShoppingOrderPhase(false);
-                shoppingState.continueIntro = function() {
-                    shoppingState.introPending = false;
-                    shoppingState.continueIntro = null;
-                    showShoppingOrderPhase(true);
-                };
+                onDismiss = function() { showShoppingOrderPhase(true); };
                 title = '按順序逐一記住圖片';
             } else {
                 showShoppingListPhase(false, renderBeforeIntro);
-                shoppingState.continueIntro = function() {
-                    shoppingState.introPending = false;
-                    shoppingState.continueIntro = null;
-                    showShoppingListPhase(true);
-                };
+                onDismiss = function() { showShoppingListPhase(true); };
                 const timed = shoppingState.listRevealMode === 'timer';
                 title = timed
                     ? `記住清單，${shoppingState.listSeconds} 秒後開始揀選`
                     : '記住清單，準備好後按<br><span class="start-hint">「開始揀選」</span>';
             }
-            showCustomMessage(
-                title,
-                '',
-                [],
-                false,
-                false,
-                true,
-                true
-            );
+            window.CognitiveMessage.show({
+                title: title,
+                subtitle: '',
+                extraLarge: true,
+                pauseTimer: false,
+                titleHtml: true,
+                onDismiss: onDismiss
+            });
         }
 
         function showShoppingRecallIntro() {
-            shoppingState.recallIntroPending = true;
-            shoppingState.continueRecall = function() {
-                shoppingState.recallIntroPending = false;
-                shoppingState.continueRecall = null;
-                startShoppingRecall();
-            };
-            showCustomMessage(
-                '時間到，開始揀選',
-                '',
-                [],
-                false,
-                false,
-                true
-            );
+            window.CognitiveMessage.show({
+                title: '時間到，開始揀選',
+                subtitle: '',
+                extraLarge: true,
+                pauseTimer: false,
+                onDismiss: startShoppingRecall
+            });
         }
 
         function startShoppingRecall() {
@@ -669,22 +645,19 @@
         function handleShoppingRecallTimeout() {
             if (shoppingState.roundLocked) return;
             shoppingState.roundLocked = true;
-            shoppingState.timeoutPending = true;
             CognitiveAudio.play('wrong');
             showShoppingFeedback('⏰ 時間到！再看一次清單', '#ff9800');
             setTimeout(function() {
-                showCustomMessage(
-                    '⏰ 時間到',
-                    '先記住購物清單，再試一次！',
-                    [{
+                window.CognitiveMessage.show({
+                    title: '⏰ 時間到',
+                    subtitle: '先記住購物清單，再試一次！',
+                    buttons: [{
                         text: '再看清單',
-                        class: 'btn-stay',
-                        action: function() {
-                            hideOverlay();
-                            beginShoppingListPhase();
-                        }
-                    }]
-                );
+                        className: 'btn-stay',
+                        action: beginShoppingListPhase
+                    }],
+                    onDismiss: beginShoppingListPhase
+                });
             }, 400);
         }
 
@@ -731,30 +704,25 @@
         function completeShoppingRound() {
             if (shoppingState.roundLocked) return;
             shoppingState.roundLocked = true;
-            shoppingState.roundCompletePending = true;
             stopShoppingTimer();
             updateShoppingProgress();
             shoppingRecallGrid.querySelectorAll('.shopping-recall-card').forEach(card => {
                 if (!card.classList.contains('selected')) card.classList.add('dimmed');
             });
             CognitiveAudio.play('correct');
-            showCustomMessage(
-                '🎉 買餸完成！',
-                `你正確揀選了 ${shoppingState.list.length} 樣食物，總得分 ${shoppingState.score}！`,
-                [{
+            window.CognitiveMessage.show({
+                title: '🎉 買餸完成！',
+                subtitle: `你正確揀選了 ${shoppingState.list.length} 樣食物，總得分 ${shoppingState.score}！`,
+                buttons: [{
                     text: '下一輪 ➜',
-                    class: 'btn-restart',
-                    action: function() {
-                        hideOverlay();
-                        shoppingState.roundCompletePending = false;
-                        startShoppingRound();
-                    }
-                }]
-            );
+                    className: 'btn-restart',
+                    action: startShoppingRound
+                }],
+                onDismiss: startShoppingRound
+            });
         }
 
         function startShoppingRound() {
-            shoppingState.roundCompletePending = false;
             shoppingState.round++;
             buildShoppingRound();
             beginShoppingListPhase();
@@ -815,18 +783,13 @@
             pauseShoppingTimer();
             stopOrderTransition();
             clearShoppingFeedback();
+            if (window.CognitiveMessage) window.CognitiveMessage.close();
             shoppingState.orderIndex = 0;
             shoppingState.orderMemoryComplete = false;
             shoppingOrderItem.innerHTML = '';
             shoppingOrderIndicator.classList.remove('active');
             shoppingOrderView.classList.add('hidden');
             shoppingState.roundLocked = false;
-            shoppingState.roundCompletePending = false;
-            shoppingState.timeoutPending = false;
-            shoppingState.introPending = false;
-            shoppingState.continueIntro = null;
-            shoppingState.recallIntroPending = false;
-            shoppingState.continueRecall = null;
         }
 
         shoppingManualStartBtn.addEventListener('click', function() {
