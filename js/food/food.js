@@ -216,12 +216,12 @@
                 updateFoodScore();
                 card.classList.add('correct-highlight');
                 cards.forEach(c => c.classList.add('disabled'));
-                if (sfxEnabled) playCorrectSound();
+                CognitiveAudio.play('correct');
                 const encourage = getRandomEncourage();
                 showAnswerMessage('correct', '✅', '正確！', encourage);
             } else {
                 card.classList.add('wrong-highlight');
-                if (sfxEnabled) playWrongSound();
+                CognitiveAudio.play('wrong');
                 showAnswerMessage('wrong', '🔄', '請再選擇', '再試一次，你可以的！');
                 setTimeout(() => { card.classList.remove('wrong-highlight'); }, 600);
             }

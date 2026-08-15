@@ -138,7 +138,7 @@
                 updateDifferentScore();
                 card.classList.add('correct-highlight');
                 Array.from(differentGridContainer.querySelectorAll('.different-card')).forEach(child => child.classList.add('disabled'));
-                if (sfxEnabled) playCorrectSound();
+                CognitiveAudio.play('correct');
                 showCustomMessage(
                     '✅ 正確！',
                     getRandomEncourage(),
@@ -154,7 +154,7 @@
                     false
                 );
             } else {
-                if (sfxEnabled) playWrongSound();
+                CognitiveAudio.play('wrong');
                 card.classList.add('wrong-flash');
                 clearTimeout(differentState.wrongFlashTimer);
                 differentState.wrongFlashTimer = setTimeout(function() {

@@ -195,10 +195,10 @@
                 if (isMatch) nbackState.correctHits++;
                 else nbackState.falseAlarms++;
                 showNbackFeedback('✅ 正確匹配', '#3ba87b');
-                if (sfxEnabled) playCorrectSound();
+                CognitiveAudio.play('correct');
             } else {
                 showNbackFeedback('💪 ' + getRandomWrongEncourage(), '#d95a5a');
-                if (sfxEnabled) playWrongSound();
+                CognitiveAudio.play('wrong');
             }
             nbackState.totalTrials++;
             updateNbackScore();

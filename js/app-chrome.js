@@ -4,6 +4,7 @@
             var THEME_KEY = 'cognitiveAppTheme';
             var MUSIC_KEY = 'cognitiveAppMusic';
             var SFX_KEY = 'cognitiveAppSfx';
+            var audio = window.CognitiveAudio || null;
 
             function read(key, fallback) {
                 try {
@@ -36,12 +37,10 @@
 
             var settings = {
                 theme: read(THEME_KEY, 'light') === 'dark' ? 'dark' : 'light',
-                music: read(MUSIC_KEY, true) !== false,
-                sfx: read(SFX_KEY, true) !== false,
+                music: audio ? audio.getMusicEnabled() : true,
+                sfx: audio ? audio.getSfxEnabled() : true,
                 save: function () {
                     write(THEME_KEY, settings.theme);
-                    write(MUSIC_KEY, settings.music);
-                    write(SFX_KEY, settings.sfx);
                 },
                 setTheme: function (value) {
                     settings.theme = value === 'dark' ? 'dark' : 'light';
@@ -55,50 +54,39 @@
                     settings.save();
                     updateBadges();
                     notifySettingsChanged();
-                    if (settings.music) {
-                        tryPlayMusic();
-                    } else if (bgAudio) {
-                        bgAudio.pause();
-                    }
+                    if (audio) audio.setMusicEnabled(settings.music);
                 },
                 setSfx: function (value) {
                     settings.sfx = !!value;
                     settings.save();
                     updateBadges();
                     notifySettingsChanged();
+                    if (audio) audio.setSfxEnabled(settings.sfx);
                 }
             };
             window.CognitiveSettings = settings;
             applyTheme();
-
-            var bgAudio = document.getElementById('appBgAudio');
-            if (bgAudio) {
-                bgAudio.loop = true;
-                bgAudio.volume = 0.3;
-            }
-            window.CognitiveAudio = { bg: bgAudio };
 
             function applyTheme() {
                 document.documentElement.setAttribute('data-theme', settings.theme);
             }
 
             function refreshSettingsFromStorage() {
+                if (audio) audio.syncFromStorage();
                 settings.theme = read(THEME_KEY, 'light') === 'dark' ? 'dark' : 'light';
-                settings.music = read(MUSIC_KEY, true) !== false;
-                settings.sfx = read(SFX_KEY, true) !== false;
+                settings.music = audio ? audio.getMusicEnabled() : true;
+                settings.sfx = audio ? audio.getSfxEnabled() : true;
                 applyTheme();
                 updateBadges();
                 notifySettingsChanged();
-                if (settings.music) tryPlayMusic();
-                else if (bgAudio) bgAudio.pause();
+                if (audio) {
+                    if (settings.music) audio.playMusic();
+                    else audio.pauseMusic();
+                }
             }
 
             function tryPlayMusic() {
-                if (!bgAudio || !settings.music) return;
-                var promise = bgAudio.play();
-                if (promise && typeof promise.catch === 'function') {
-                    promise.catch(function () {});
-                }
+                if (audio) audio.playMusic();
             }
 
             function badge(on) {

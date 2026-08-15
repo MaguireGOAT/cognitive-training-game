@@ -372,11 +372,11 @@
             if (correct) {
                 gngState.score++;
                 gngState.correctHits++;
-                if (sfxEnabled) playCorrectSound();
+                CognitiveAudio.play('correct');
                 const encourage = getRandomEncourage();
                 showGngFeedback('✅ ' + encourage, '#3ba87b');
             } else {
-                if (sfxEnabled) playWrongSound();
+                CognitiveAudio.play('wrong');
                 const wrongMsg = getRandomWrongEncourage();
                 showGngFeedback('💪 ' + wrongMsg, '#d95a5a');
             }

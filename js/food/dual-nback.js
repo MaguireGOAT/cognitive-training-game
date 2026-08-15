@@ -49,7 +49,6 @@
             score: 0,
             totalTrials: 0,
             interval: 0,
-            audio: null,
             instructionPending: false
         };
 
@@ -239,20 +238,14 @@
             const src = window.CognitiveNbackAudioMap[getDualFoodId(item)] ||
                         window.CognitiveNbackAudioMap[item.name];
             if (!src) return;
-            if (dualNbackState.audio) {
-                dualNbackState.audio.pause();
-                dualNbackState.audio.currentTime = 0;
-            }
-            const audio = new Audio(src);
-            audio.volume = 1;
-            audio.preservesPitch = true;
+            CognitiveAudio.stopFile();
             // Edge clips are generated at 0.5x, so play them at normal speed.
-            audio.playbackRate = dualNbackState.audioRate || 1;
-            const playPromise = audio.play();
-            if (playPromise && typeof playPromise.catch === 'function') {
-                playPromise.catch(function() {});
-            }
-            dualNbackState.audio = audio;
+            CognitiveAudio.playFile(src, {
+                volume: 1,
+                preservesPitch: true,
+                playbackRate: dualNbackState.audioRate || 1,
+                bypassSfx: true
+            });
         }
 
         function commitDualNbackTrial(index, playAudio) {
@@ -295,10 +288,7 @@
             }
             dualNbackState.isPlaying = false;
             syncDualNbackPlayButton();
-            if (dualNbackState.audio) {
-                dualNbackState.audio.pause();
-                dualNbackState.audio.currentTime = 0;
-            }
+            CognitiveAudio.stopFile();
             hideOverlay();
         }
 
@@ -353,9 +343,9 @@
             dualNbackState.totalTrials++;
             if (correct) {
                 dualNbackState.score++;
-                if (sfxEnabled) playCorrectSound();
+                CognitiveAudio.play('correct');
             } else {
-                if (sfxEnabled) playWrongSound();
+                CognitiveAudio.play('wrong');
             }
             updateDualNbackScore();
             flashDualNbackFeedback(correct, channel);

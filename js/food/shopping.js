@@ -670,7 +670,7 @@
             if (shoppingState.roundLocked) return;
             shoppingState.roundLocked = true;
             shoppingState.timeoutPending = true;
-            if (sfxEnabled) playWrongSound();
+            CognitiveAudio.play('wrong');
             showShoppingFeedback('⏰ 時間到！再看一次清單', '#ff9800');
             setTimeout(function() {
                 showCustomMessage(
@@ -712,14 +712,14 @@
                     badge.classList.add('visible');
                 }
                 card.classList.add('selected');
-                if (sfxEnabled) playCorrectSound();
+                CognitiveAudio.play('correct');
                 showShoppingFeedback('✅ 正確！', '#3ba87b');
                 updateShoppingProgress();
                 if (shoppingState.completedNames.length >= shoppingState.list.length) {
                     completeShoppingRound();
                 }
             } else {
-                if (sfxEnabled) playWrongSound();
+                CognitiveAudio.play('wrong');
                 showShoppingFeedback(getRandomWrongEncourage(), '#d95a5a');
                 card.classList.add('wrong-flash');
                 shoppingState.wrongFlashTimer = setTimeout(function() {
@@ -737,7 +737,7 @@
             shoppingRecallGrid.querySelectorAll('.shopping-recall-card').forEach(card => {
                 if (!card.classList.contains('selected')) card.classList.add('dimmed');
             });
-            if (sfxEnabled) playCorrectSound();
+            CognitiveAudio.play('correct');
             showCustomMessage(
                 '🎉 買餸完成！',
                 `你正確揀選了 ${shoppingState.list.length} 樣食物，總得分 ${shoppingState.score}！`,
