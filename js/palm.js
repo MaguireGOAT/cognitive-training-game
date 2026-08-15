@@ -269,6 +269,12 @@
 
     difficultySelect.addEventListener('change', function () {
         currentDifficulty = difficultySelect.value;
+        if (window.CognitiveSettingsStore) {
+            window.CognitiveSettingsStore.save(
+                window.CognitiveSettingsStore.keys.palm,
+                { difficulty: currentDifficulty }
+            );
+        }
         updateGestureLists();
         lastLeft = null;
         lastRight = null;
@@ -278,6 +284,12 @@
 
     handSelect.addEventListener('change', function () {
         currentHand = handSelect.value;
+        if (window.CognitiveSettingsStore) {
+            window.CognitiveSettingsStore.save(
+                window.CognitiveSettingsStore.keys.palm,
+                { hand: currentHand }
+            );
+        }
         updateGestureLists();
         lastLeft = null;
         lastRight = null;
@@ -311,6 +323,19 @@
     }
 
     speedDisplay.textContent = speedLevel;
+
+    if (window.CognitiveSettingsStore) {
+        var palmPrefs = window.CognitiveSettingsStore.load(window.CognitiveSettingsStore.keys.palm);
+        if (palmPrefs && palmPrefs.difficulty) {
+            currentDifficulty = palmPrefs.difficulty;
+        }
+        if (palmPrefs && palmPrefs.hand) {
+            currentHand = palmPrefs.hand;
+        }
+        if (difficultySelect) difficultySelect.value = currentDifficulty;
+        if (handSelect) handSelect.value = currentHand;
+    }
+
     updateGestureLists();
     syncPalmLayout();
 
@@ -322,6 +347,15 @@
                     updateGame();
                 }
                 syncPalmLayout();
+                if (window.CognitiveMessage) {
+                    window.CognitiveMessage.show({
+                        icon: '',
+                        title: '跟住左右手做手勢',
+                        subtitle: '',
+                        extraLarge: true,
+                        pauseTimer: false
+                    });
+                }
             },
             exit: stopAutoPlay,
             back: 'home'

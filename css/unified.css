@@ -138,38 +138,6 @@
             user-select: none;
             -webkit-user-select: none;
         }
-        #palm .menu-group {
-            display: flex;
-            align-items: center;
-            gap: calc(6px * var(--ui-scale));
-        }
-        #palm .menu-label {
-            font-size: calc(18px * var(--ui-scale));
-            font-weight: 600;
-            color: var(--muted-text);
-            white-space: nowrap;
-            transition: color 0.3s;
-        }
-        #palm select {
-            height: calc(44px * var(--ui-scale));
-            font-size: calc(20px * var(--ui-scale));
-            padding: 0 calc(14px * var(--ui-scale));
-            border-radius: calc(30px * var(--ui-scale));
-            border: calc(2px * var(--ui-scale)) solid var(--border-color);
-            background: var(--card-bg);
-            font-weight: 600;
-            color: var(--text-color);
-            cursor: pointer;
-            outline: none;
-            transition: background 0.3s, color 0.3s, border 0.3s;
-        }
-        #palm select option {
-            font-size: inherit;
-        }
-        #palm select:focus-visible {
-            outline: calc(2px * var(--ui-scale)) solid var(--primary-blue);
-        }
-
         #palm .grid-wrapper {
             align-items: stretch;
             padding: calc(8px * var(--ui-scale)) 0;
@@ -185,7 +153,9 @@
             min-height: 0;
             margin: 0 auto;
             cursor: pointer;
+            touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+            transition: transform 0.16s ease, box-shadow 0.16s ease;
         }
         #palm .side {
             flex: 0 0 auto;
@@ -199,8 +169,9 @@
             box-shadow: var(--panel-shadow);
             overflow: hidden;
             padding: calc(12px * var(--ui-scale));
-            transition: background 0.3s, box-shadow 0.3s;
+            transition: background 0.3s, box-shadow 0.16s ease, transform 0.16s ease;
             cursor: pointer;
+            touch-action: manipulation;
         }
         #palm .gesture-image {
             width: 100%;
@@ -239,12 +210,6 @@
         #palm .bottom-controls .center-group {
             gap: calc(14px * var(--ui-scale));
         }
-        #palm .divider-vertical {
-            width: calc(1px * var(--ui-scale));
-            height: calc(28px * var(--ui-scale));
-            background: var(--border-color);
-            transition: background 0.3s;
-        }
 
         /* Equal-height palm controls, loaded after responsive.css */
         #palm #swapBtn,
@@ -269,8 +234,15 @@
             min-width: calc(60px * var(--ui-scale));
             letter-spacing: calc(0.5px * var(--ui-scale));
             line-height: 1.2;
-            transition: background 0.3s, box-shadow 0.3s, color 0.3s;
+            box-shadow: var(--btn-shadow);
+            transition: var(--btn-transition);
             -webkit-tap-highlight-color: transparent;
+        }
+        #palm #swapBtn:hover {
+            background: #1565c0;
+        }
+        [data-theme="dark"] #palm #swapBtn:hover {
+            background: #1565c0;
         }
         #palm #swapBtn:focus-visible {
             outline: calc(3px * var(--ui-scale)) solid #ffb300;
@@ -283,7 +255,7 @@
             background: var(--control-bg-nback);
             padding: 0 calc(10px * var(--ui-scale));
             border-radius: calc(30px * var(--ui-scale));
-            border: calc(2px * var(--ui-scale)) solid var(--primary-blue);
+            border: calc(2px * var(--ui-scale)) solid var(--nback-brown);
             transition: background 0.3s, border 0.3s;
         }
         #palm .speed-btn {
@@ -291,7 +263,7 @@
             height: calc(28px * var(--ui-scale));
             border: none;
             background: transparent;
-            color: var(--primary-blue);
+            color: var(--nback-brown);
             font-size: 1.1rem;
             font-weight: 900;
             cursor: pointer;
@@ -320,7 +292,22 @@
         #palm .play-btn {
             width: calc(47px * var(--ui-scale));
             border-radius: 50%;
+            background: var(--nback-brown);
+        }
+        #palm .play-btn:hover {
+            background: #6D4C41;
+        }
+        [data-theme="dark"] #palm .speed-control {
+            border-color: var(--primary-blue);
+        }
+        [data-theme="dark"] #palm .speed-btn {
+            color: var(--primary-blue);
+        }
+        [data-theme="dark"] #palm .play-btn {
             background: var(--btn-bg);
+        }
+        [data-theme="dark"] #palm .play-btn:hover {
+            background: #1565c0;
         }
 
         /* Physical button press: depth plus scale while held. */
@@ -331,7 +318,9 @@
         .food-card.pressed:not(.disabled),
         .different-card.pressed:not(.disabled),
         .shopping-list-card.pressed:not(.disabled),
-        .reality-dot.pressed:not(.disabled) {
+        .reality-dot.pressed:not(.disabled),
+        #palm .game-board.pressed,
+        #palm .side.pressed {
             transform: translateY(calc(4px * var(--ui-scale))) scale(0.96) !important;
             box-shadow: 0 calc(1px * var(--ui-scale)) 0 rgba(0, 0, 0, 0.18) !important;
         }
@@ -699,10 +688,10 @@
                 padding-right: calc(14px * var(--ui-scale));
                 padding-left: calc(14px * var(--ui-scale));
             }
-            #palm .menu-label {
-                font-size: calc(14px * var(--ui-scale));
+            #palm .dropdown-wrapper {
+                max-width: calc(170px * var(--ui-scale));
             }
-            #palm select {
+            #palm .dropdown-wrapper select {
                 max-width: calc(130px * var(--ui-scale));
             }
         }
@@ -756,6 +745,9 @@
             }
             .dropdown-wrapper select {
                 max-width: calc(90px * var(--ui-scale));
+            }
+            #palm .dropdown-wrapper label {
+                display: none;
             }
             .shopping-memory-time-suffix.active {
                 max-width: 5em;

@@ -92,7 +92,7 @@
         }
 
         // ---- 通用按壓動畫 ----
-        const pressSelectors = 'button, [role="button"], .category-btn, .menu-item, .food-card, .different-card, .shopping-list-card, .reality-dot';
+        const pressSelectors = 'button, [role="button"], .category-btn, .menu-item, .food-card, .different-card, .shopping-list-card, .reality-dot, #palm .game-board, #palm .side';
         const pressedByPointer = new Map();
 
         function isPressDisabled(target) {

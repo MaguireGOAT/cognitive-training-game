@@ -8,7 +8,8 @@
         gng: 'cognitiveGngPrefs',
         different: 'cognitiveDifferentPrefs',
         shopping: 'cognitiveShoppingPrefs',
-        reality: 'realityOrientationSettings'
+        reality: 'realityOrientationSettings',
+        palm: 'cognitivePalmPrefs'
     };
 
     var REALITY_WEATHER_OPTIONS = ['未設定', '晴', '陰', '雨', '雷暴'];
@@ -130,6 +131,17 @@
                     type: 'string',
                     enum: ['未設定'].concat(REALITY_HOMES)
                 }
+            }
+        },
+        cognitivePalmPrefs: {
+            format: 'json',
+            default: {
+                difficulty: 'hard',
+                hand: 'both'
+            },
+            fields: {
+                difficulty: { type: 'string', enum: ['easy', 'hard'] },
+                hand: { type: 'string', enum: ['both', 'palmar'] }
             }
         }
     };

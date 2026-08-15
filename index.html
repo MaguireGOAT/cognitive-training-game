@@ -768,22 +768,20 @@
                 <button class="back-btn" id="palmBackBtn" data-app-back="previous" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
             </div>
             <div class="right-group">
-                <div class="menu-group">
-                    <span class="menu-label">手勢</span>
+                <div class="dropdown-wrapper">
+                    <label for="difficultySelect">手勢</label>
                     <select id="difficultySelect">
                         <option value="easy">包剪揼</option>
                         <option value="hard" selected>全部</option>
                     </select>
                 </div>
-                <span class="separator">|</span>
-                <div class="menu-group">
-                    <span class="menu-label">正反手</span>
+                <div class="dropdown-wrapper">
+                    <label for="handSelect">正反手</label>
                     <select id="handSelect">
                         <option value="both" selected>正反手</option>
                         <option value="palmar">正手</option>
                     </select>
                 </div>
-                <span class="separator">|</span>
                 <button class="hamburger-btn" id="palmMenuBtn" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
             </div>
         </div>
@@ -800,8 +798,12 @@
         </div>
 
         <div class="bottom-controls">
-            <div class="left-group"></div>
-            <div class="center-group palm-controls">
+            <div class="left-group">
+                <div class="speed-control">
+                    <button class="speed-btn" id="speedDown" title="減慢速度">◀</button>
+                    <span class="speed-display" id="speedDisplay">5</span>
+                    <button class="speed-btn" id="speedUp" title="加快速度">▶</button>
+                </div>
                 <button class="play-btn" id="playBtn" title="自動播放">
                     <span class="play-icon">
                         <span class="triangle"></span>
@@ -809,16 +811,11 @@
                         <span class="pause-bar right"></span>
                     </span>
                 </button>
-                <div class="divider-vertical"></div>
+            </div>
+            <div class="center-group palm-controls">
                 <button id="swapBtn" title="交換左右手勢">
                     <span id="swapSymbol">交換</span>
                 </button>
-                <div class="divider-vertical"></div>
-                <div class="speed-control">
-                    <button class="speed-btn" id="speedDown" title="減慢速度">◀</button>
-                    <span class="speed-display" id="speedDisplay">5</span>
-                    <button class="speed-btn" id="speedUp" title="加快速度">▶</button>
-                </div>
             </div>
             <div class="right-group"></div>
         </div>
@@ -879,11 +876,11 @@
     <script src="js/router.js"></script>
     <script src="js/app-chrome.js"></script>
     <script src="js/reality.js"></script>
+    <script src="js/timer.js"></script>
     <script src="js/palm.js"></script>
     <script src="js/food/data.js"></script>
     <script src="js/food/utils.js"></script>
     <script src="js/food/prefs.js"></script>
-    <script src="js/timer.js"></script>
     <script src="js/food/message.js"></script>
     <script src="js/food/ui.js"></script>
     <script src="js/food/food.js"></script>
