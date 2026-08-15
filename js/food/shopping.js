@@ -18,9 +18,8 @@
             completedNames: [],
             nextOrderIndex: 0,
             phase: 'list',
-            timer: null,
-            timerToken: 0,
             countdown: 0,
+            timerActive: false,
             orderIndex: 0,
             orderMemoryComplete: false,
             orderTransitionTimer: null,
@@ -494,7 +493,7 @@
 
         function updateShoppingTimer() {
             const active = shoppingState.phase === 'list' || shoppingState.phase === 'order' || shoppingState.phase === 'recall';
-            if (active && shoppingState.timer) {
+            if (active && shoppingState.timerActive) {
                 shoppingTimer.textContent = `⏱ ${shoppingState.countdown} 秒`;
                 shoppingTimer.classList.toggle('alert', shoppingState.countdown <= 5);
             } else {
@@ -504,27 +503,51 @@
         }
 
         function stopShoppingTimer() {
-            shoppingState.timerToken++;
-            if (shoppingState.timer) {
-                clearInterval(shoppingState.timer);
-                shoppingState.timer = null;
+            shoppingState.timerActive = false;
+            shoppingState.countdown = 0;
+            if (window.CognitiveSession) {
+                window.CognitiveSession.stop();
             }
+        }
+
+        function pauseShoppingTimer() {
+            shoppingState.timerActive = false;
+            shoppingState.countdown = 0;
+            if (window.CognitiveSession) {
+                window.CognitiveSession.pause();
+            }
+        }
+
+        function syncShoppingSessionUi() {
+            updateShoppingTimer();
         }
 
         function startShoppingCountdown(seconds, onExpire) {
             stopShoppingTimer();
             shoppingState.countdown = seconds;
-            const token = ++shoppingState.timerToken;
-            shoppingState.timer = setInterval(function() {
-                if (token !== shoppingState.timerToken) return;
-                shoppingState.countdown--;
-                updateShoppingTimer();
-                if (shoppingState.countdown <= 0) {
-                    stopShoppingTimer();
-                    onExpire();
-                }
-            }, 1000);
+            shoppingState.timerActive = true;
             updateShoppingTimer();
+            if (window.CognitiveSession) {
+                window.CognitiveSession.start({
+                    mode: 'countdown',
+                    durationMs: seconds * 1000,
+                    tickIntervalMs: 1000,
+                    tick: function() {
+                        shoppingState.countdown = Math.max(0, shoppingState.countdown - 1);
+                        updateShoppingTimer();
+                    },
+                    onComplete: function() {
+                        shoppingState.timerActive = false;
+                        shoppingState.countdown = 0;
+                        updateShoppingTimer();
+                        if (typeof onExpire === 'function') {
+                            onExpire();
+                        }
+                    },
+                    onPause: syncShoppingSessionUi,
+                    onResume: syncShoppingSessionUi
+                });
+            }
         }
 
         function showShoppingListPhase(startTimer = true, renderList = true) {
@@ -789,7 +812,7 @@
         }
 
         function pauseShopping() {
-            stopShoppingTimer();
+            pauseShoppingTimer();
             stopOrderTransition();
             clearShoppingFeedback();
             shoppingState.orderIndex = 0;
