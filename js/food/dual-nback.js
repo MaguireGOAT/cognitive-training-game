@@ -111,53 +111,17 @@
             return [];
         }
 
-        function pickDualPlannedIndices(length, n, targetCount, minGap, used) {
-            const excluded = new Set(used || []);
-            for (let attempt = 0; attempt < 80; attempt++) {
-                const indices = window.CognitiveNbackSequence.pickPlannedIndices(
-                    length,
-                    n,
-                    targetCount,
-                    minGap,
-                    excluded
-                );
-                if (indices.length === targetCount && indices.every(index => !excluded.has(index))) {
-                    return indices;
-                }
-            }
-
-            const indices = [];
-            let cursor = n;
-            while (indices.length < targetCount && cursor < length) {
-                if (!excluded.has(cursor)) {
-                    indices.push(cursor);
-                    cursor += minGap;
-                } else {
-                    cursor++;
-                }
-            }
-            return indices;
-        }
-
         function buildDualSequences() {
             dualNbackState.sequences = {};
             if (!window.CognitiveNbackSequence) return;
-            const used = new Set();
+            const matchProbability = window.CognitiveNbackSequence.matchProbability || 0.25;
             dualNbackState.channels.forEach(channel => {
                 const choices = getDualChannelChoices(channel);
-                const plannedIndices = pickDualPlannedIndices(
-                    DUAL_NBACK_SEQUENCE_LENGTH,
-                    dualNbackState.n,
-                    window.CognitiveNbackSequence.targetCount,
-                    window.CognitiveNbackSequence.minGap,
-                    used
-                );
-                plannedIndices.forEach(index => used.add(index));
                 dualNbackState.sequences[channel] = window.CognitiveNbackSequence.generateStream(
                     choices,
                     dualNbackState.n,
                     DUAL_NBACK_SEQUENCE_LENGTH,
-                    plannedIndices,
+                    matchProbability,
                     value => getDualChannelValue(channel, value),
                     value => cloneDualChannelValue(channel, value)
                 );
