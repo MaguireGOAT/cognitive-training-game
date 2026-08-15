@@ -62,26 +62,11 @@
         const shoppingSaveSettingsBtn = document.getElementById('shoppingSaveSettingsBtn');
 
         let shoppingOrderBulbHideTimer = null;
+        const shoppingCountdownTimer = window.CognitiveActivityTimer.create();
 
-        const shoppingPreferences = window.CognitivePrefs ? CognitivePrefs.load(
-            'cognitiveShoppingPrefs',
-            {
-                listDisplayMode: 'image',
-                listCount: 3,
-                memoryTime: 'manual',
-                choiceCount: 6,
-                orderRequired: false,
-                recallTime: '0'
-            },
-            {
-                listDisplayMode: ['image', 'name'],
-                listCount: [2, 3, 4, 5, 6],
-                memoryTime: ['1', '3', '5', '10', '15', '20', 'manual'],
-                choiceCount: [4, 6, 8],
-                orderRequired: 'boolean',
-                recallTime: ['0', '15', '30', '45', '60']
-            }
-        ) : null;
+        const shoppingPreferences = window.CognitivePrefs
+            ? CognitivePrefs.load('cognitiveShoppingPrefs')
+            : null;
 
         if (shoppingPreferences) {
             shoppingListDisplayMode.value = shoppingPreferences.listDisplayMode;
@@ -498,17 +483,13 @@
         function stopShoppingTimer() {
             shoppingState.timerActive = false;
             shoppingState.countdown = 0;
-            if (window.CognitiveSession) {
-                window.CognitiveSession.stop();
-            }
+            shoppingCountdownTimer.stop();
         }
 
         function pauseShoppingTimer() {
             shoppingState.timerActive = false;
             shoppingState.countdown = 0;
-            if (window.CognitiveSession) {
-                window.CognitiveSession.pause();
-            }
+            shoppingCountdownTimer.pause();
         }
 
         function syncShoppingSessionUi() {
@@ -520,27 +501,25 @@
             shoppingState.countdown = seconds;
             shoppingState.timerActive = true;
             updateShoppingTimer();
-            if (window.CognitiveSession) {
-                window.CognitiveSession.start({
-                    mode: 'countdown',
-                    durationMs: seconds * 1000,
-                    tickIntervalMs: 1000,
-                    tick: function() {
-                        shoppingState.countdown = Math.max(0, shoppingState.countdown - 1);
-                        updateShoppingTimer();
-                    },
-                    onComplete: function() {
-                        shoppingState.timerActive = false;
-                        shoppingState.countdown = 0;
-                        updateShoppingTimer();
-                        if (typeof onExpire === 'function') {
-                            onExpire();
-                        }
-                    },
-                    onPause: syncShoppingSessionUi,
-                    onResume: syncShoppingSessionUi
-                });
-            }
+            shoppingCountdownTimer.start({
+                mode: 'countdown',
+                durationMs: seconds * 1000,
+                tickIntervalMs: 1000,
+                tick: function() {
+                    shoppingState.countdown = Math.max(0, shoppingState.countdown - 1);
+                    updateShoppingTimer();
+                },
+                onComplete: function() {
+                    shoppingState.timerActive = false;
+                    shoppingState.countdown = 0;
+                    updateShoppingTimer();
+                    if (typeof onExpire === 'function') {
+                        onExpire();
+                    }
+                },
+                onPause: syncShoppingSessionUi,
+                onResume: syncShoppingSessionUi
+            });
         }
 
         function showShoppingListPhase(startTimer = true, renderList = true) {
@@ -826,21 +805,21 @@
         });
 
         shoppingBackBtn.addEventListener('click', function() {
-            pauseShopping();
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             } else {
                 shoppingGameScreen.style.display = 'none';
                 shoppingSettingsScreen.classList.remove('hidden');
+                pauseShopping();
             }
         });
 
         shoppingSettingsBackBtn.addEventListener('click', function() {
-            pauseShopping();
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             } else {
                 shoppingSettingsScreen.classList.add('hidden');
+                pauseShopping();
                 goToMainMenu();
             }
         });
@@ -850,8 +829,14 @@
         shoppingTimer.textContent = '--';
 
         if (window.CognitiveRouter) {
-            window.CognitiveRouter.registerExit('shoppingGame', pauseShopping);
-            window.CognitiveRouter.registerExit('shoppingSettings', pauseShopping);
+            window.CognitiveRouter.defineScreen('shoppingSettings', {
+                exit: pauseShopping,
+                back: 'mainMenu'
+            });
+            window.CognitiveRouter.defineScreen('shoppingGame', {
+                exit: pauseShopping,
+                back: 'shoppingSettings'
+            });
         }
 
         // =============================================================

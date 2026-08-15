@@ -20,6 +20,7 @@
             matchPending: false,
             roundCounter: 0,
             timerPaused: false,
+            messagePaused: false,
         };
 
         const gngGridContainer = document.getElementById('gngGridContainer');
@@ -44,23 +45,10 @@
         const gngStartBtn = document.getElementById('gngStartBtn');
         const gngSaveSettingsBtn = document.getElementById('gngSaveSettingsBtn');
 
-        const gngPreferences = window.CognitivePrefs ? CognitivePrefs.load(
-            'cognitiveGngPrefs',
-            {
-                goCategory: '水果',
-                noGoCategory: '全部',
-                autoSwitch: false,
-                switchType: 'swap',
-                switchFreq: 10
-            },
-            {
-                goCategory: ['全部', ...CATEGORY_NAMES],
-                noGoCategory: ['全部', ...CATEGORY_NAMES],
-                autoSwitch: 'boolean',
-                switchType: ['random', 'swap'],
-                switchFreq: [5, 10, 15, 20]
-            }
-        ) : null;
+        const gngPreferences = window.CognitivePrefs
+            ? CognitivePrefs.load('cognitiveGngPrefs')
+            : null;
+        const gngTimer = window.CognitiveActivityTimer.create();
 
         function updateGngInterval() {
             const maxDelay = 6000,
@@ -69,8 +57,8 @@
             gngState.interval = maxDelay - factor * (maxDelay - minDelay);
         }
 
-        function getGngSessionConfig() {
-            return {
+        function startGngSession() {
+            gngTimer.start({
                 mode: 'repeating',
                 intervalMs: gngState.interval,
                 tick: function () {
@@ -80,13 +68,7 @@
                 },
                 onPause: syncGngSessionUi,
                 onResume: syncGngSessionUi
-            };
-        }
-
-        function startGngSession() {
-            if (window.CognitiveSession) {
-                window.CognitiveSession.start(getGngSessionConfig());
-            }
+            });
         }
 
         function syncGngPlayButton() {
@@ -94,14 +76,17 @@
         }
 
         function syncGngSessionUi() {
-            const sessionActive = !window.CognitiveSession ||
-                (!window.CognitiveSession.paused && window.CognitiveSession.running);
-            gngPlayBtn.classList.toggle('playing', gngState.isPlaying && (gngState.timerPaused || sessionActive));
+            gngState.messagePaused = gngTimer.isPaused() && !gngState.timerPaused;
+            gngPlayBtn.classList.toggle('playing', gngState.isPlaying && (gngState.timerPaused || gngTimer.isRunning()));
         }
 
         function resetGngTimer() {
             if (!gngState.isPlaying || gngState.timerPaused) return;
             updateGngInterval();
+            if (gngState.messagePaused && gngTimer.isPaused()) {
+                gngTimer.restart(gngState.interval);
+                return;
+            }
             startGngSession();
         }
 
@@ -264,16 +249,7 @@
         function pauseGngTimer() {
             if (!gngState.isPlaying || gngState.timerPaused) return;
             gngState.timerPaused = true;
-            if (window.CognitiveSession) {
-                window.CognitiveSession.pause();
-            }
-        }
-
-        function resumeGngTimer() {
-            if (gngState.isPlaying && gngState.timerPaused) {
-                gngState.timerPaused = false;
-                resetGngTimer();
-            }
+            gngTimer.pause();
         }
 
         function startGng() {
@@ -285,6 +261,7 @@
             gngState.correctHits = 0;
             gngState.roundCounter = 0;
             gngState.timerPaused = false;
+            gngState.messagePaused = false;
             updateGngScore();
             updateGngRuleDisplay(false);
             gngState.isPlaying = true;
@@ -294,11 +271,10 @@
         }
 
         function pauseGng() {
-            if (window.CognitiveSession) {
-                window.CognitiveSession.pause();
-            }
+            gngTimer.pause();
             gngState.isPlaying = false;
             gngState.timerPaused = false;
+            gngState.messagePaused = false;
             syncGngPlayButton();
         }
 
@@ -451,7 +427,6 @@
             gngState.switchFreq = parseInt(gngSwitchFreq.value, 10);
             gngState.roundCounter = 0;
             updateGngRuleDisplay(false);
-            pauseGng();
             gngState.score = 0;
             gngState.totalTrials = 0;
             gngState.correctHits = 0;
@@ -475,21 +450,21 @@
         });
 
         gngBackBtn.addEventListener('click', function() {
-            pauseGng();
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             } else {
                 document.getElementById('gngGame').style.display = 'none';
                 document.getElementById('gngSettings').classList.remove('hidden');
+                pauseGng();
             }
         });
 
         gngSettingsBackBtn.addEventListener('click', function() {
-            pauseGng();
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             } else {
                 document.getElementById('gngSettings').classList.add('hidden');
+                pauseGng();
                 goToMainMenu();
             }
         });
@@ -618,12 +593,15 @@
             });
         }
 
-        window.pauseGngTimer = pauseGngTimer;
-        window.resumeGngTimer = resumeGngTimer;
-
         if (window.CognitiveRouter) {
-            window.CognitiveRouter.registerExit('gngGame', pauseGng);
-            window.CognitiveRouter.registerExit('gngSettings', pauseGng);
+            window.CognitiveRouter.defineScreen('gngSettings', {
+                exit: pauseGng,
+                back: 'mainMenu'
+            });
+            window.CognitiveRouter.defineScreen('gngGame', {
+                exit: pauseGng,
+                back: 'gngSettings'
+            });
         }
 
         // =============================================================

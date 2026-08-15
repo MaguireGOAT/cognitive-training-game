@@ -22,7 +22,8 @@
     <link rel="stylesheet" href="css/shopping.css" />
     <link rel="stylesheet" href="css/different.css" />
     <link rel="stylesheet" href="css/unified.css" />
-    <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('cognitiveAppTheme')==='dark'?'dark':'light');}catch(e){}</script>
+    <script src="js/settings.js"></script>
+    <script>try{document.documentElement.setAttribute('data-theme',CognitiveSettingsStore.load(CognitiveSettingsStore.keys.theme).theme==='dark'?'dark':'light');}catch(e){}</script>
 </head>
 <body>
 
@@ -875,14 +876,14 @@
     <audio id="appBgAudio" src="assets/audio/background.mp3" loop preload="auto"></audio>
 
     <script src="js/food/audio.js"></script>
-    <script src="js/app-chrome.js"></script>
     <script src="js/router.js"></script>
-    <script src="js/session.js"></script>
+    <script src="js/app-chrome.js"></script>
     <script src="js/reality.js"></script>
     <script src="js/palm.js"></script>
     <script src="js/food/data.js"></script>
     <script src="js/food/utils.js"></script>
     <script src="js/food/prefs.js"></script>
+    <script src="js/timer.js"></script>
     <script src="js/food/message.js"></script>
     <script src="js/food/ui.js"></script>
     <script src="js/food/food.js"></script>

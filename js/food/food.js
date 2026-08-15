@@ -409,11 +409,17 @@
         });
 
         if (window.CognitiveRouter) {
-            window.CognitiveRouter.registerEnter('foodCategorySelect', function () {
-                buildFoodCategoryGrid();
-                updateFoodMenuButtons();
+            window.CognitiveRouter.defineScreen('foodCategorySelect', {
+                enter: function () {
+                    buildFoodCategoryGrid();
+                    updateFoodMenuButtons();
+                },
+                back: 'mainMenu'
             });
-            window.CognitiveRouter.registerExit('foodGame', hideOverlay);
+            window.CognitiveRouter.defineScreen('foodGame', {
+                exit: hideOverlay,
+                back: 'foodCategorySelect'
+            });
         }
 
         // =============================================================

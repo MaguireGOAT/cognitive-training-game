@@ -34,6 +34,7 @@
         const nbackBackBtn = document.getElementById('nbackBackBtn');
         const nbackMagnifyBtn = document.getElementById('nbackMagnifyBtn');
         const NBACK_TRANSITION_MS = 240;
+        const nbackTimer = window.CognitiveActivityTimer.create();
 
         function updateNbackInterval() {
             const maxDelay = 3000,
@@ -42,8 +43,8 @@
             nbackState.interval = maxDelay - factor * (maxDelay - minDelay);
         }
 
-        function getNbackSessionConfig() {
-            return {
+        function startNbackSession() {
+            nbackTimer.start({
                 mode: 'repeating',
                 intervalMs: nbackState.interval,
                 tick: function () {
@@ -53,13 +54,7 @@
                 },
                 onPause: syncNbackSessionUi,
                 onResume: syncNbackSessionUi
-            };
-        }
-
-        function startNbackSession() {
-            if (window.CognitiveSession) {
-                window.CognitiveSession.start(getNbackSessionConfig());
-            }
+            });
         }
 
         function syncNbackPlayButton() {
@@ -67,9 +62,7 @@
         }
 
         function syncNbackSessionUi() {
-            var active = nbackState.isPlaying &&
-                (!window.CognitiveSession ||
-                    (!window.CognitiveSession.paused && window.CognitiveSession.running));
+            var active = nbackState.isPlaying && nbackTimer.isRunning();
             nbackPlayBtn.classList.toggle('playing', active);
         }
 
@@ -80,14 +73,16 @@
         }
 
         // Brain Workshop-style random match generation: each trial has a set
-        // probability of matching the stimulus N trials earlier.
+        // probability of matching the stimulus N trials earlier. The planner
+        // keeps identity and match status in the trial itself.
         function generateNbackSequence(length = 50) {
-            return window.CognitiveSequence.generateStream({
+            return window.CognitiveSequence.generateTrials({
                 choices: FOOD_DATA,
                 n: nbackState.n,
                 length,
                 matchProbability: window.CognitiveSequence.matchProbability,
-                cloneValue: item => ({ ...item })
+                cloneValue: item => ({ ...item }),
+                keyFor: item => item.name
             });
         }
 
@@ -103,7 +98,8 @@
             nbackState.transitioning = false;
         }
 
-        function commitNbackItem(item, index) {
+        function commitNbackItem(trial, index) {
+            const item = trial && trial.value ? trial.value : trial;
             nbackImage.style.display = 'block';
             nbackMagnifyBtn.style.display = 'flex';
             nbackImage.style.backgroundColor = 'transparent';
@@ -135,17 +131,13 @@
 
         function pauseNback() {
             clearNbackTransition();
-            if (window.CognitiveSession) {
-                window.CognitiveSession.pause();
-            }
+            nbackTimer.pause();
             nbackState.isPlaying = false;
             syncNbackPlayButton();
         }
 
         function holdNbackTimer() {
-            if (window.CognitiveSession) {
-                window.CognitiveSession.stop();
-            }
+            nbackTimer.stop();
         }
 
         function nextNbackImage(fromTimer = false) {
@@ -163,10 +155,10 @@
                     nbackState.sequence = generateNbackSequence(50);
                     nbackState.currentIndex = 0;
                 }
-                const item = nbackState.sequence[nbackState.currentIndex];
+                const trial = nbackState.sequence[nbackState.currentIndex];
                 nbackImageContainer.classList.remove('is-exiting');
                 nbackImageContainer.classList.add('is-entering');
-                commitNbackItem(item, nbackState.currentIndex);
+                commitNbackItem(trial, nbackState.currentIndex);
                 nbackState.transitionTimer = setTimeout(() => {
                     if (token !== nbackState.animationToken) return;
                     nbackImageContainer.classList.remove('is-entering');
@@ -178,14 +170,14 @@
 
         function handleNbackMatch(isMatch) {
             if (nbackState.currentIndex < 0 || nbackState.matchPending || nbackState.transitioning) return;
-            const current = nbackState.currentItem;
-            const targetIndex = nbackState.currentIndex - nbackState.n;
-            if (targetIndex < 0) {
+            if (nbackState.currentIndex < nbackState.n) {
                 showNbackFeedback('還不夠 N 步', '#ffaa00');
                 return;
             }
-            const targetItem = nbackState.sequence[targetIndex];
-            const actualMatch = (targetItem.name === current.name);
+            const actualMatch = Boolean(
+                nbackState.sequence[nbackState.currentIndex] &&
+                nbackState.sequence[nbackState.currentIndex].isMatch
+            );
             const correct = (isMatch === actualMatch);
             nbackState.matchPending = true;
             holdNbackTimer();
@@ -282,11 +274,11 @@
         });
 
         nbackBackBtn.addEventListener('click', function() {
-            pauseNback();
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             } else {
                 document.getElementById('nbackGame').style.display = 'none';
+                pauseNback();
                 goToMainMenu();
             }
         });
@@ -315,7 +307,7 @@
             if (nbackState.sequence.length === 0) {
                 nbackState.sequence = generateNbackSequence(50);
                 nbackState.currentIndex = 0;
-                nbackState.currentItem = nbackState.sequence[0];
+                nbackState.currentItem = nbackState.sequence[0].value;
                 nbackState.matchPending = false;
                 nbackState.score = 0;
                 nbackState.totalTrials = 0;
@@ -337,8 +329,11 @@
         }
 
         if (window.CognitiveRouter) {
-            window.CognitiveRouter.registerEnter('nbackGame', prepareNbackGame);
-            window.CognitiveRouter.registerExit('nbackGame', pauseNback);
+            window.CognitiveRouter.defineScreen('nbackGame', {
+                enter: prepareNbackGame,
+                exit: pauseNback,
+                back: 'nbackModeSelect'
+            });
         }
 
         // =============================================================

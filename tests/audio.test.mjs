@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const { createAudioEngine } = require('../js/food/audio.js');
+const { createSettingsStore } = require('../js/settings.js');
 
 function createStorage(initial) {
     const data = new Map(Object.entries(initial || {}));
@@ -47,6 +48,7 @@ function createAdapters(overrides) {
     const storage = overrides && overrides.storage
         ? overrides.storage
         : createStorage();
+    const settingsStore = createSettingsStore({ storage });
     const tone = createToneContext();
     const players = [];
     const background = {
@@ -69,6 +71,7 @@ function createAdapters(overrides) {
         background,
         adapters: {
             storage,
+            settingsStore,
             schedule: () => 1,
             cancel: () => {},
             createToneContext: () => tone.context,

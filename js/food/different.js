@@ -19,11 +19,9 @@
         const differentBackBtn = document.getElementById('differentBackBtn');
         const differentCountSelect = document.getElementById('differentCountSelect');
 
-        const differentPreferences = window.CognitivePrefs ? CognitivePrefs.load(
-            'cognitiveDifferentPrefs',
-            { imageCount: 4 },
-            { imageCount: [3, 4, 5, 6] }
-        ) : null;
+        const differentPreferences = window.CognitivePrefs
+            ? CognitivePrefs.load('cognitiveDifferentPrefs')
+            : null;
 
         if (differentPreferences) {
             differentState.imageCount = differentPreferences.imageCount;
@@ -208,11 +206,11 @@
         }
 
         differentBackBtn.addEventListener('click', function() {
-            pauseDifferent();
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             } else {
                 differentGameScreen.style.display = 'none';
+                pauseDifferent();
                 goToMainMenu();
             }
         });
@@ -232,8 +230,11 @@
         updateDifferentRound();
 
         if (window.CognitiveRouter) {
-            window.CognitiveRouter.registerEnter('differentGame', prepareDifferentGame);
-            window.CognitiveRouter.registerExit('differentGame', pauseDifferent);
+            window.CognitiveRouter.defineScreen('differentGame', {
+                enter: prepareDifferentGame,
+                exit: pauseDifferent,
+                back: 'mainMenu'
+            });
         }
 
         // =============================================================

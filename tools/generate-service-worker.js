@@ -10,6 +10,7 @@ const ignored = new Set([
   '.gitignore',
   'node_modules',
   'tools',
+  'tests',
   'optimization-preview',
   'package.json',
   'package-lock.json'

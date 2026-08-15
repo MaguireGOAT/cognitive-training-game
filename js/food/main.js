@@ -13,11 +13,6 @@
         const slideMenu = document.getElementById('slideMenu');
 
         function goToMainMenu() {
-            if (typeof window.pauseDualNback === 'function') window.pauseDualNback();
-            pauseNback();
-            pauseGng();
-            pauseDifferent();
-            pauseShopping();
             slideMenu.classList.remove('open');
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
@@ -31,11 +26,16 @@
             } else if (gameId === 'gng') {
                 window.CognitiveRouter.navigate('gngSettings');
             } else if (gameId === 'different') {
-                pauseDifferent();
                 window.CognitiveRouter.navigate('differentGame');
             } else if (gameId === 'shopping') {
                 window.CognitiveRouter.navigate('shoppingSettings');
             }
+        }
+
+        if (window.CognitiveRouter) {
+            window.CognitiveRouter.defineScreen('mainMenu', {
+                back: 'home'
+            });
         }
 
         document.getElementById('gameFoodBtn').addEventListener('click', () => switchGame('food'));

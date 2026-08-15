@@ -14,9 +14,17 @@ function makeRandom(values) {
     };
 }
 
+function values(trials) {
+    return trials.map(trial => trial.value);
+}
+
+function matches(trials) {
+    return trials.map(trial => trial.isMatch);
+}
+
 test('empty sequence returns an empty array', function () {
     assert.deepEqual(
-        CognitiveSequence.generateStream({
+        CognitiveSequence.generateTrials({
             choices: ['A'],
             n: 1,
             length: 0,
@@ -27,7 +35,7 @@ test('empty sequence returns an empty array', function () {
 });
 
 test('first n trials are random choices, not copies', function () {
-    const sequence = CognitiveSequence.generateStream({
+    const trials = CognitiveSequence.generateTrials({
         choices: ['A', 'B'],
         n: 2,
         length: 2,
@@ -35,11 +43,12 @@ test('first n trials are random choices, not copies', function () {
         random: makeRandom([0, 0.99])
     });
 
-    assert.deepEqual(sequence, ['A', 'B']);
+    assert.deepEqual(values(trials), ['A', 'B']);
+    assert.deepEqual(matches(trials), [false, false]);
 });
 
 test('forced match copies the item from n trials back', function () {
-    const sequence = CognitiveSequence.generateStream({
+    const trials = CognitiveSequence.generateTrials({
         choices: ['A', 'B'],
         n: 2,
         length: 4,
@@ -47,11 +56,12 @@ test('forced match copies the item from n trials back', function () {
         random: makeRandom([0, 0.99])
     });
 
-    assert.deepEqual(sequence, ['A', 'B', 'A', 'B']);
+    assert.deepEqual(values(trials), ['A', 'B', 'A', 'B']);
+    assert.deepEqual(matches(trials), [false, false, true, true]);
 });
 
-test('non-match draws a fresh random item', function () {
-    const sequence = CognitiveSequence.generateStream({
+test('non-match draws a fresh random item and avoids accidental matches', function () {
+    const trials = CognitiveSequence.generateTrials({
         choices: ['A', 'B'],
         n: 1,
         length: 3,
@@ -59,12 +69,43 @@ test('non-match draws a fresh random item', function () {
         random: makeRandom([0, 0, 0.99, 0, 0, 0])
     });
 
-    assert.deepEqual(sequence, ['A', 'B', 'A']);
+    assert.deepEqual(values(trials), ['A', 'B', 'A']);
+    assert.deepEqual(matches(trials), [false, false, false]);
+});
+
+test('keyFor controls identity for object values', function () {
+    const appleOne = { name: 'apple', id: 1 };
+    const appleTwo = { name: 'apple', id: 2 };
+    const pear = { name: 'pear', id: 3 };
+    const trials = CognitiveSequence.generateTrials({
+        choices: [appleOne, appleTwo, pear],
+        n: 1,
+        length: 3,
+        matchProbability: 0,
+        keyFor: value => value.name,
+        random: makeRandom([0, 0, 0.99, 0, 0, 0])
+    });
+
+    assert.deepEqual(values(trials), [appleOne, pear, appleOne]);
+    assert.deepEqual(matches(trials), [false, false, false]);
+});
+
+test('fallback marks a match when no different choice exists', function () {
+    const trials = CognitiveSequence.generateTrials({
+        choices: ['A'],
+        n: 1,
+        length: 2,
+        matchProbability: 0,
+        random: () => 0
+    });
+
+    assert.deepEqual(values(trials), ['A', 'A']);
+    assert.deepEqual(matches(trials), [false, true]);
 });
 
 test('cloneValue prevents shared object references', function () {
     const choice = { name: 'apple' };
-    const sequence = CognitiveSequence.generateStream({
+    const trials = CognitiveSequence.generateTrials({
         choices: [choice],
         n: 1,
         length: 2,
@@ -73,7 +114,29 @@ test('cloneValue prevents shared object references', function () {
         random: () => 0
     });
 
-    assert.notEqual(sequence[0], sequence[1]);
-    assert.deepEqual(sequence[0], { name: 'apple' });
-    assert.deepEqual(sequence[1], { name: 'apple' });
+    assert.notEqual(trials[0].value, trials[1].value);
+    assert.deepEqual(trials[0].value, { name: 'apple' });
+    assert.deepEqual(trials[1].value, { name: 'apple' });
+    assert.deepEqual(matches(trials), [false, true]);
+});
+
+test('independent planner calls keep trial streams separate', function () {
+    const first = CognitiveSequence.generateTrials({
+        choices: [0, 1],
+        n: 1,
+        length: 4,
+        matchProbability: 0,
+        random: makeRandom([0, 0, 0.99, 0.99, 0, 0, 0.99, 0.99])
+    });
+    const second = CognitiveSequence.generateTrials({
+        choices: [0, 1],
+        n: 1,
+        length: 4,
+        matchProbability: 0,
+        random: makeRandom([0.99, 0.99, 0, 0, 0.99, 0.99, 0, 0])
+    });
+
+    assert.deepEqual(values(first), [0, 1, 0, 1]);
+    assert.deepEqual(values(second), [1, 0, 1, 0]);
+    assert.notDeepEqual(first, second);
 });

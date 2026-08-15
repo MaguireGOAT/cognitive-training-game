@@ -67,31 +67,22 @@
         const realityStage = document.getElementById('realityStage');
 
         function loadRealitySettings() {
-            try {
-                const raw = localStorage.getItem(REALITY_STORAGE_KEY);
-                if (!raw) return;
-                const saved = JSON.parse(raw);
-                if (REALITY_WEATHER_OPTIONS.includes(saved.weather)) realityState.weather = saved.weather;
-                const oldSeasonNames = { '春': '春天', '夏': '夏天', '秋': '秋天', '冬': '冬天' };
-                const seasonValue = oldSeasonNames[saved.season] || saved.season;
-                if (REALITY_SEASON_OPTIONS.includes(seasonValue)) realityState.season = seasonValue;
-                if (saved.location === '未設定' || REALITY_HOMES.includes(saved.location)) {
-                    realityState.location = saved.location;
-                }
-            } catch (e) {
-                // 忽略損毀的儲存資料
-            }
+            const saved = window.CognitiveSettingsStore
+                ? CognitiveSettingsStore.load(REALITY_STORAGE_KEY)
+                : null;
+            if (!saved) return;
+            realityState.weather = saved.weather;
+            realityState.season = saved.season;
+            realityState.location = saved.location;
         }
 
         function saveRealitySettings() {
-            try {
-                localStorage.setItem(REALITY_STORAGE_KEY, JSON.stringify({
+            if (window.CognitiveSettingsStore) {
+                CognitiveSettingsStore.save(REALITY_STORAGE_KEY, {
                     weather: realityState.weather,
                     season: realityState.season,
-                    location: realityState.location,
-                }));
-            } catch (e) {
-                // 忽略儲存失敗
+                    location: realityState.location
+                });
             }
         }
 
@@ -621,13 +612,19 @@
         updateRealityClock();
 
         if (window.CognitiveRouter) {
-            window.CognitiveRouter.registerEnter('realityBoard', function () {
-                realityState.currentPageIndex = 0;
-                renderRealityBoard();
-                fitRealityText();
-                startRealityClock();
+            window.CognitiveRouter.defineScreen('realityBoard', {
+                enter: function () {
+                    realityState.currentPageIndex = 0;
+                    renderRealityBoard();
+                    fitRealityText();
+                    startRealityClock();
+                },
+                exit: stopRealityClock,
+                back: 'home'
             });
-            window.CognitiveRouter.registerExit('realityBoard', stopRealityClock);
-            window.CognitiveRouter.registerEnter('realitySettings', openRealitySettings);
+            window.CognitiveRouter.defineScreen('realitySettings', {
+                enter: openRealitySettings,
+                back: 'realityBoard'
+            });
         }
         })();

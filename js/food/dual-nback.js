@@ -80,6 +80,7 @@
         const dualStartBtn = document.getElementById('dualStartBtn');
 
         let dualFeedbackTimer = null;
+        const dualNbackTimer = window.CognitiveActivityTimer.create();
 
         function getDualFoodId(item) {
             return item.id || item.name;
@@ -114,12 +115,13 @@
             if (!window.CognitiveSequence) return;
             dualNbackState.channels.forEach(channel => {
                 const choices = getDualChannelChoices(channel);
-                dualNbackState.sequences[channel] = window.CognitiveSequence.generateStream({
+                dualNbackState.sequences[channel] = window.CognitiveSequence.generateTrials({
                     choices: choices,
                     n: dualNbackState.n,
                     length: DUAL_NBACK_SEQUENCE_LENGTH,
                     matchProbability: window.CognitiveSequence.matchProbability,
-                    cloneValue: value => cloneDualChannelValue(channel, value)
+                    cloneValue: value => cloneDualChannelValue(channel, value),
+                    keyFor: value => getDualChannelValue(channel, value)
                 });
             });
         }
@@ -131,8 +133,8 @@
             dualNbackState.interval = maxDelay - factor * (maxDelay - minDelay);
         }
 
-        function getDualNbackSessionConfig() {
-            return {
+        function startDualNbackSession() {
+            dualNbackTimer.start({
                 mode: 'repeating',
                 intervalMs: dualNbackState.interval,
                 tick: function () {
@@ -142,13 +144,7 @@
                 },
                 onPause: syncDualNbackSessionUi,
                 onResume: syncDualNbackSessionUi
-            };
-        }
-
-        function startDualNbackSession() {
-            if (window.CognitiveSession) {
-                window.CognitiveSession.start(getDualNbackSessionConfig());
-            }
+            });
         }
 
         function syncDualNbackPlayButton() {
@@ -156,9 +152,7 @@
         }
 
         function syncDualNbackSessionUi() {
-            const active = dualNbackState.isPlaying &&
-                (!window.CognitiveSession ||
-                    (!window.CognitiveSession.paused && window.CognitiveSession.running));
+            const active = dualNbackState.isPlaying && dualNbackTimer.isRunning();
             dualNbackPlayBtn.classList.toggle('playing', active);
         }
 
@@ -169,9 +163,7 @@
         }
 
         function holdDualNbackTimer() {
-            if (window.CognitiveSession) {
-                window.CognitiveSession.stop();
-            }
+            dualNbackTimer.stop();
         }
 
         function getDualVisibleContent() {
@@ -254,7 +246,8 @@
             dualNbackState.matchLocked = {};
 
             dualNbackState.channels.forEach(channel => {
-                dualNbackState.currentItems[channel] = dualNbackState.sequences[channel][index];
+                const trial = dualNbackState.sequences[channel][index];
+                dualNbackState.currentItems[channel] = trial ? trial.value : undefined;
                 dualNbackState.matchLocked[channel] = false;
             });
 
@@ -282,9 +275,7 @@
         }
 
         function pauseDual() {
-            if (window.CognitiveSession) {
-                window.CognitiveSession.pause();
-            }
+            dualNbackTimer.pause();
             dualNbackState.isPlaying = false;
             syncDualNbackPlayButton();
             CognitiveAudio.stopFile();
@@ -330,13 +321,8 @@
             if (dualNbackState.currentIndex < 0 ||
                 dualNbackState.matchLocked[channel]) return;
 
-            const targetIndex = dualNbackState.currentIndex - dualNbackState.n;
-            let correct = false;
-            if (targetIndex >= 0) {
-                const previous = dualNbackState.sequences[channel][targetIndex];
-                const current = dualNbackState.currentItems[channel];
-                correct = getDualChannelValue(channel, previous) === getDualChannelValue(channel, current);
-            }
+            const trial = dualNbackState.sequences[channel][dualNbackState.currentIndex];
+            const correct = Boolean(trial && trial.isMatch);
 
             dualNbackState.matchLocked[channel] = true;
             dualNbackState.totalTrials++;
@@ -475,7 +461,6 @@
         });
 
         dualNbackBackBtn.addEventListener('click', function() {
-            pauseDual();
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             }
@@ -508,10 +493,17 @@
         updateDualSettingsState();
 
         if (window.CognitiveRouter) {
-            window.CognitiveRouter.registerEnter('dualNbackGame', prepareDualNbackGame);
-            window.CognitiveRouter.registerExit('dualNbackGame', pauseDual);
+            window.CognitiveRouter.defineScreen('nbackModeSelect', {
+                back: 'home'
+            });
+            window.CognitiveRouter.defineScreen('dualNbackSettings', {
+                back: 'nbackModeSelect'
+            });
+            window.CognitiveRouter.defineScreen('dualNbackGame', {
+                enter: prepareDualNbackGame,
+                exit: pauseDual,
+                back: 'dualNbackSettings'
+            });
         }
-
-        window.pauseDualNback = pauseDual;
 
         // =============================================================

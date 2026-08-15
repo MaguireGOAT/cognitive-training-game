@@ -37,6 +37,14 @@ function createFixture() {
     const msgButtons = createFakeElement('div');
     let pauses = 0;
     let resumes = 0;
+    const pauseCoordinator = {
+        pause: () => {
+            pauses++;
+        },
+        resume: () => {
+            resumes++;
+        }
+    };
 
     const controller = createMessageController({
         overlay,
@@ -45,12 +53,7 @@ function createFixture() {
         getMsgSub: () => msgSub,
         getMsgButtons: () => msgButtons,
         createElement: createFakeElement,
-        pauseTimer: () => {
-            pauses++;
-        },
-        resumeTimer: () => {
-            resumes++;
-        },
+        pauseCoordinator,
         attachBackdrop: false
     });
 
@@ -167,4 +170,14 @@ test('pause and resume adapters follow the message lifecycle', function () {
     fixture.controller.dismiss();
     assert.equal(fixture.getPauses(), 1);
     assert.equal(fixture.getResumes(), 1);
+});
+
+test('creation requires a pause coordinator', function () {
+    assert.throws(
+        () => createMessageController({
+            overlay: createFakeElement('overlay'),
+            attachBackdrop: false
+        }),
+        /pauseCoordinator/
+    );
 });

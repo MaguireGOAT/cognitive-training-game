@@ -69,6 +69,7 @@
     var isPlaying = false;
     var speedLevel = 5;
     var initialized = false;
+    var palmTimer = window.CognitiveActivityTimer.create();
 
     var leftEl = document.getElementById('leftGesture');
     var rightEl = document.getElementById('rightGesture');
@@ -196,20 +197,14 @@
         rightGestures = rightBase;
     }
 
-    function getPalmSessionConfig() {
-        return {
+    function startPalmSession() {
+        palmTimer.start({
             mode: 'repeating',
             intervalMs: getSpeedInterval(speedLevel),
             tick: function () {
                 if (isPlaying) updateGame();
             }
-        };
-    }
-
-    function startPalmSession() {
-        if (window.CognitiveSession) {
-            window.CognitiveSession.start(getPalmSessionConfig());
-        }
+        });
     }
 
     function startAutoPlay() {
@@ -224,9 +219,7 @@
         if (!isPlaying) return;
         isPlaying = false;
         playBtn.classList.remove('playing');
-        if (window.CognitiveSession) {
-            window.CognitiveSession.stop();
-        }
+        palmTimer.stop();
     }
 
     function togglePlay() {
@@ -322,13 +315,16 @@
     syncPalmLayout();
 
     if (window.CognitiveRouter) {
-        window.CognitiveRouter.registerEnter('palm', function () {
-            if (!initialized) {
-                initialized = true;
-                updateGame();
-            }
-            syncPalmLayout();
+        window.CognitiveRouter.defineScreen('palm', {
+            enter: function () {
+                if (!initialized) {
+                    initialized = true;
+                    updateGame();
+                }
+                syncPalmLayout();
+            },
+            exit: stopAutoPlay,
+            back: 'home'
         });
-        window.CognitiveRouter.registerExit('palm', stopAutoPlay);
     }
 })();

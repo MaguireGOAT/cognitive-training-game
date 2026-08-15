@@ -8,6 +8,8 @@
         adapters = adapters || {};
         var storage = adapters.storage ||
             (typeof window !== 'undefined' ? window.localStorage : null);
+        var settingsStore = adapters.settingsStore ||
+            (typeof window !== 'undefined' ? window.CognitiveSettingsStore : null);
         var schedule = adapters.schedule || function (fn, ms) {
             return setTimeout(fn, ms);
         };
@@ -55,8 +57,13 @@
         }
 
         function syncFromStorage() {
-            settings.music = readFlag(MUSIC_KEY, true) !== false;
-            settings.sfx = readFlag(SFX_KEY, true) !== false;
+            if (settingsStore) {
+                settings.music = settingsStore.load(MUSIC_KEY).music;
+                settings.sfx = settingsStore.load(SFX_KEY).sfx;
+            } else {
+                settings.music = readFlag(MUSIC_KEY, true) !== false;
+                settings.sfx = readFlag(SFX_KEY, true) !== false;
+            }
             if (!settings.music) pauseMusic();
             return {
                 music: settings.music,
@@ -66,7 +73,11 @@
 
         function setMusicEnabled(value) {
             settings.music = !!value;
-            writeFlag(MUSIC_KEY, settings.music);
+            if (settingsStore) {
+                settingsStore.save(MUSIC_KEY, { music: settings.music });
+            } else {
+                writeFlag(MUSIC_KEY, settings.music);
+            }
             if (settings.music) {
                 playMusic();
             } else {
@@ -76,7 +87,11 @@
 
         function setSfxEnabled(value) {
             settings.sfx = !!value;
-            writeFlag(SFX_KEY, settings.sfx);
+            if (settingsStore) {
+                settingsStore.save(SFX_KEY, { sfx: settings.sfx });
+            } else {
+                writeFlag(SFX_KEY, settings.sfx);
+            }
         }
 
         function getMusicEnabled() {

@@ -3,6 +3,12 @@
 
     function createMessageController(adapters) {
         adapters = adapters || {};
+        var pauseCoordinator = adapters.pauseCoordinator;
+        if (!pauseCoordinator ||
+            typeof pauseCoordinator.pause !== 'function' ||
+            typeof pauseCoordinator.resume !== 'function') {
+            throw new Error('createMessageController requires a pauseCoordinator with pause() and resume().');
+        }
 
         function getElement(id) {
             if (typeof document === 'undefined') return null;
@@ -25,16 +31,6 @@
         var createElement = adapters.createElement || function (tag) {
             if (typeof document === 'undefined') return null;
             return document.createElement(tag);
-        };
-        var pauseTimer = adapters.pauseTimer || function () {
-            if (typeof window !== 'undefined' && typeof window.pauseGngTimer === 'function') {
-                window.pauseGngTimer();
-            }
-        };
-        var resumeTimer = adapters.resumeTimer || function () {
-            if (typeof window !== 'undefined' && typeof window.resumeGngTimer === 'function') {
-                window.resumeGngTimer();
-            }
         };
 
         var currentFlow = null;
@@ -94,8 +90,8 @@
                 currentFlow = null;
                 if (overlay) overlay.classList.remove('active');
             }
-            if (flow.options.pauseTimer && typeof resumeTimer === 'function') {
-                resumeTimer();
+            if (flow.options.pauseTimer) {
+                pauseCoordinator.resume();
             }
             if (runDismiss && !flow.consumed) {
                 flow.consumed = true;
@@ -115,8 +111,8 @@
             currentFlow = flow;
             render(flow.options);
             if (overlay) overlay.classList.add('active');
-            if (flow.options.pauseTimer && typeof pauseTimer === 'function') {
-                pauseTimer();
+            if (flow.options.pauseTimer) {
+                pauseCoordinator.pause();
             }
             return flow;
         }
@@ -166,6 +162,8 @@
     }
 
     if (typeof window !== 'undefined') {
-        window.CognitiveMessage = createMessageController();
+        window.CognitiveMessage = createMessageController({
+            pauseCoordinator: window.CognitiveActivityTimer.createPauseCoordinator()
+        });
     }
 })(typeof window !== 'undefined' ? window : globalThis);
