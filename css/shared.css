@@ -116,11 +116,15 @@
         }
 
         #gngSettings > div:not(.menu-header):not(.menu-subtitle):not([style*="position:fixed"]) span,
-        #shoppingSettings > div:not(.menu-header):not(.menu-subtitle):not([style*="position:fixed"]) span {
+        #shoppingSettings > div:not(.menu-header):not(.menu-subtitle):not([style*="position:fixed"]) span,
+        #realitySettings > div:not(.menu-header):not(.menu-subtitle):not([style*="position:fixed"]) span,
+        #dualNbackSettings > div:not(.menu-header):not(.menu-subtitle):not([style*="position:fixed"]) span {
             font-size: calc(26px * var(--ui-scale)) !important;
         }
         #gngSettings select,
         #shoppingSettings select,
+        #realitySettings select,
+        #dualNbackSettings select,
         #gngAutoToggle {
             font-size: calc(24px * var(--ui-scale)) !important;
             padding: calc(8px * var(--ui-scale)) calc(18px * var(--ui-scale)) !important;

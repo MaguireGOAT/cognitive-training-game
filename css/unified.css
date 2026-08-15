@@ -723,13 +723,15 @@
             }
             #gngSettings > div[style*="display:flex"] > span,
             #shoppingSettings > div[style*="display:flex"] > span,
-            #realitySettings > div[style*="display:flex"] > span {
+            #realitySettings > div[style*="display:flex"] > span,
+            #dualNbackSettings > div[style*="display:flex"] > span {
                 font-size: clamp(calc(15px * var(--ui-scale)), 4vw, calc(22px * var(--ui-scale))) !important;
                 max-width: 62%;
             }
             #gngSettings select,
             #shoppingSettings select,
             #realitySettings select,
+            #dualNbackSettings select,
             #gngAutoToggle {
                 font-size: clamp(calc(13px * var(--ui-scale)), 3.5vw, calc(20px * var(--ui-scale))) !important;
                 max-width: 62%;

@@ -48,7 +48,7 @@
     min-width: 0;
 }
         #dualNbackSettings [style*="display:flex"] > span {
-            font-size: calc(24px * var(--ui-scale)) !important;
+            font-size: calc(26px * var(--ui-scale)) !important;
         }
         #dualNbackSettings .menu-header {
             margin-top: auto !important;
@@ -61,7 +61,7 @@
     min-width: 0;
 }
 #dualStartBtn {
-    font-size: calc(30px * var(--ui-scale)) !important;
+    font-size: calc(28px * var(--ui-scale)) !important;
 }
 
 /* Dual N-back game */
