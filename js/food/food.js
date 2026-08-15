@@ -370,9 +370,10 @@
             hideOverlay();
             updateFoodMenuButtons();
             if (window.CognitiveRouter) {
-                window.CognitiveRouter.navigate('foodGame');
-                nextFoodRound();
-                syncTopBarCentering();
+                if (window.CognitiveRouter.navigate('foodGame')) {
+                    nextFoodRound();
+                    syncTopBarCentering();
+                }
             } else {
                 document.getElementById('foodGame').style.display = 'flex';
                 document.getElementById('foodCategorySelect').classList.add('hidden');

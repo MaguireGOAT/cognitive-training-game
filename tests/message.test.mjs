@@ -181,3 +181,167 @@ test('creation requires a pause coordinator', function () {
         /pauseCoordinator/
     );
 });
+
+function createTransitionElement(id) {
+    const values = new Set();
+    return {
+        id,
+        textContent: '',
+        innerHTML: '',
+        className: '',
+        classList: {
+            add(...names) {
+                names.forEach(name => values.add(name));
+            },
+            remove(...names) {
+                names.forEach(name => values.delete(name));
+            },
+            toggle(name, force) {
+                const on = force === undefined ? !values.has(name) : !!force;
+                if (on) values.add(name);
+                else values.delete(name);
+            },
+            contains(name) {
+                return values.has(name);
+            }
+        },
+        appendChild() {}
+    };
+}
+
+function createTransitionAdapter() {
+    const callbacks = [];
+    return {
+        callbacks,
+        isTransitioning: () => true,
+        afterTransition(callback) {
+            callbacks.push(callback);
+            return true;
+        },
+        drain() {
+            callbacks.splice(0).forEach(callback => callback());
+        }
+    };
+}
+
+function createTransitionFixture(adapter) {
+    const overlay = createTransitionElement('overlay');
+    const text = createTransitionElement('msgText');
+    const sub = createTransitionElement('msgSub');
+    const icon = createTransitionElement('msgIcon');
+    const buttons = createTransitionElement('msgButtons');
+    let pauses = 0;
+    let resumes = 0;
+    const controller = createMessageController({
+        pauseCoordinator: {
+            pause() {
+                pauses += 1;
+            },
+            resume() {
+                resumes += 1;
+            }
+        },
+        overlay,
+        getMsgIcon: () => icon,
+        getMsgText: () => text,
+        getMsgSub: () => sub,
+        getMsgButtons: () => buttons,
+        createElement: createTransitionElement,
+        attachBackdrop: false,
+        transitionAdapter: adapter || null
+    });
+
+    return {
+        controller,
+        overlay,
+        text,
+        getPauses: () => pauses,
+        getResumes: () => resumes
+    };
+}
+
+test('message show is deferred during a transition and drains the latest pending message', function () {
+    const adapter = createTransitionAdapter();
+    const fixture = createTransitionFixture(adapter);
+
+    fixture.controller.show({
+        title: 'first',
+        pauseTimer: true
+    });
+
+    assert.equal(fixture.controller.isActive(), false);
+    assert.equal(fixture.overlay.classList.contains('active'), false);
+    assert.equal(fixture.text.textContent, '');
+    assert.equal(fixture.getPauses(), 0);
+    assert.equal(adapter.callbacks.length, 1);
+
+    fixture.controller.show({
+        title: 'second',
+        pauseTimer: true
+    });
+
+    assert.equal(adapter.callbacks.length, 1);
+    assert.equal(fixture.controller.isActive(), false);
+
+    adapter.drain();
+
+    assert.equal(fixture.controller.isActive(), true);
+    assert.equal(fixture.overlay.classList.contains('active'), true);
+    assert.equal(fixture.text.textContent, 'second');
+    assert.equal(fixture.getPauses(), 1);
+});
+
+test('message show stays synchronous when the transition adapter is idle', function () {
+    const fixture = createTransitionFixture({
+        isTransitioning: () => false,
+        afterTransition() {
+            return false;
+        }
+    });
+
+    fixture.controller.show({
+        title: 'ready',
+        pauseTimer: true
+    });
+
+    assert.equal(fixture.controller.isActive(), true);
+    assert.equal(fixture.text.textContent, 'ready');
+    assert.equal(fixture.getPauses(), 1);
+});
+
+test('close clears a pending message before the transition callback runs', function () {
+    const adapter = createTransitionAdapter();
+    const fixture = createTransitionFixture(adapter);
+
+    fixture.controller.show({
+        title: 'stale',
+        pauseTimer: true
+    });
+    fixture.controller.close();
+
+    adapter.drain();
+
+    assert.equal(fixture.controller.isActive(), false);
+    assert.equal(fixture.overlay.classList.contains('active'), false);
+    assert.equal(fixture.getPauses(), 0);
+    assert.equal(fixture.getResumes(), 0);
+});
+
+test('dismiss runs the current message callback and resumes paused activity', function () {
+    const fixture = createTransitionFixture(null);
+    let dismissed = 0;
+
+    fixture.controller.show({
+        title: 'choose',
+        pauseTimer: true,
+        onDismiss() {
+            dismissed += 1;
+        }
+    });
+    fixture.controller.dismiss();
+
+    assert.equal(fixture.controller.isActive(), false);
+    assert.equal(fixture.overlay.classList.contains('active'), false);
+    assert.equal(dismissed, 1);
+    assert.equal(fixture.getResumes(), 1);
+});

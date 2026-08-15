@@ -23,6 +23,31 @@
                     window.syncTopBarCentering();
                 }
             };
+        var transitioning = false;
+        var transitionTimer = null;
+        var afterTransitionQueue = [];
+        var reducedMotion = false;
+
+        if (documentRef && documentRef.defaultView &&
+            typeof documentRef.defaultView.matchMedia === 'function') {
+            try {
+                reducedMotion = documentRef.defaultView.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            } catch (error) {
+                reducedMotion = false;
+            }
+        } else if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+            try {
+                reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            } catch (error) {
+                reducedMotion = false;
+            }
+        }
+
+        var transitionMs = reducedMotion ? 140 : 200;
+        var setTimeoutRef = adapters.setTimeout ||
+            (typeof setTimeout !== 'undefined' ? setTimeout : null);
+        var clearTimeoutRef = adapters.clearTimeout ||
+            (typeof clearTimeout !== 'undefined' ? clearTimeout : function () {});
 
         function findScreen(id) {
             return screens.filter(function (screen) {
@@ -64,19 +89,122 @@
             }
         }
 
+        function closeOverlays() {
+            if (!documentRef) return;
+            if (typeof window !== 'undefined' && window.CognitiveMessage &&
+                typeof window.CognitiveMessage.close === 'function') {
+                window.CognitiveMessage.close();
+            }
+            if (typeof documentRef.querySelectorAll === 'function') {
+                var overlays = documentRef.querySelectorAll('.overlay.active');
+                for (var i = 0; i < overlays.length; i++) {
+                    if (overlays[i].classList && typeof overlays[i].classList.remove === 'function') {
+                        overlays[i].classList.remove('active');
+                    }
+                }
+            }
+            if (typeof documentRef.getElementById === 'function') {
+                var menu = documentRef.getElementById('slideMenu');
+                if (menu && menu.classList && typeof menu.classList.remove === 'function') {
+                    menu.classList.remove('open');
+                }
+            }
+        }
+
+        function isTransitioning() {
+            return transitioning;
+        }
+
+        function afterTransition(callback) {
+            if (typeof callback !== 'function') return false;
+            if (transitioning) {
+                afterTransitionQueue.push(callback);
+                return true;
+            }
+            callback();
+            return false;
+        }
+
+        function removeTransitionClasses() {
+            if (documentRef && documentRef.body && documentRef.body.classList &&
+                typeof documentRef.body.classList.remove === 'function') {
+                documentRef.body.classList.remove(
+                    'cognitive-screen-transition',
+                    'screen-forward',
+                    'screen-back',
+                    'screen-home'
+                );
+            }
+            screens.forEach(function (screen) {
+                if (screen.classList && typeof screen.classList.remove === 'function') {
+                    screen.classList.remove('screen-from', 'screen-to');
+                }
+            });
+        }
+
+        function finishTransition(id) {
+            if (transitionTimer !== null && typeof clearTimeoutRef === 'function') {
+                clearTimeoutRef(transitionTimer);
+                transitionTimer = null;
+            }
+            removeTransitionClasses();
+            setVisibility(id);
+            syncLayout();
+            transitioning = false;
+            var callbacks = afterTransitionQueue;
+            afterTransitionQueue = [];
+            callbacks.forEach(function (callback) {
+                if (typeof callback === 'function') callback();
+            });
+        }
+
         function leaveCurrent() {
             if (!currentScreen) return;
             callHook('pause', currentScreen);
             callHook('exit', currentScreen);
         }
 
-        function show(id) {
+        function show(id, mode) {
+            var previousScreen = currentScreen;
+            if (mode !== 'instant' && isTransitioning()) return false;
+            if (documentRef && documentRef.body) closeOverlays();
             leaveCurrent();
             currentScreen = id;
-            setVisibility(id);
+
+            if (!documentRef || !documentRef.body || mode === 'instant' ||
+                previousScreen === id || !setTimeoutRef) {
+                setVisibility(id);
+                updateChrome();
+                callHook('enter', id);
+                syncLayout();
+                return true;
+            }
+
+            var oldScreen = findScreen(previousScreen);
+            var newScreen = findScreen(id);
+            if (!oldScreen || !newScreen) {
+                setVisibility(id);
+                updateChrome();
+                callHook('enter', id);
+                syncLayout();
+                return true;
+            }
+
+            transitioning = true;
+            oldScreen.classList.add('screen-from');
+            newScreen.classList.add('screen-to');
+            documentRef.body.classList.add(
+                'cognitive-screen-transition',
+                mode === 'back' ? 'screen-back' :
+                    mode === 'home' ? 'screen-home' : 'screen-forward'
+            );
             updateChrome();
             callHook('enter', id);
-            syncLayout();
+            transitionTimer = setTimeoutRef(function () {
+                finishTransition(id);
+            }, transitionMs);
+            setVisibility(id);
+            return true;
         }
 
         function normalizeDefinition(definition) {
@@ -110,23 +238,25 @@
 
         function navigate(id) {
             if (!findScreen(id)) return false;
+            if (isTransitioning()) return false;
             if (stack.length > 0 && stack[stack.length - 1] === id) {
-                show(id);
+                show(id, 'forward');
                 return true;
             }
             stack.push(id);
-            show(id);
+            show(id, 'forward');
             return true;
         }
 
         function replace(id) {
             if (!findScreen(id)) return false;
+            if (isTransitioning()) return false;
             if (stack.length === 0) {
                 stack.push(id);
             } else {
                 stack[stack.length - 1] = id;
             }
-            show(id);
+            show(id, 'forward');
             return true;
         }
 
@@ -140,9 +270,10 @@
         }
 
         function goBack() {
+            if (isTransitioning()) return false;
             if (stack.length > 1) {
                 stack.pop();
-                show(stack[stack.length - 1]);
+                show(stack[stack.length - 1], 'back');
                 return true;
             }
 
@@ -150,26 +281,27 @@
             var target = typeof fallback === 'string' && findScreen(fallback) ? fallback : 'home';
             if (!findScreen(target)) return false;
             stack = [target];
-            show(target);
+            show(target, 'back');
             return true;
         }
 
         function goHome() {
             if (!findScreen('home')) return false;
+            if (isTransitioning()) return false;
             stack = ['home'];
-            show('home');
+            show('home', 'home');
             return true;
         }
 
         function initialize(id) {
             if (!findScreen(id)) return false;
             if (initialized) {
-                show(id);
+                show(id, 'instant');
                 return true;
             }
             initialized = true;
             stack = [id];
-            show(id);
+            show(id, 'instant');
             return true;
         }
 
@@ -191,7 +323,9 @@
             registerExit: registerExit,
             initialize: initialize,
             getCurrent: getCurrent,
-            getHistory: getHistory
+            getHistory: getHistory,
+            isTransitioning: isTransitioning,
+            afterTransition: afterTransition
         };
     }
 

@@ -793,9 +793,10 @@
 
         shoppingStartBtn.addEventListener('click', function() {
             if (window.CognitiveRouter) {
-                window.CognitiveRouter.navigate('shoppingGame');
-                syncTopBarCentering();
-                startShoppingSession();
+                if (window.CognitiveRouter.navigate('shoppingGame')) {
+                    syncTopBarCentering();
+                    startShoppingSession();
+                }
             } else {
                 shoppingSettingsScreen.classList.add('hidden');
                 shoppingGameScreen.style.display = 'flex';

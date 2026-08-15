@@ -436,10 +436,13 @@
             gngState.matchPending = false;
             gngState.sequence = generateGngSequence(50);
             if (window.CognitiveRouter) {
-                window.CognitiveRouter.navigate('gngGame');
-                syncTopBarCentering();
-                nextGngImage();
-                showGngIntro();
+                if (window.CognitiveRouter.navigate('gngGame')) {
+                    window.CognitiveRouter.afterTransition(function () {
+                        syncTopBarCentering();
+                        nextGngImage();
+                        showGngIntro();
+                    });
+                }
             } else {
                 document.getElementById('gngSettings').classList.add('hidden');
                 document.getElementById('gngGame').style.display = 'flex';

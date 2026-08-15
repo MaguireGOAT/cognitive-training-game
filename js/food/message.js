@@ -4,6 +4,7 @@
     function createMessageController(adapters) {
         adapters = adapters || {};
         var pauseCoordinator = adapters.pauseCoordinator;
+        var transitionAdapter = adapters.transitionAdapter || null;
         if (!pauseCoordinator ||
             typeof pauseCoordinator.pause !== 'function' ||
             typeof pauseCoordinator.resume !== 'function') {
@@ -34,6 +35,8 @@
         };
 
         var currentFlow = null;
+        var pendingOptions = null;
+        var pendingDrainQueued = false;
 
         function render(options) {
             var icon = getMsgIcon();
@@ -101,7 +104,7 @@
             }
         }
 
-        function show(options) {
+        function showNow(options) {
             if (currentFlow) closeFlow(currentFlow, false);
             var flow = {
                 options: options || {},
@@ -117,11 +120,42 @@
             return flow;
         }
 
+        function drainPendingShow() {
+            pendingDrainQueued = false;
+            if (pendingOptions === null) return;
+            var options = pendingOptions;
+            pendingOptions = null;
+            showNow(options);
+        }
+
+        function show(options) {
+            if (transitionAdapter &&
+                typeof transitionAdapter.isTransitioning === 'function' &&
+                transitionAdapter.isTransitioning() &&
+                typeof transitionAdapter.afterTransition === 'function') {
+                if (currentFlow) closeFlow(currentFlow, false);
+                pendingOptions = options || {};
+                if (!pendingDrainQueued) {
+                    var queued = transitionAdapter.afterTransition(drainPendingShow);
+                    if (queued) {
+                        pendingDrainQueued = true;
+                    } else {
+                        pendingOptions = null;
+                        return showNow(options);
+                    }
+                }
+                return null;
+            }
+            return showNow(options);
+        }
+
         function dismiss() {
+            pendingOptions = null;
             closeFlow(currentFlow, true);
         }
 
         function close() {
+            pendingOptions = null;
             closeFlow(currentFlow, false);
         }
 
@@ -163,7 +197,8 @@
 
     if (typeof window !== 'undefined') {
         window.CognitiveMessage = createMessageController({
-            pauseCoordinator: window.CognitiveActivityTimer.createPauseCoordinator()
+            pauseCoordinator: window.CognitiveActivityTimer.createPauseCoordinator(),
+            transitionAdapter: window.CognitiveRouter || null
         });
     }
 })(typeof window !== 'undefined' ? window : globalThis);
