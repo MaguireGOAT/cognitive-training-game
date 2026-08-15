@@ -1,10 +1,6 @@
         /* ================================================================
            現實導向（Reality Orientation）
            ================================================================ */
-        .hidden {
-            display: none !important;
-        }
-
         .category-grid.game-select {
             grid-template-columns: repeat(5, 1fr);
         }
