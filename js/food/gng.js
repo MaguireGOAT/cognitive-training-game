@@ -15,8 +15,6 @@
             score: 0,
             totalTrials: 0,
             correctHits: 0,
-            timer: null,
-            timerToken: 0,
             interval: 0,
             currentItems: [],
             matchPending: false,
@@ -71,16 +69,40 @@
             gngState.interval = maxDelay - factor * (maxDelay - minDelay);
         }
 
+        function getGngSessionConfig() {
+            return {
+                mode: 'repeating',
+                intervalMs: gngState.interval,
+                tick: function () {
+                    if (gngState.isPlaying && !gngState.timerPaused) {
+                        nextGngImage();
+                    }
+                },
+                onPause: syncGngSessionUi,
+                onResume: syncGngSessionUi
+            };
+        }
+
+        function startGngSession() {
+            if (window.CognitiveSession) {
+                window.CognitiveSession.start(getGngSessionConfig());
+            }
+        }
+
+        function syncGngPlayButton() {
+            gngPlayBtn.classList.toggle('playing', gngState.isPlaying);
+        }
+
+        function syncGngSessionUi() {
+            const sessionActive = !window.CognitiveSession ||
+                (!window.CognitiveSession.paused && window.CognitiveSession.running);
+            gngPlayBtn.classList.toggle('playing', gngState.isPlaying && (gngState.timerPaused || sessionActive));
+        }
+
         function resetGngTimer() {
-            if (gngState.timer) clearInterval(gngState.timer);
             if (!gngState.isPlaying || gngState.timerPaused) return;
             updateGngInterval();
-            const token = ++gngState.timerToken;
-            gngState.timer = setInterval(() => {
-                if (gngState.isPlaying && !gngState.timerPaused && gngState.timerToken === token) {
-                    nextGngImage();
-                }
-            }, gngState.interval);
+            startGngSession();
         }
 
         function generateGngSequence(length = 50) {
@@ -245,10 +267,10 @@
         }
 
         function pauseGngTimer() {
-            if (gngState.isPlaying && gngState.timer) {
-                gngState.timerToken++;
-                clearInterval(gngState.timer);
-                gngState.timerPaused = true;
+            if (!gngState.isPlaying || gngState.timerPaused) return;
+            gngState.timerPaused = true;
+            if (window.CognitiveSession) {
+                window.CognitiveSession.pause();
             }
         }
 
@@ -271,18 +293,18 @@
             updateGngScore();
             updateGngRuleDisplay(false);
             gngState.isPlaying = true;
-            gngPlayBtn.classList.add('playing');
+            syncGngPlayButton();
             gngState.matchPending = false;
             nextGngImage();
         }
 
         function pauseGng() {
-            gngState.timerToken++;
-            if (gngState.timer) { clearInterval(gngState.timer);
-                gngState.timer = null; }
+            if (window.CognitiveSession) {
+                window.CognitiveSession.pause();
+            }
             gngState.isPlaying = false;
             gngState.timerPaused = false;
-            gngPlayBtn.classList.remove('playing');
+            syncGngPlayButton();
         }
 
         function renderGngImage() {
