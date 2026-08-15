@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "node tools/serve.js",
-    "build:sw": "node tools/generate-service-worker.js"
+    "build:sw": "node tools/generate-service-worker.js",
+    "test": "node --test"
   }
 }

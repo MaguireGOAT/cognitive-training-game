@@ -81,8 +81,6 @@
             totalTrials: 0,
             correctHits: 0,
             falseAlarms: 0,
-            timer: null,
-            timerToken: 0,
             interval: 0,
             currentItem: null,
             matchPending: false,
@@ -114,16 +112,41 @@
             nbackState.interval = maxDelay - factor * (maxDelay - minDelay);
         }
 
+        function getNbackSessionConfig() {
+            return {
+                mode: 'repeating',
+                intervalMs: nbackState.interval,
+                tick: function () {
+                    if (nbackState.isPlaying) {
+                        nextNbackImage(true);
+                    }
+                },
+                onPause: syncNbackSessionUi,
+                onResume: syncNbackSessionUi
+            };
+        }
+
+        function startNbackSession() {
+            if (window.CognitiveSession) {
+                window.CognitiveSession.start(getNbackSessionConfig());
+            }
+        }
+
+        function syncNbackPlayButton() {
+            nbackPlayBtn.classList.toggle('playing', nbackState.isPlaying);
+        }
+
+        function syncNbackSessionUi() {
+            var active = nbackState.isPlaying &&
+                (!window.CognitiveSession ||
+                    (!window.CognitiveSession.paused && window.CognitiveSession.running));
+            nbackPlayBtn.classList.toggle('playing', active);
+        }
+
         function resetNbackTimer() {
-            if (nbackState.timer) clearInterval(nbackState.timer);
             if (!nbackState.isPlaying) return;
             updateNbackInterval();
-            const token = ++nbackState.timerToken;
-            nbackState.timer = setInterval(() => {
-                if (nbackState.isPlaying && nbackState.timerToken === token) {
-                    nextNbackImage(true);
-                }
-            }, nbackState.interval);
+            startNbackSession();
         }
 
         // Planned-target sequence: pre-select 15 spread-out match positions, then build
@@ -182,25 +205,23 @@
             nbackState.falseAlarms = 0;
             updateNbackScore();
             nbackState.isPlaying = true;
-            nbackPlayBtn.classList.add('playing');
+            syncNbackPlayButton();
             commitNbackItem(nbackState.sequence[0], 0);
             resetNbackTimer();
         }
 
         function pauseNback() {
             clearNbackTransition();
-            nbackState.timerToken++;
-            if (nbackState.timer) { clearInterval(nbackState.timer);
-                nbackState.timer = null; }
+            if (window.CognitiveSession) {
+                window.CognitiveSession.pause();
+            }
             nbackState.isPlaying = false;
-            nbackPlayBtn.classList.remove('playing');
+            syncNbackPlayButton();
         }
 
         function holdNbackTimer() {
-            nbackState.timerToken++;
-            if (nbackState.timer) {
-                clearInterval(nbackState.timer);
-                nbackState.timer = null;
+            if (window.CognitiveSession) {
+                window.CognitiveSession.stop();
             }
         }
 
