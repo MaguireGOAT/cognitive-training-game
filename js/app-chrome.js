@@ -165,11 +165,23 @@
             refreshSettingsFromStorage();
             setTimeout(tryPlayMusic, 400);
 
+            function pauseAppAudio() {
+                if (audio) {
+                    audio.pauseMusic();
+                    audio.stopFile();
+                }
+            }
+
             window.addEventListener('pageshow', refreshSettingsFromStorage);
             window.addEventListener('focus', refreshSettingsFromStorage);
             document.addEventListener('visibilitychange', function () {
-                if (!document.hidden) refreshSettingsFromStorage();
+                if (document.hidden) {
+                    pauseAppAudio();
+                } else {
+                    refreshSettingsFromStorage();
+                }
             });
+            window.addEventListener('pagehide', pauseAppAudio);
             window.addEventListener('storage', function (e) {
                 if (e.key === null ||
                     e.key === THEME_KEY ||
