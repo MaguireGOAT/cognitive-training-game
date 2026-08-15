@@ -48,8 +48,6 @@
             matchLocked: {},
             score: 0,
             totalTrials: 0,
-            timer: null,
-            timerToken: 0,
             interval: 0,
             audio: null,
             instructionPending: false
@@ -173,23 +171,46 @@
             dualNbackState.interval = maxDelay - factor * (maxDelay - minDelay);
         }
 
+        function getDualNbackSessionConfig() {
+            return {
+                mode: 'repeating',
+                intervalMs: dualNbackState.interval,
+                tick: function () {
+                    if (dualNbackState.isPlaying) {
+                        nextDualNbackTrial(true);
+                    }
+                },
+                onPause: syncDualNbackSessionUi,
+                onResume: syncDualNbackSessionUi
+            };
+        }
+
+        function startDualNbackSession() {
+            if (window.CognitiveSession) {
+                window.CognitiveSession.start(getDualNbackSessionConfig());
+            }
+        }
+
+        function syncDualNbackPlayButton() {
+            dualNbackPlayBtn.classList.toggle('playing', dualNbackState.isPlaying);
+        }
+
+        function syncDualNbackSessionUi() {
+            const active = dualNbackState.isPlaying &&
+                (!window.CognitiveSession ||
+                    (!window.CognitiveSession.paused && window.CognitiveSession.running));
+            dualNbackPlayBtn.classList.toggle('playing', active);
+        }
+
         function resetDualNbackTimer() {
-            if (dualNbackState.timer) clearInterval(dualNbackState.timer);
             if (!dualNbackState.isPlaying) return;
             updateDualNbackInterval();
-            const token = ++dualNbackState.timerToken;
-            dualNbackState.timer = setInterval(function() {
-                if (dualNbackState.isPlaying && dualNbackState.timerToken === token) {
-                    nextDualNbackTrial(true);
-                }
-            }, dualNbackState.interval);
+            startDualNbackSession();
         }
 
         function holdDualNbackTimer() {
-            dualNbackState.timerToken++;
-            if (dualNbackState.timer) {
-                clearInterval(dualNbackState.timer);
-                dualNbackState.timer = null;
+            if (window.CognitiveSession) {
+                window.CognitiveSession.stop();
             }
         }
 
@@ -307,9 +328,11 @@
         }
 
         function pauseDual() {
-            holdDualNbackTimer();
+            if (window.CognitiveSession) {
+                window.CognitiveSession.pause();
+            }
             dualNbackState.isPlaying = false;
-            dualNbackPlayBtn.classList.remove('playing');
+            syncDualNbackPlayButton();
             if (dualNbackState.audio) {
                 dualNbackState.audio.pause();
                 dualNbackState.audio.currentTime = 0;
@@ -327,7 +350,7 @@
             dualNbackState.score = 0;
             dualNbackState.totalTrials = 0;
             dualNbackState.isPlaying = true;
-            dualNbackPlayBtn.classList.add('playing');
+            syncDualNbackPlayButton();
             commitDualNbackTrial(0, true);
             updateDualNbackScore();
             resetDualNbackTimer();
