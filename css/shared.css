@@ -741,21 +741,29 @@
         .slide-menu {
             position: fixed;
             top: 0;
-            right: calc(-320px * var(--ui-scale));
+            right: 0;
             width: calc(300px * var(--ui-scale));
             height: 100%;
             background: var(--slide-bg, var(--menu-bg, rgba(255, 255, 255, 0.96)));
             box-shadow: var(--slide-shadow, 0 0 calc(20px * var(--ui-scale)) rgba(0, 0, 0, 0.15));
             z-index: 3000;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             padding: calc(20px * var(--ui-scale) + env(safe-area-inset-top, 0px)) calc(16px * var(--ui-scale));
             display: flex;
             flex-direction: column;
             gap: calc(12px * var(--ui-scale));
             backdrop-filter: blur(calc(8px * var(--ui-scale)));
+            will-change: transform;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .slide-menu.open {
-            right: 0;
+            transform: translateX(0);
+        }
+        .slide-menu.dragging {
+            transition: none;
         }
         .slide-menu .menu-item {
             display: flex;

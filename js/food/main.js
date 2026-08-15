@@ -10,10 +10,11 @@
         const shoppingGame = document.getElementById('shoppingGame');
         const shoppingSettings = document.getElementById('shoppingSettings');
         const foodCategorySelect = document.getElementById('foodCategorySelect');
-        const slideMenu = document.getElementById('slideMenu');
 
         function goToMainMenu() {
-            slideMenu.classList.remove('open');
+            if (window.CognitiveMenu) {
+                window.CognitiveMenu.close();
+            }
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             }

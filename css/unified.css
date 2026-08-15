@@ -43,14 +43,25 @@
             inset: 0;
             z-index: 3000;
             display: none;
-            background: transparent;
+            background: rgba(0, 0, 0, 0.55);
+            opacity: 0;
             pointer-events: auto;
+            touch-action: none;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .slide-menu {
             z-index: 3001;
         }
-        .slide-menu.open ~ .slide-menu-backdrop {
+        .slide-menu.open ~ .slide-menu-backdrop,
+        .slide-menu.dragging ~ .slide-menu-backdrop,
+        .slide-menu.closing ~ .slide-menu-backdrop {
             display: block;
+        }
+        .slide-menu.open ~ .slide-menu-backdrop {
+            opacity: 1;
+        }
+        .slide-menu.dragging ~ .slide-menu-backdrop {
+            transition: none;
         }
 
         /* Larger title, subtitle, and tile text on the home and food mode menus. */
