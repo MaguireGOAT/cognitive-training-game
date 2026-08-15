@@ -37,6 +37,9 @@
         #realitySettings {
             z-index: 1500;
         }
+        #realitySettings .menu-header {
+            margin-top: auto !important;
+        }
         #realitySettings .menu-title {
             letter-spacing: 0;
         }
