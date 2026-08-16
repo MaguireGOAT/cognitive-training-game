@@ -828,3 +828,132 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
+
+        /* ================================================================
+           Short landscape phones (iPhone included)
+           Keep titles/buttons fixed and let only the content area scroll.
+           ================================================================ */
+        @media (max-height: 500px) and (orientation: landscape) {
+            #home,
+            #mainMenu,
+            #foodCategorySelect,
+            #nbackModeSelect {
+                overflow: hidden;
+            }
+            #home .menu-header,
+            #mainMenu .menu-header,
+            #foodCategorySelect .menu-header,
+            #nbackModeSelect .menu-header,
+            #home .menu-subtitle,
+            #mainMenu .menu-subtitle,
+            #foodCategorySelect .menu-subtitle,
+            #nbackModeSelect .menu-subtitle {
+                flex-shrink: 0;
+            }
+            #home .menu-header,
+            #mainMenu .menu-header,
+            #nbackModeSelect .menu-header {
+                margin-top: calc(20px * var(--ui-scale));
+            }
+            #home .menu-footer,
+            #mainMenu .menu-footer,
+            #nbackModeSelect .menu-footer {
+                display: none;
+            }
+            .tile-scroll-area {
+                flex: 1 1 auto;
+                min-height: 0;
+                width: 100%;
+                margin-bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                overflow-y: auto;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
+                padding: calc(4px * var(--ui-scale)) 0 calc(12px * var(--ui-scale));
+            }
+            .tile-scroll-area > .category-grid,
+            .tile-scroll-area > .home-grid {
+                flex: 0 0 auto;
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+
+            #realitySettings,
+            #gngSettings,
+            #shoppingSettings,
+            #dualNbackSettings {
+                overflow: hidden;
+            }
+            #realitySettings .menu-header,
+            #gngSettings .menu-header,
+            #shoppingSettings .menu-header,
+            #dualNbackSettings .menu-header,
+            #realitySettings .menu-subtitle,
+            #gngSettings .menu-subtitle,
+            #shoppingSettings .menu-subtitle,
+            #dualNbackSettings .menu-subtitle {
+                flex-shrink: 0;
+            }
+            #dualNbackSettings .menu-header {
+                margin-top: calc(20px * var(--ui-scale));
+            }
+            .settings-options {
+                flex: 1 1 auto;
+                min-height: 0;
+                margin-bottom: 0;
+                overflow-y: auto;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
+                padding-bottom: calc(86px * var(--ui-scale));
+            }
+            .settings-actions {
+                width: auto;
+                box-sizing: border-box;
+                position: fixed;
+                left: 50%;
+                bottom: calc(10px * var(--ui-scale));
+                transform: translateX(-50%);
+                z-index: 5;
+                background: var(--bg-color);
+                padding-top: calc(10px * var(--ui-scale));
+                padding-bottom: calc(10px * var(--ui-scale));
+            }
+            .settings-actions > button {
+                width: auto;
+                min-width: calc(180px * var(--ui-scale));
+            }
+
+            .question-text,
+            .gng-rules-text,
+            .top-bar.wrapped .question-text,
+            .top-bar.wrapped .gng-rules-text {
+                white-space: nowrap !important;
+                overflow: visible;
+                text-overflow: clip;
+            }
+
+            .back-btn,
+            .hamburger-btn,
+            .action-btn,
+            .score-display,
+            .dropdown-wrapper,
+            .magnify-btn,
+            .play-btn,
+            .speed-btn {
+                min-width: 44px;
+                min-height: 44px;
+            }
+            .back-btn,
+            .hamburger-btn {
+                width: 44px;
+                height: 44px;
+            }
+            .magnify-btn {
+                width: 44px;
+                height: 44px;
+            }
+        }

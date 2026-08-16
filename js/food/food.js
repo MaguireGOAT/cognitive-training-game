@@ -48,6 +48,14 @@
 
         function updateFoodRound() { foodRoundInfo.textContent = `第 ${foodState.round} 題`; }
 
+        function getFoodQuestionHtml(category) {
+            return QUESTION_TEMPLATES[category] || `哪一個是 <span class="category-highlight">${category}</span> ？`;
+        }
+
+        function setFoodQuestion(category) {
+            questionText.innerHTML = `<span class="category-highlight">${category}</span>`;
+        }
+
         function applyNameVisibility() {
             document.getElementById('foodGame').classList.toggle('hide-names', !showNames);
             document.getElementById('shoppingGame').classList.toggle('hide-names', !showNames);
@@ -140,7 +148,7 @@
             distractors.forEach(item => foodState.usedFoods.add(getFoodId(item)));
 
             renderFoodGrid(foodState.items);
-            questionText.innerHTML = QUESTION_TEMPLATES[targetCat] || `哪一個是 ${targetCat} ？`;
+            setFoodQuestion(targetCat);
             updateFoodRound();
             foodState.isAnswered = false;
             foodState.isWaitingForNext = false;
@@ -342,7 +350,7 @@
         }
 
         function showFoodGameIntro() {
-            const title = questionText.innerHTML.trim();
+            const title = getFoodQuestionHtml(foodState.currentCategory);
             window.CognitiveMessage.show({
                 title: title,
                 titleHtml: true,

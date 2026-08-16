@@ -47,23 +47,25 @@
             <div class="menu-title"><span class="brain">🧠</span> 認知訓練</div>
         </div>
         <div class="menu-subtitle">選擇一個遊戲或活動開始</div>
-        <div class="home-grid">
-            <button class="category-btn home-link" data-router-target="realityBoard">
-                <span class="icon">🧭</span>
-                <span class="label">現實導向</span>
-            </button>
-            <button class="category-btn home-link" data-router-target="mainMenu">
-                <span class="icon">🍽️</span>
-                <span class="label">食物遊戲</span>
-            </button>
-            <button class="category-btn home-link" data-router-target="nbackModeSelect">
-                <span class="icon">🧩</span>
-                <span class="label">N-back</span>
-            </button>
-            <button class="category-btn home-link" data-router-target="palm">
-                <span class="icon">👍</span>
-                <span class="label">手掌跳飛機</span>
-            </button>
+        <div class="tile-scroll-area">
+            <div class="home-grid">
+                <button class="category-btn home-link" data-router-target="realityBoard">
+                    <span class="icon">🧭</span>
+                    <span class="label">現實導向</span>
+                </button>
+                <button class="category-btn home-link" data-router-target="mainMenu">
+                    <span class="icon">🍽️</span>
+                    <span class="label">食物遊戲</span>
+                </button>
+                <button class="category-btn home-link" data-router-target="nbackModeSelect">
+                    <span class="icon">🧩</span>
+                    <span class="label">N-back</span>
+                </button>
+                <button class="category-btn home-link" data-router-target="palm">
+                    <span class="icon">👍</span>
+                    <span class="label">手掌跳飛機</span>
+                </button>
+            </div>
         </div>
         <div class="menu-footer"></div>
     </div>
@@ -137,7 +139,7 @@
         <div class="menu-header" style="margin-top:calc(20px * var(--ui-scale));">
             <div class="menu-title">⚙️ 設定</div>
         </div>
-        <div style="max-width:calc(620px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
+        <div class="settings-options" style="max-width:calc(620px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
             <div style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
                 <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">天氣</span>
                 <select id="realityWeatherSelect" class="reality-setting-select">
@@ -176,7 +178,7 @@
                     <option value="沙田第一城富璟">沙田第一城富璟</option>
                 </select>
             </div>
-            <div style="margin-top:calc(10px * var(--ui-scale));">
+            <div class="settings-actions" style="margin-top:calc(10px * var(--ui-scale));">
                 <button id="realityDoneBtn" class="reality-done-btn">確定</button>
             </div>
         </div>
@@ -196,23 +198,25 @@
             <button class="hamburger-btn" id="hamburgerBtnHome" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
         <div class="menu-subtitle">選擇一個遊戲或活動開始</div>
-        <div class="category-grid game-select">
-            <button class="category-btn" id="gameFoodBtn">
-                <span class="icon">❓</span>
-                <span class="label">食物分類</span>
-            </button>
-            <button class="category-btn" id="gameGngBtn">
-                <span class="icon">✅</span>
-                <span class="label">Go/No Go</span>
-            </button>
-            <button class="category-btn" id="gameDifferentBtn">
-                <span class="icon">🔍</span>
-                <span class="label">找不同</span>
-            </button>
-            <button class="category-btn" id="gameShoppingBtn">
-                <span class="icon">🛒</span>
-                <span class="label">買餸</span>
-            </button>
+        <div class="tile-scroll-area">
+            <div class="category-grid game-select">
+                <button class="category-btn" id="gameFoodBtn">
+                    <span class="icon">❓</span>
+                    <span class="label">食物分類</span>
+                </button>
+                <button class="category-btn" id="gameGngBtn">
+                    <span class="icon">✅</span>
+                    <span class="label">Go/No Go</span>
+                </button>
+                <button class="category-btn" id="gameDifferentBtn">
+                    <span class="icon">🔍</span>
+                    <span class="label">找不同</span>
+                </button>
+                <button class="category-btn" id="gameShoppingBtn">
+                    <span class="icon">🛒</span>
+                    <span class="label">買餸</span>
+                </button>
+            </div>
         </div>
         <div class="menu-footer"></div>
     </div>
@@ -231,7 +235,9 @@
             <div class="menu-title">❓ 選擇食物類別</div>
         </div>
         <div class="menu-subtitle" id="foodSubtitle">點擊類別開始挑戰</div>
-        <div class="category-grid food-select" id="foodCategoryGrid"></div>
+        <div class="tile-scroll-area">
+            <div class="category-grid food-select" id="foodCategoryGrid"></div>
+        </div>
     </div>
 
     <!-- ================================================================
@@ -346,15 +352,17 @@
             <div class="menu-title">🧩 N-back</div>
         </div>
         <div class="menu-subtitle">選擇模式</div>
-        <div class="category-grid nback-mode-grid">
-            <button class="category-btn" id="singleNbackBtn">
-                <span class="icon">1️⃣</span>
-                <span class="label">Single N-back</span>
-            </button>
-            <button class="category-btn" id="dualNbackBtn">
-                <span class="icon">2️⃣</span>
-                <span class="label">Dual N-back</span>
-            </button>
+        <div class="tile-scroll-area">
+            <div class="category-grid nback-mode-grid">
+                <button class="category-btn" id="singleNbackBtn">
+                    <span class="icon">1️⃣</span>
+                    <span class="label">Single N-back</span>
+                </button>
+                <button class="category-btn" id="dualNbackBtn">
+                    <span class="icon">2️⃣</span>
+                    <span class="label">Dual N-back</span>
+                </button>
+            </div>
         </div>
         <div class="menu-footer"></div>
     </div>
@@ -373,7 +381,7 @@
             <div class="menu-title">⚙️ 設定</div>
         </div>
         <div class="menu-subtitle">選擇模態</div>
-        <div style="max-width:calc(620px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
+        <div class="settings-options" style="max-width:calc(620px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
             <div style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
                 <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">模態一</span>
                 <select id="dualChannel1Select" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
@@ -412,7 +420,7 @@
                     <option value="3">3 色</option>
                 </select>
             </div>
-            <div style="margin-top:calc(10px * var(--ui-scale));">
+            <div class="settings-actions" style="margin-top:calc(10px * var(--ui-scale));">
                 <button id="dualStartBtn" style="width:100%; padding:calc(14px * var(--ui-scale)); font-size:calc(28px * var(--ui-scale)); font-weight:700; border:none; border-radius:calc(40px * var(--ui-scale)); background:var(--highlight-correct); color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; box-shadow:var(--btn-shadow-correct); transition: background 0.2s, transform 0.15s, box-shadow 0.15s; opacity:0.45;" disabled>▶ 開始遊戲</button>
             </div>
         </div>
@@ -529,7 +537,7 @@
             <div class="menu-title">⚙️ 設定</div>
         </div>
         <div class="menu-subtitle">設定任務規則與切換條件</div>
-        <div style="max-width:calc(600px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
+        <div class="settings-options" style="max-width:calc(600px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
             <div style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
                 <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">✅ Go 類別</span>
                 <select id="gngGoCategory" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
@@ -577,7 +585,7 @@
                     <option value="20">20 張</option>
                 </select>
             </div>
-            <div style="margin-top:calc(10px * var(--ui-scale));">
+            <div class="settings-actions" style="margin-top:calc(10px * var(--ui-scale));">
                 <button id="gngStartBtn" style="width:100%; padding:calc(14px * var(--ui-scale)); font-size:calc(28px * var(--ui-scale)); font-weight:700; border:none; border-radius:calc(40px * var(--ui-scale)); background:var(--highlight-correct); color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; box-shadow:var(--btn-shadow-correct); transition: background 0.2s, transform 0.15s, box-shadow 0.15s;">▶ 開始遊戲</button>
             </div>
         </div>
@@ -694,7 +702,7 @@
             <div class="menu-title">🛒 設定</div>
         </div>
         <div class="menu-subtitle">設定購物清單與回憶任務</div>
-        <div style="max-width:calc(600px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
+        <div class="settings-options" style="max-width:calc(600px * var(--ui-scale)); width:100%; display:flex; flex-direction:column; gap:calc(18px * var(--ui-scale)); padding:calc(10px * var(--ui-scale)) calc(20px * var(--ui-scale));">
             <div style="display:flex; align-items:center; gap:calc(12px * var(--ui-scale)); justify-content:space-between;">
                 <span style="font-size:calc(22px * var(--ui-scale)); font-weight:600; color:var(--text-color);">📋 清單顯示</span>
                 <select id="shoppingListDisplayMode" style="font-size:calc(20px * var(--ui-scale)); padding:calc(6px * var(--ui-scale)) calc(16px * var(--ui-scale)); border-radius:calc(30px * var(--ui-scale)); border:calc(2px * var(--ui-scale)) solid var(--border-color); background:var(--card-bg); color:var(--text-color);">
@@ -753,7 +761,7 @@
                     <option value="60">60 秒</option>
                 </select>
             </div>
-            <div style="margin-top:calc(10px * var(--ui-scale));">
+            <div class="settings-actions" style="margin-top:calc(10px * var(--ui-scale));">
                 <button id="shoppingStartBtn" style="width:100%; padding:calc(14px * var(--ui-scale)); font-size:calc(28px * var(--ui-scale)); font-weight:700; border:none; border-radius:calc(40px * var(--ui-scale)); background:var(--highlight-correct); color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; box-shadow:var(--btn-shadow-correct); transition: background 0.2s, transform 0.15s, box-shadow 0.15s;">▶ 開始遊戲</button>
             </div>
         </div>
