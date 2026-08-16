@@ -868,6 +868,8 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                justify-content: center;
+                overflow-x: hidden;
                 overflow-y: auto;
                 overscroll-behavior: contain;
                 -webkit-overflow-scrolling: touch;
@@ -877,8 +879,41 @@
             .tile-scroll-area > .category-grid,
             .tile-scroll-area > .home-grid {
                 flex: 0 0 auto;
-                margin-top: auto;
-                margin-bottom: auto;
+                margin: auto;
+            }
+
+            /* Phone landscape: shrink tile menus to fit first, then scroll
+               only when a tile would drop below the shared 96px minimum. */
+            #home .home-grid,
+            .app-screen#mainMenu .category-grid.game-select,
+            #foodCategorySelect .category-grid.food-select,
+            .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
+                --phone-menu-gap: calc(18px * var(--ui-scale));
+                --phone-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
+                --phone-menu-avail-h: calc(100vh - calc(220px * var(--ui-scale)));
+                --phone-menu-card: max(
+                    calc(96px * var(--ui-scale)),
+                    min(
+                        calc((var(--phone-menu-width) - 3 * var(--phone-menu-gap)) / 4),
+                        calc(var(--phone-menu-avail-h) / 2)
+                    )
+                );
+                --large-menu-gap: var(--phone-menu-gap);
+                --large-menu-width: var(--phone-menu-width);
+                --large-menu-card: var(--phone-menu-card);
+                gap: var(--phone-menu-gap);
+            }
+            .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
+                --phone-menu-card: max(
+                    calc(96px * var(--ui-scale)),
+                    min(
+                        calc((var(--phone-menu-width) - var(--phone-menu-gap)) / 2),
+                        var(--phone-menu-avail-h)
+                    )
+                );
+                --large-menu-gap: var(--phone-menu-gap);
+                --large-menu-width: var(--phone-menu-width);
+                --large-menu-card: var(--phone-menu-card);
             }
 
             #realitySettings,
@@ -904,27 +939,34 @@
                 flex: 1 1 auto;
                 min-height: 0;
                 margin-bottom: 0;
+                overflow-x: hidden;
                 overflow-y: auto;
                 overscroll-behavior: contain;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: thin;
-                padding-bottom: calc(86px * var(--ui-scale));
+                padding-bottom: calc(12px * var(--ui-scale));
             }
             .settings-actions {
-                width: auto;
+                position: sticky;
+                left: auto;
+                bottom: 0;
+                width: 100%;
                 box-sizing: border-box;
-                position: fixed;
-                left: 50%;
-                bottom: calc(10px * var(--ui-scale));
-                transform: translateX(-50%);
+                transform: none;
+                margin-top: auto;
                 z-index: 5;
                 background: var(--bg-color);
                 padding-top: calc(10px * var(--ui-scale));
                 padding-bottom: calc(10px * var(--ui-scale));
             }
             .settings-actions > button {
-                width: auto;
-                min-width: calc(180px * var(--ui-scale));
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+            }
+
+            .save-btn {
+                font-size: calc(18px * var(--ui-scale));
             }
 
             .question-text,
@@ -934,6 +976,22 @@
                 white-space: nowrap !important;
                 overflow: visible;
                 text-overflow: clip;
+            }
+
+            .top-bar .question-area {
+                min-width: 0;
+            }
+
+            /* Keep the food question on the same row in short landscape even
+               for narrower iPhone widths that normally stack it in portrait. */
+            #foodGame .top-bar:not(.wrapped) .left-group,
+            #foodGame .top-bar:not(.wrapped) .right-group {
+                order: 0;
+            }
+            #foodGame .top-bar:not(.wrapped) .question-area {
+                order: 0;
+                flex: 1 1 auto;
+                padding: 0 calc(8px * var(--ui-scale));
             }
 
             .back-btn,

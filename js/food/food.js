@@ -25,6 +25,7 @@
         const toggleNamesBtn = document.getElementById('toggleNamesBtn');
         const foodBackBtn = document.getElementById('foodBackBtn');
         const nameBadge = document.getElementById('nameBadge');
+        let currentFoodQuestionCategory = '';
 
         function getAvailableItems(category) {
             return FOOD_DATA.filter(item => item.category === category && !foodState.usedFoods.has(getFoodId(item)));
@@ -53,8 +54,39 @@
         }
 
         function setFoodQuestion(category) {
-            questionText.innerHTML = `<span class="category-highlight">${category}</span>`;
+            currentFoodQuestionCategory = category;
+            applyAdaptiveFoodQuestion();
         }
+
+        function applyAdaptiveFoodQuestion() {
+            const category = currentFoodQuestionCategory;
+            if (!category) {
+                questionText.innerHTML = '';
+                return;
+            }
+
+            questionText.innerHTML = getFoodQuestionHtml(category);
+            requestAnimationFrame(() => {
+                if (typeof syncTopBarCentering === 'function') syncTopBarCentering();
+                const bar = questionText.closest('.top-bar');
+                if (bar && bar.classList.contains('wrapped')) {
+                    questionText.innerHTML = `<span class="category-highlight">${category}</span>`;
+                    bar.classList.remove('wrapped');
+                    void bar.offsetWidth;
+                    if (typeof syncTopBarCentering === 'function') syncTopBarCentering();
+                }
+            });
+        }
+
+        let adaptiveFoodQuestionFrame = null;
+        function scheduleAdaptiveFoodQuestion() {
+            if (adaptiveFoodQuestionFrame) cancelAnimationFrame(adaptiveFoodQuestionFrame);
+            adaptiveFoodQuestionFrame = requestAnimationFrame(() => {
+                adaptiveFoodQuestionFrame = null;
+                if (currentFoodQuestionCategory) applyAdaptiveFoodQuestion();
+            });
+        }
+        window.addEventListener('resize', scheduleAdaptiveFoodQuestion);
 
         function applyNameVisibility() {
             document.getElementById('foodGame').classList.toggle('hide-names', !showNames);
