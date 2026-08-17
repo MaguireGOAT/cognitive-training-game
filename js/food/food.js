@@ -174,23 +174,20 @@
             foodState.usedFoods.add(getFoodId(correct));
             distractors.forEach(item => foodState.usedFoods.add(getFoodId(item)));
 
-            window.CognitiveAnimations.fadeSwap({
-                container: grid,
-                selector: '.food-card',
-                render: function () {
-                    renderFoodGrid(foodState.items);
-                    setFoodQuestion(targetCat);
-                    updateFoodRound();
-                    foodState.isAnswered = false;
-                    foodState.isWaitingForNext = false;
-                    hideOverlay();
-                    if (foodState.gameMode === 'random') {
-                        if (prevCat !== targetCat) showFoodGameIntro();
-                    } else if (prevCat === '') {
-                        showFoodGameIntro();
-                    }
-                }
+            renderFoodGrid(foodState.items);
+            setFoodQuestion(targetCat);
+            updateFoodRound();
+            foodState.isAnswered = false;
+            foodState.isWaitingForNext = false;
+            document.querySelectorAll('.food-card').forEach(card => {
+                card.classList.remove('correct-highlight', 'wrong-highlight', 'disabled');
             });
+            hideOverlay();
+            if (foodState.gameMode === 'random') {
+                if (prevCat !== targetCat) showFoodGameIntro();
+            } else if (prevCat === '') {
+                showFoodGameIntro();
+            }
         }
 
         function renderFoodGrid(items) {

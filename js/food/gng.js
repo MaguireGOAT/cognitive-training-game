@@ -316,13 +316,7 @@
                 switchGngTask();
             }
 
-            window.CognitiveAnimations.fadeSwap({
-                container: gngGridContainer,
-                selector: '.gng-card',
-                render: function () {
-                    renderGngImage();
-                }
-            });
+            renderGngImage();
             resetGngTimer();
         }
 

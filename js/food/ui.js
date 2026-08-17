@@ -34,55 +34,6 @@
             }
         };
 
-        // ---- 共用圖片切換動畫 ----
-        (function () {
-            var reducedMotion = false;
-            if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-                try { reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-            }
-            var fadeDuration = reducedMotion ? 60 : 150;
-
-            function fadeInCards(cards) {
-                for (var i = 0; i < cards.length; i++) {
-                    cards[i].classList.add('card-fade-in');
-                }
-                setTimeout(function () {
-                    for (var i = 0; i < cards.length; i++) {
-                        cards[i].classList.remove('card-fade-in');
-                    }
-                }, fadeDuration + 50);
-            }
-
-            function fadeSwap(options) {
-                var container = options.container;
-                var renderFn = options.render;
-                var selector = options.selector;
-
-                if (!container || !renderFn) { if (renderFn) renderFn(); return; }
-
-                var oldCards = selector ? container.querySelectorAll(selector) : container.children;
-                var hasOld = oldCards && oldCards.length > 0;
-
-                if (!hasOld) {
-                    renderFn();
-                    var newCards = selector ? container.querySelectorAll(selector) : container.children;
-                    fadeInCards(newCards);
-                    return;
-                }
-
-                for (var i = 0; i < oldCards.length; i++) {
-                    oldCards[i].classList.add('card-fade-out');
-                }
-                setTimeout(function () {
-                    renderFn();
-                    var newCards = selector ? container.querySelectorAll(selector) : container.children;
-                    fadeInCards(newCards);
-                }, fadeDuration);
-            }
-
-            window.CognitiveAnimations = { fadeSwap: fadeSwap };
-        })();
-
         // ---- 共用圖片放大 ----
         function openMagnify(src, name, showNameOverride) {
             const overlay = document.getElementById('magnifyOverlay');
