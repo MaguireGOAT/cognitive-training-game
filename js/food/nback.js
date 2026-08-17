@@ -35,42 +35,23 @@
         const nbackBackBtn = document.getElementById('nbackBackBtn');
         const nbackMagnifyBtn = document.getElementById('nbackMagnifyBtn');
         const NBACK_TRANSITION_MS = 240;
-        const nbackTimer = window.CognitiveActivityTimer.create();
-
-        function updateNbackInterval() {
-            const maxDelay = 3000,
-                minDelay = 500;
-            const factor = (nbackState.speed - 1) / 9;
-            nbackState.interval = maxDelay - factor * (maxDelay - minDelay);
-        }
-
-        function startNbackSession() {
-            nbackTimer.start({
-                mode: 'repeating',
-                intervalMs: nbackState.interval,
-                tick: function () {
-                    if (nbackState.isPlaying) {
-                        nextNbackImage(true);
-                    }
-                },
-                onPause: syncNbackSessionUi,
-                onResume: syncNbackSessionUi
-            });
-        }
+        const nbackActivity = window.CognitiveActivity.create({
+            minInterval: 500,
+            maxInterval: 3000,
+            speedSteps: 10,
+            defaultSpeed: nbackState.speed,
+            tick: function () { if (nbackState.isPlaying) nextNbackImage(true); },
+            onPause: syncNbackSessionUi,
+            onResume: syncNbackSessionUi
+        });
 
         function syncNbackPlayButton() {
             nbackPlayBtn.classList.toggle('playing', nbackState.isPlaying);
         }
 
         function syncNbackSessionUi() {
-            var active = nbackState.isPlaying && nbackTimer.isRunning();
+            var active = nbackState.isPlaying && nbackActivity.isRunning();
             nbackPlayBtn.classList.toggle('playing', active);
-        }
-
-        function resetNbackTimer() {
-            if (!nbackState.isPlaying) return;
-            updateNbackInterval();
-            startNbackSession();
         }
 
         // Brain Workshop-style random match generation: each trial has a set
@@ -127,24 +108,20 @@
             nbackState.isPlaying = true;
             syncNbackPlayButton();
             commitNbackItem(nbackState.sequence[0], 0);
-            resetNbackTimer();
+            nbackActivity.start(nbackState.speed);
         }
 
         function pauseNback() {
             clearNbackTransition();
-            nbackTimer.pause();
+            nbackActivity.pause();
             nbackState.isPlaying = false;
             syncNbackPlayButton();
             window.CognitiveFeedback.clear(nbackGridWrapper);
         }
 
-        function holdNbackTimer() {
-            nbackTimer.stop();
-        }
-
         function nextNbackImage(fromTimer = false) {
             if (nbackState.transitioning) return;
-            holdNbackTimer();
+            nbackActivity.hold();
             nbackState.transitioning = true;
             nbackState.matchPending = true;
             const token = ++nbackState.animationToken;
@@ -166,7 +143,7 @@
                     nbackImageContainer.classList.remove('is-entering');
                     nbackState.transitioning = false;
                 }, NBACK_TRANSITION_MS);
-                resetNbackTimer();
+                nbackActivity.reset();
             }, NBACK_TRANSITION_MS);
         }
 
@@ -182,7 +159,7 @@
             );
             const correct = (isMatch === actualMatch);
             nbackState.matchPending = true;
-            holdNbackTimer();
+            nbackActivity.hold();
 
             if (correct) {
                 nbackState.score++;
@@ -224,7 +201,7 @@
             nbackState.speed = newSpeed;
             nbackSpeedDisplay.textContent = newSpeed;
             if (nbackState.isPlaying) {
-                resetNbackTimer();
+                nbackActivity.reset();
             }
         }
 

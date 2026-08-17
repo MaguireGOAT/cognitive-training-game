@@ -80,7 +80,15 @@
         const dualStartBtn = document.getElementById('dualStartBtn');
 
         let dualFeedbackTimer = null;
-        const dualNbackTimer = window.CognitiveActivityTimer.create();
+        const dualNbackActivity = window.CognitiveActivity.create({
+            minInterval: 2000,
+            maxInterval: 4000,
+            speedSteps: 10,
+            defaultSpeed: dualNbackState.speed,
+            tick: function () { if (dualNbackState.isPlaying) nextDualNbackTrial(true); },
+            onPause: syncDualNbackSessionUi,
+            onResume: syncDualNbackSessionUi
+        });
 
         function getDualFoodId(item) {
             return item.id || item.name;
@@ -126,44 +134,13 @@
             });
         }
 
-        function updateDualNbackInterval() {
-            const maxDelay = 4000;
-            const minDelay = 2000;
-            const factor = (dualNbackState.speed - 1) / 9;
-            dualNbackState.interval = maxDelay - factor * (maxDelay - minDelay);
-        }
-
-        function startDualNbackSession() {
-            dualNbackTimer.start({
-                mode: 'repeating',
-                intervalMs: dualNbackState.interval,
-                tick: function () {
-                    if (dualNbackState.isPlaying) {
-                        nextDualNbackTrial(true);
-                    }
-                },
-                onPause: syncDualNbackSessionUi,
-                onResume: syncDualNbackSessionUi
-            });
-        }
-
         function syncDualNbackPlayButton() {
             dualNbackPlayBtn.classList.toggle('playing', dualNbackState.isPlaying);
         }
 
         function syncDualNbackSessionUi() {
-            const active = dualNbackState.isPlaying && dualNbackTimer.isRunning();
+            const active = dualNbackState.isPlaying && dualNbackActivity.isRunning();
             dualNbackPlayBtn.classList.toggle('playing', active);
-        }
-
-        function resetDualNbackTimer() {
-            if (!dualNbackState.isPlaying) return;
-            updateDualNbackInterval();
-            startDualNbackSession();
-        }
-
-        function holdDualNbackTimer() {
-            dualNbackTimer.stop();
         }
 
         function getDualVisibleContent() {
@@ -264,18 +241,18 @@
 
         function nextDualNbackTrial() {
             if (!dualNbackState.channels.length) return;
-            holdDualNbackTimer();
+            dualNbackActivity.hold();
             dualNbackState.currentIndex++;
             if (dualNbackState.currentIndex >= DUAL_NBACK_SEQUENCE_LENGTH) {
                 buildDualSequences();
                 dualNbackState.currentIndex = 0;
             }
             commitDualNbackTrial(dualNbackState.currentIndex, true);
-            resetDualNbackTimer();
+            dualNbackActivity.reset();
         }
 
         function pauseDual() {
-            dualNbackTimer.pause();
+            dualNbackActivity.pause();
             dualNbackState.isPlaying = false;
             syncDualNbackPlayButton();
             CognitiveAudio.stopFile();
@@ -296,7 +273,7 @@
             syncDualNbackPlayButton();
             commitDualNbackTrial(0, true);
             updateDualNbackScore();
-            resetDualNbackTimer();
+            dualNbackActivity.start(dualNbackState.speed);
         }
 
         function flashDualNbackFeedback(correct, channel) {
@@ -348,7 +325,7 @@
             if (newSpeed > 10) newSpeed = 10;
             dualNbackState.speed = newSpeed;
             dualNbackSpeedDisplay.textContent = newSpeed;
-            if (dualNbackState.isPlaying) resetDualNbackTimer();
+            if (dualNbackState.isPlaying) dualNbackActivity.reset();
         }
 
         function showDualNbackInstruction() {

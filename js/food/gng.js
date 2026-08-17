@@ -48,46 +48,32 @@
         const gngPreferences = window.CognitivePrefs
             ? CognitivePrefs.load('cognitiveGngPrefs')
             : null;
-        const gngTimer = window.CognitiveActivityTimer.create();
-
-        function updateGngInterval() {
-            const maxDelay = 6000,
-                minDelay = 1000;
-            const factor = (gngState.speed - 1) / 9;
-            gngState.interval = maxDelay - factor * (maxDelay - minDelay);
-        }
-
-        function startGngSession() {
-            gngTimer.start({
-                mode: 'repeating',
-                intervalMs: gngState.interval,
-                tick: function () {
-                    if (gngState.isPlaying && !gngState.timerPaused) {
-                        nextGngImage();
-                    }
-                },
-                onPause: syncGngSessionUi,
-                onResume: syncGngSessionUi
-            });
-        }
+        const gngActivity = window.CognitiveActivity.create({
+            minInterval: 1000,
+            maxInterval: 6000,
+            speedSteps: 10,
+            defaultSpeed: gngState.speed,
+            tick: function () { if (gngState.isPlaying && !gngState.timerPaused) nextGngImage(); },
+            onPause: syncGngSessionUi,
+            onResume: syncGngSessionUi
+        });
 
         function syncGngPlayButton() {
             gngPlayBtn.classList.toggle('playing', gngState.isPlaying);
         }
 
         function syncGngSessionUi() {
-            gngState.messagePaused = gngTimer.isPaused() && !gngState.timerPaused;
-            gngPlayBtn.classList.toggle('playing', gngState.isPlaying && (gngState.timerPaused || gngTimer.isRunning()));
+            gngState.messagePaused = gngActivity.isPaused() && !gngState.timerPaused;
+            gngPlayBtn.classList.toggle('playing', gngState.isPlaying && (gngState.timerPaused || gngActivity.isRunning()));
         }
 
         function resetGngTimer() {
             if (!gngState.isPlaying || gngState.timerPaused) return;
-            updateGngInterval();
-            if (gngState.messagePaused && gngTimer.isPaused()) {
-                gngTimer.restart(gngState.interval);
+            if (gngState.messagePaused && gngActivity.isPaused()) {
+                gngActivity.restart();
                 return;
             }
-            startGngSession();
+            gngActivity.reset();
         }
 
         function generateGngSequence(length = 50) {
@@ -249,7 +235,7 @@
         function pauseGngTimer() {
             if (!gngState.isPlaying || gngState.timerPaused) return;
             gngState.timerPaused = true;
-            gngTimer.pause();
+            gngActivity.pause();
         }
 
         function startGng() {
@@ -267,11 +253,12 @@
             gngState.isPlaying = true;
             syncGngPlayButton();
             gngState.matchPending = false;
+            gngActivity.start(gngState.speed);
             nextGngImage();
         }
 
         function pauseGng() {
-            gngTimer.pause();
+            gngActivity.stop();
             gngState.isPlaying = false;
             gngState.timerPaused = false;
             gngState.messagePaused = false;
@@ -376,8 +363,9 @@
             if (newSpeed > 10) newSpeed = 10;
             gngState.speed = newSpeed;
             gngSpeedDisplay.textContent = newSpeed;
+            gngActivity.setSpeed(newSpeed);
             if (gngState.isPlaying && !gngState.timerPaused) {
-                resetGngTimer();
+                gngActivity.reset();
             }
         }
 

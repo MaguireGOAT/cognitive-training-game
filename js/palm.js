@@ -69,7 +69,14 @@
     var isPlaying = false;
     var speedLevel = 5;
     var initialized = false;
-    var palmTimer = window.CognitiveActivityTimer.create();
+    var palmActivity = window.CognitiveActivity.create({
+        speedToInterval: function (level) {
+            var mapping = { 1: 7000, 2: 6000, 3: 5000, 4: 4000, 5: 3500, 6: 3000, 7: 2500, 8: 2000, 9: 1500, 10: 1000 };
+            return mapping[level] || 3500;
+        },
+        defaultSpeed: 5,
+        tick: function () { if (isPlaying) updateGame(); }
+    });
 
     var leftEl = document.getElementById('leftGesture');
     var rightEl = document.getElementById('rightGesture');
@@ -85,22 +92,6 @@
     var palmGame = document.getElementById('palm');
     var palmGrid = palmGame ? palmGame.querySelector('.grid-wrapper') : null;
     var palmBoard = palmGame ? palmGame.querySelector('.game-board') : null;
-
-    function getSpeedInterval(level) {
-        var mapping = {
-            1: 7000,
-            2: 6000,
-            3: 5000,
-            4: 4000,
-            5: 3500,
-            6: 3000,
-            7: 2500,
-            8: 2000,
-            9: 1500,
-            10: 1000
-        };
-        return mapping[level] || 3500;
-    }
 
     function randomGesture(arr) {
         return arr[Math.floor(Math.random() * arr.length)];
@@ -197,29 +188,19 @@
         rightGestures = rightBase;
     }
 
-    function startPalmSession() {
-        palmTimer.start({
-            mode: 'repeating',
-            intervalMs: getSpeedInterval(speedLevel),
-            tick: function () {
-                if (isPlaying) updateGame();
-            }
-        });
-    }
-
     function startAutoPlay() {
         if (isPlaying) return;
         isPlaying = true;
         playBtn.classList.add('playing');
         updateGame();
-        startPalmSession();
+        palmActivity.start(speedLevel);
     }
 
     function stopAutoPlay() {
         if (!isPlaying) return;
         isPlaying = false;
         playBtn.classList.remove('playing');
-        palmTimer.stop();
+        palmActivity.stop();
     }
 
     function togglePlay() {
@@ -232,7 +213,7 @@
 
     function restartTimerIfPlaying() {
         if (!isPlaying) return;
-        startPalmSession();
+        palmActivity.reset();
     }
 
     function changeSpeed(delta) {
@@ -240,6 +221,7 @@
         if (newLevel >= 1 && newLevel <= 10) {
             speedLevel = newLevel;
             speedDisplay.textContent = speedLevel;
+            palmActivity.setSpeed(speedLevel);
             restartTimerIfPlaying();
         }
     }
