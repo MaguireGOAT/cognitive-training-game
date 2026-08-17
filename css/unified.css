@@ -682,6 +682,19 @@
            Keep titles/buttons fixed and let only the content area scroll.
            ================================================================ */
         @media (max-height: 500px) and (orientation: landscape) {
+            :root {
+                --top-bar-h: max(36px, calc(48px * var(--ui-scale)));
+                --stage-extra-h: 88px;
+            }
+            .top-bar {
+                padding: calc(2px * var(--ui-scale)) calc(2px * var(--ui-scale));
+                row-gap: calc(4px * var(--ui-scale));
+            }
+            .bottom-controls {
+                padding: calc(2px * var(--ui-scale)) 0 0 0;
+                margin-top: calc(2px * var(--ui-scale));
+                padding-top: calc(4px * var(--ui-scale));
+            }
             #home,
             #mainMenu,
             #foodCategorySelect,
