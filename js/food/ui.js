@@ -3,6 +3,37 @@
             if (window.CognitiveMessage) window.CognitiveMessage.close();
         }
 
+        // ---- 共用即時回饋（正確／錯誤提示） ----
+        window.CognitiveFeedback = {
+            _entries: new WeakMap(),
+            show: function (host, text, color) {
+                const hostEl = typeof host === 'string' ? document.getElementById(host) : host;
+                if (!hostEl) return;
+                this.clear(hostEl);
+                const pill = document.createElement('div');
+                pill.className = 'feedback-pill';
+                pill.textContent = text;
+                if (color) pill.style.color = color;
+                hostEl.appendChild(pill);
+                const timer = setTimeout(function () {
+                    pill.style.opacity = '0';
+                    setTimeout(function () { if (pill.parentNode) pill.remove(); }, 300);
+                }, 650);
+                this._entries.set(hostEl, { pill: pill, timer: timer });
+            },
+            clear: function (host) {
+                const hostEl = typeof host === 'string' ? document.getElementById(host) : host;
+                if (!hostEl) return;
+                const entry = this._entries.get(hostEl);
+                if (entry) {
+                    clearTimeout(entry.timer);
+                    if (entry.pill.parentNode) entry.pill.remove();
+                    this._entries.delete(hostEl);
+                }
+                hostEl.querySelectorAll('.feedback-pill').forEach(function (el) { el.remove(); });
+            }
+        };
+
         // ---- 共用圖片放大 ----
         function openMagnify(src, name, showNameOverride) {
             const overlay = document.getElementById('magnifyOverlay');

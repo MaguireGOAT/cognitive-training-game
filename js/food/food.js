@@ -10,6 +10,7 @@
             items: [],
             isAnswered: false,
             isWaitingForNext: false,
+            advanceTimer: null,
             gameMode: 'random',
             usedFoods: new Set(),
             categoryCompleted: {}
@@ -18,6 +19,7 @@
         let showNames = true;
 
         const grid = document.getElementById('gridContainer');
+        const foodGridWrapper = document.querySelector('#foodGame .grid-wrapper');
         const questionText = document.getElementById('questionText');
         const foodScoreNum = document.getElementById('foodScoreNum');
         const foodRoundInfo = document.getElementById('foodRoundInfo');
@@ -250,34 +252,14 @@
                 card.classList.add('correct-highlight');
                 cards.forEach(c => c.classList.add('disabled'));
                 CognitiveAudio.play('correct');
-                const encourage = getRandomEncourage();
-                showAnswerMessage('correct', '✅', '正確！', encourage);
+                window.CognitiveFeedback.show(foodGridWrapper, '✅ 正確！', '#3ba87b');
+                clearTimeout(foodState.advanceTimer);
+                foodState.advanceTimer = setTimeout(nextFoodRound, 650);
             } else {
                 card.classList.add('wrong-highlight');
                 CognitiveAudio.play('wrong');
-                showAnswerMessage('wrong', '🔄', '請再選擇', '再試一次，你可以的！');
+                window.CognitiveFeedback.show(foodGridWrapper, '❌ 再試一次！', '#d95a5a');
                 setTimeout(() => { card.classList.remove('wrong-highlight'); }, 600);
-            }
-        }
-
-        function showAnswerMessage(type, icon, text, sub) {
-            if (type === 'correct') {
-                window.CognitiveMessage.show({
-                    title: text,
-                    subtitle: sub,
-                    icon: icon,
-                    textClass: 'correct',
-                    onDismiss: nextFoodRound,
-                    pauseTimer: false
-                });
-            } else {
-                window.CognitiveMessage.show({
-                    title: text,
-                    subtitle: sub,
-                    icon: icon,
-                    textClass: 'wrong',
-                    pauseTimer: false
-                });
             }
         }
 
@@ -411,6 +393,8 @@
         }
 
         function goToFoodCategorySelect() {
+            clearTimeout(foodState.advanceTimer);
+            window.CognitiveFeedback.clear(foodGridWrapper);
             if (window.CognitiveRouter) {
                 window.CognitiveRouter.goBack();
             } else {
@@ -446,7 +430,11 @@
                 back: 'mainMenu'
             });
             window.CognitiveRouter.defineScreen('foodGame', {
-                exit: hideOverlay,
+                exit: function () {
+                    clearTimeout(foodState.advanceTimer);
+                    window.CognitiveFeedback.clear(foodGridWrapper);
+                    hideOverlay();
+                },
                 back: 'foodCategorySelect'
             });
         }

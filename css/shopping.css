@@ -340,28 +340,6 @@
             0% { opacity: 1; transform: scale(1); }
             100% { opacity: 0; transform: scale(0); }
         }
-        /* 回饋提示 */
-        .shopping-feedback {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 40;
-            font-size: calc(44px * var(--ui-scale));
-            font-weight: 800;
-            padding: calc(10px * var(--ui-scale)) calc(28px * var(--ui-scale));
-            border-radius: calc(40px * var(--ui-scale));
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 calc(12px * var(--ui-scale)) calc(30px * var(--ui-scale)) rgba(0, 0, 0, 0.25);
-            pointer-events: none;
-            text-align: center;
-            white-space: nowrap;
-            transition: opacity 0.3s ease;
-        }
-        [data-theme="dark"] .shopping-feedback {
-            background: rgba(30, 30, 50, 0.95);
-        }
-
         /* 回憶揀選 */
         .shopping-recall-panel {
             width: 100%;

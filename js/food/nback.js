@@ -20,6 +20,7 @@
         };
 
         const nbackImage = document.getElementById('nbackImage');
+        const nbackGridWrapper = document.getElementById('nbackGridWrapper');
         const nbackOverlay = document.getElementById('nbackOverlay');
         const nbackStepLabel = document.getElementById('nbackStepLabel');
         const nbackScoreNum = document.getElementById('nbackScoreNum');
@@ -134,6 +135,7 @@
             nbackTimer.pause();
             nbackState.isPlaying = false;
             syncNbackPlayButton();
+            window.CognitiveFeedback.clear(nbackGridWrapper);
         }
 
         function holdNbackTimer() {
@@ -186,10 +188,10 @@
                 nbackState.score++;
                 if (isMatch) nbackState.correctHits++;
                 else nbackState.falseAlarms++;
-                showNbackFeedback('✅ 正確匹配', '#3ba87b');
+                showNbackFeedback('✅ 正確！', '#3ba87b');
                 CognitiveAudio.play('correct');
             } else {
-                showNbackFeedback('💪 ' + getRandomWrongEncourage(), '#d95a5a');
+                showNbackFeedback('❌ 再試一次！', '#d95a5a');
                 CognitiveAudio.play('wrong');
             }
             nbackState.totalTrials++;
@@ -210,10 +212,7 @@
         }
 
         function showNbackFeedback(text, color) {
-            nbackOverlay.textContent = text;
-            nbackOverlay.style.color = color;
-            nbackOverlay.style.opacity = 1;
-            setTimeout(() => { nbackOverlay.style.opacity = 0; }, 500);
+            window.CognitiveFeedback.show(nbackGridWrapper, text, color);
         }
 
         function updateNbackScore() { nbackScoreNum.textContent = nbackState.score; }

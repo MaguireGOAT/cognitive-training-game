@@ -280,6 +280,7 @@
             syncDualNbackPlayButton();
             CognitiveAudio.stopFile();
             hideOverlay();
+            window.CognitiveFeedback.clear(dualNbackStage);
         }
 
         function startDual() {
@@ -334,6 +335,7 @@
             }
             updateDualNbackScore();
             flashDualNbackFeedback(correct, channel);
+            window.CognitiveFeedback.show(dualNbackStage, correct ? '✅ 正確！' : '❌ 再試一次！', correct ? '#3ba87b' : '#d95a5a');
         }
 
         function updateDualNbackScore() {

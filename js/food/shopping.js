@@ -25,7 +25,6 @@
             orderTransitionTimer: null,
             orderTransitionToken: 0,
             roundLocked: false,
-            feedbackTimer: null,
             wrongFlashTimer: null,
             introShownOnce: false
         };
@@ -691,7 +690,7 @@
                 }
             } else {
                 CognitiveAudio.play('wrong');
-                showShoppingFeedback(getRandomWrongEncourage(), '#d95a5a');
+                showShoppingFeedback('❌ 再試一次！', '#d95a5a');
                 card.classList.add('wrong-flash');
                 shoppingState.wrongFlashTimer = setTimeout(function() {
                     card.classList.remove('wrong-flash');
@@ -752,29 +751,16 @@
         }
 
         function clearShoppingFeedback() {
-            if (shoppingState.feedbackTimer) {
-                clearTimeout(shoppingState.feedbackTimer);
-                shoppingState.feedbackTimer = null;
-            }
             if (shoppingState.wrongFlashTimer) {
                 clearTimeout(shoppingState.wrongFlashTimer);
                 shoppingState.wrongFlashTimer = null;
             }
-            shoppingStage.querySelectorAll('.shopping-feedback').forEach(el => el.remove());
+            window.CognitiveFeedback.clear(shoppingStage);
             shoppingRecallGrid.querySelectorAll('.shopping-recall-card.wrong-flash').forEach(el => el.classList.remove('wrong-flash'));
         }
 
         function showShoppingFeedback(text, color) {
-            clearShoppingFeedback();
-            const overlay = document.createElement('div');
-            overlay.className = 'shopping-feedback';
-            overlay.textContent = text;
-            overlay.style.color = color;
-            shoppingStage.appendChild(overlay);
-            shoppingState.feedbackTimer = setTimeout(function() {
-                overlay.style.opacity = '0';
-                setTimeout(function() { overlay.remove(); }, 300);
-            }, 650);
+            window.CognitiveFeedback.show(shoppingStage, text, color);
         }
 
         function pauseShopping() {

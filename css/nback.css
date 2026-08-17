@@ -9,6 +9,7 @@
             justify-content: center;
             padding: calc(2px * var(--ui-scale)) 0;
             overflow: hidden;
+            position: relative;
         }
         .nback-image-container {
             --grid-cols: 1;

@@ -9,10 +9,12 @@
             oddItem: null,
             isAnswered: false,
             isWaitingForNext: false,
-            wrongFlashTimer: null
+            wrongFlashTimer: null,
+            advanceTimer: null
         };
 
         const differentGameScreen = document.getElementById('differentGame');
+        const differentGridWrapper = document.getElementById('differentGridWrapper');
         const differentGridContainer = document.getElementById('differentGridContainer');
         const differentScoreNum = document.getElementById('differentScoreNum');
         const differentRoundInfo = document.getElementById('differentRoundInfo');
@@ -137,15 +139,13 @@
                 card.classList.add('correct-highlight');
                 Array.from(differentGridContainer.querySelectorAll('.different-card')).forEach(child => child.classList.add('disabled'));
                 CognitiveAudio.play('correct');
-                window.CognitiveMessage.show({
-                    title: '✅ 正確！',
-                    subtitle: getRandomEncourage(),
-                    onDismiss: nextDifferentRound,
-                    pauseTimer: false
-                });
+                window.CognitiveFeedback.show(differentGridWrapper, '✅ 正確！', '#3ba87b');
+                clearTimeout(differentState.advanceTimer);
+                differentState.advanceTimer = setTimeout(nextDifferentRound, 650);
             } else {
                 CognitiveAudio.play('wrong');
                 card.classList.add('wrong-flash');
+                window.CognitiveFeedback.show(differentGridWrapper, '❌ 再試一次！', '#d95a5a');
                 clearTimeout(differentState.wrongFlashTimer);
                 differentState.wrongFlashTimer = setTimeout(function() {
                     card.classList.remove('wrong-flash');
@@ -176,6 +176,8 @@
 
         function pauseDifferent() {
             clearTimeout(differentState.wrongFlashTimer);
+            clearTimeout(differentState.advanceTimer);
+            window.CognitiveFeedback.clear(differentGridWrapper);
             differentState.isAnswered = false;
             differentState.isWaitingForNext = false;
         }

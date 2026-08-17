@@ -276,6 +276,7 @@
             gngState.timerPaused = false;
             gngState.messagePaused = false;
             syncGngPlayButton();
+            window.CognitiveFeedback.clear(gngGridWrapper);
         }
 
         function renderGngImage() {
@@ -344,12 +345,10 @@
                 gngState.score++;
                 gngState.correctHits++;
                 CognitiveAudio.play('correct');
-                const encourage = getRandomEncourage();
-                showGngFeedback('✅ ' + encourage, '#3ba87b');
+                window.CognitiveFeedback.show(gngGridWrapper, '✅ 正確！', '#3ba87b');
             } else {
                 CognitiveAudio.play('wrong');
-                const wrongMsg = getRandomWrongEncourage();
-                showGngFeedback('💪 ' + wrongMsg, '#d95a5a');
+                window.CognitiveFeedback.show(gngGridWrapper, '❌ 再試一次！', '#d95a5a');
             }
             gngState.totalTrials++;
             updateGngScore();
@@ -367,37 +366,6 @@
                     gngState.matchPending = false;
                 }, 600);
             }
-        }
-
-        function showGngFeedback(text, color) {
-            const overlay = document.createElement('div');
-            overlay.className = 'gng-overlay';
-            overlay.textContent = text;
-            overlay.style.color = color;
-            overlay.style.opacity = 1;
-            overlay.style.position = 'absolute';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100%';
-            overlay.style.height = '100%';
-            overlay.style.display = 'flex';
-            overlay.style.alignItems = 'center';
-            overlay.style.justifyContent = 'center';
-            overlay.style.fontSize = 'calc(48px * var(--ui-scale))';
-            overlay.style.fontWeight = '700';
-            overlay.style.textShadow = '0 0 calc(30px * var(--ui-scale)) rgba(0,0,0,0.9)';
-            overlay.style.pointerEvents = 'none';
-            overlay.style.transition = 'opacity 0.3s';
-
-            gngGridWrapper.style.position = 'relative';
-            const existing = gngGridWrapper.querySelector('.gng-overlay');
-            if (existing) existing.remove();
-            gngGridWrapper.appendChild(overlay);
-
-            setTimeout(() => {
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.remove(), 300);
-            }, 500);
         }
 
         function updateGngScore() { gngScoreNum.textContent = gngState.score; }
