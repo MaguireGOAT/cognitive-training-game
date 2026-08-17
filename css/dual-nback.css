@@ -12,9 +12,9 @@
         }
         .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
             --large-menu-gap: calc(24px * var(--ui-scale));
-            --large-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
+            --large-menu-width: min(calc(var(--avail-w) - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
             --large-menu-card: min(calc((var(--large-menu-width) - var(--large-menu-gap)) / 2),
-                                   calc((100vh - calc(300px * var(--ui-scale))) / 2));
+                                   calc((var(--avail-h) - calc(300px * var(--ui-scale))) / 2));
     display: grid;
     grid-template-columns: repeat(2, var(--large-menu-card));
     grid-auto-rows: var(--large-menu-card);
@@ -96,15 +96,15 @@
 
 .dual-grid {
     --dual-gap: calc(16px * var(--ui-scale));
-    --dual-avail-w: calc(100vw - calc(48px * var(--ui-scale)));
-    --dual-avail-h: calc(100vh - calc(190px * var(--ui-scale)));
-    --dual-cell: min(calc((var(--dual-avail-w) - (var(--cols) - 1) * var(--dual-gap)) / var(--cols)),
-                     calc((var(--dual-avail-h) - (var(--rows) - 1) * var(--dual-gap)) / var(--rows)));
-    width: calc(var(--dual-cell) * var(--cols) + (var(--cols) - 1) * var(--dual-gap));
-    height: calc(var(--dual-cell) * var(--rows) + (var(--rows) - 1) * var(--dual-gap));
+    --grid-gap-h: var(--dual-gap);
+    --grid-gap-v: var(--dual-gap);
+    --grid-name-track: calc(0px * var(--ui-scale));
+    --dual-cell: var(--grid-card);
+    width: calc(var(--dual-cell) * var(--grid-cols) + (var(--grid-cols) - 1) * var(--dual-gap));
+    height: calc(var(--dual-cell) * var(--grid-rows) + (var(--grid-rows) - 1) * var(--dual-gap));
     display: grid;
-    grid-template-columns: repeat(var(--cols), var(--dual-cell));
-    grid-template-rows: repeat(var(--rows), var(--dual-cell));
+    grid-template-columns: repeat(var(--grid-cols), var(--dual-cell));
+    grid-template-rows: repeat(var(--grid-rows), var(--dual-cell));
     gap: var(--dual-gap);
     justify-content: center;
     align-content: center;
@@ -149,7 +149,12 @@
 }
 
 .dual-card {
-    width: min(80vw, calc(100vh - calc(190px * var(--ui-scale))), calc(850px * var(--ui-scale)));
+    --grid-cols: 1;
+    --grid-rows: 1;
+    --grid-gap-h: calc(0px * var(--ui-scale));
+    --grid-gap-v: calc(0px * var(--ui-scale));
+    --grid-name-track: calc(0px * var(--ui-scale));
+    width: var(--grid-card);
     max-width: 100%;
     aspect-ratio: 1 / 1;
     background: var(--card-bg);
@@ -235,29 +240,6 @@
 }
 
 @media (max-width: 640px) {
-    .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
-        --large-menu-gap: calc(18px * var(--ui-scale));
-        --large-menu-card: auto;
-        width: 100%;
-        max-width: calc(760px * var(--ui-scale));
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-auto-rows: auto;
-    }
-    .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn {
-        width: 100%;
-        height: auto;
-        min-height: calc(150px * var(--ui-scale));
-        aspect-ratio: 1 / 1;
-        padding: calc(20px * var(--ui-scale)) calc(12px * var(--ui-scale));
-    }
-    .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .icon {
-        font-size: clamp(calc(30px * var(--ui-scale)), 9vw, calc(66px * var(--ui-scale)));
-        margin-bottom: calc(8px * var(--ui-scale));
-    }
-    .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .label {
-        font-size: clamp(calc(15px * var(--ui-scale)), 4vw, calc(30px * var(--ui-scale)));
-    }
-
     #dualNbackSettings [style*="display:flex"] [style*="display:flex"] {
         flex-wrap: wrap;
         row-gap: calc(8px * var(--ui-scale));
@@ -267,23 +249,5 @@
     }
     #dualNbackSettings select {
         max-width: 100%;
-    }
-
-    #dualNbackGame .bottom-controls {
-        grid-template-columns: 1fr;
-        row-gap: calc(8px * var(--ui-scale));
-    }
-    #dualNbackGame .bottom-controls .left-group,
-    #dualNbackGame .bottom-controls .right-group {
-        justify-content: center;
-    }
-    #dualNbackGame .bottom-controls .center-group.dual-match-controls {
-        order: 1;
-        gap: calc(8px * var(--ui-scale)) calc(20px * var(--ui-scale));
-    }
-    .dual-match-controls .dual-match-btn {
-        min-width: calc(96px * var(--ui-scale));
-        padding: calc(8px * var(--ui-scale)) calc(16px * var(--ui-scale));
-        font-size: clamp(calc(16px * var(--ui-scale)), 4vw, calc(26px * var(--ui-scale)));
     }
 }

@@ -392,6 +392,38 @@
                 document.removeEventListener('pointerdown', onFirstGesture);
             });
 
+            function syncMeasuredStages() {
+                var stages = [
+                    { screen: document.getElementById('foodGame'), el: document.querySelector('#foodGame .grid-wrapper') },
+                    { screen: document.getElementById('nbackGame'), el: document.getElementById('nbackGridWrapper') },
+                    { screen: document.getElementById('dualNbackGame'), el: document.getElementById('dualNbackStage') },
+                    { screen: document.getElementById('gngGame'), el: document.getElementById('gngGridWrapper') },
+                    { screen: document.getElementById('differentGame'), el: document.getElementById('differentGridWrapper') },
+                    { screen: document.getElementById('shoppingGame'), el: document.getElementById('shoppingStage') }
+                ];
+
+                function applyStage(entry) {
+                    if (!entry.screen || !entry.el) return;
+                    var rect = entry.el.getBoundingClientRect();
+                    if (rect.width <= 0 || rect.height <= 0) return;
+                    entry.screen.style.setProperty('--stage-h', Math.round(rect.height) + 'px');
+                }
+
+                stages.forEach(function (entry) {
+                    applyStage(entry);
+                    if (!window.ResizeObserver) return;
+                    var observer = new ResizeObserver(function () {
+                        applyStage(entry);
+                    });
+                    observer.observe(entry.el);
+                });
+                window.addEventListener('resize', function () {
+                    stages.forEach(applyStage);
+                });
+            }
+
+            syncMeasuredStages();
+
             refreshSettingsFromStorage();
             setTimeout(tryPlayMusic, 400);
 

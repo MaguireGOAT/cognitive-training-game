@@ -37,6 +37,7 @@
         var currentFlow = null;
         var pendingOptions = null;
         var pendingDrainQueued = false;
+        var lastBackdropDismissAt = 0;
 
         function render(options) {
             var icon = getMsgIcon();
@@ -182,7 +183,11 @@
 
         if (overlay && overlay.addEventListener && adapters.attachBackdrop !== false) {
             overlay.addEventListener('click', function (e) {
-                if (e.target === overlay) dismiss();
+                if (e.target !== overlay) return;
+                var now = Date.now();
+                if (now - lastBackdropDismissAt < 350) return;
+                lastBackdropDismissAt = now;
+                dismiss();
             });
         }
 

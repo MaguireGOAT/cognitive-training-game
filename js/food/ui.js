@@ -59,36 +59,30 @@
         });
         window.addEventListener('resize', sizeMagnifyImage);
 
+        let topBarCenteringBusy = false;
+
         function syncTopBarCentering() {
-            document.querySelectorAll('.top-bar').forEach(bar => {
-                const left = bar.querySelector('.left-group');
-                const right = bar.querySelector('.right-group');
-                const text = bar.querySelector('.question-text, .gng-rules-text');
-                if (!left || !right || !text) return;
-                if (bar.clientWidth <= 0) return;
-                const leftRect = left.getBoundingClientRect();
-                const rightRect = right.getBoundingClientRect();
-                const textRect = text.getBoundingClientRect();
-                const barRect = bar.getBoundingClientRect();
-                const textW = text.offsetWidth;
-                const sameRow = Math.abs(textRect.top - leftRect.top) < 2 &&
-                                Math.abs(textRect.top - rightRect.top) < 2;
-                const gap = 4;
-                const available = rightRect.left - leftRect.right - gap * 2;
-                const singleLine = sameRow && available >= textW;
-                let extra = 0;
-                if (singleLine) {
-                    const currentCenter = (leftRect.right + rightRect.left) / 2;
-                    const targetCenter = barRect.left + bar.clientWidth / 2;
-                    const textLeft = currentCenter - textW / 2;
-                    const textRight = currentCenter + textW / 2;
-                    const minExtra = leftRect.right + gap - textLeft;
-                    const maxExtra = rightRect.left - gap - textRight;
-                    extra = Math.max(minExtra, Math.min(targetCenter - currentCenter, maxExtra));
-                }
-                bar.style.setProperty('--top-extra', extra + 'px');
-                bar.classList.toggle('wrapped', !singleLine);
-            });
+            if (topBarCenteringBusy) return;
+            topBarCenteringBusy = true;
+            try {
+                document.querySelectorAll('.top-bar').forEach(bar => {
+                    const left = bar.querySelector('.left-group');
+                    const right = bar.querySelector('.right-group');
+                    const text = bar.querySelector('.question-text, .gng-rules-text');
+                    if (!left || !right || !text) return;
+                    if (bar.clientWidth <= 0) return;
+                    const leftRect = left.getBoundingClientRect();
+                    const rightRect = right.getBoundingClientRect();
+                    const textW = text.offsetWidth;
+                    const gap = 4;
+                    const available = rightRect.left - leftRect.right - gap * 2;
+                    const canFit = available >= textW;
+                    bar.style.setProperty('--top-extra', '0px');
+                    bar.classList.toggle('wrapped', !canFit);
+                });
+            } finally {
+                topBarCenteringBusy = false;
+            }
         }
 
         // ---- 通用按壓動畫 ----

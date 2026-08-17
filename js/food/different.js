@@ -140,11 +140,7 @@
                 window.CognitiveMessage.show({
                     title: '✅ 正確！',
                     subtitle: getRandomEncourage(),
-                    buttons: [{
-                        text: '下一題 ➜',
-                        className: 'btn-next',
-                        action: nextDifferentRound
-                    }],
+                    onDismiss: nextDifferentRound,
                     pauseTimer: false
                 });
             } else {

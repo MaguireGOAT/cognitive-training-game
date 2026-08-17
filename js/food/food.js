@@ -68,13 +68,6 @@
             questionText.innerHTML = getFoodQuestionHtml(category);
             requestAnimationFrame(() => {
                 if (typeof syncTopBarCentering === 'function') syncTopBarCentering();
-                const bar = questionText.closest('.top-bar');
-                if (bar && bar.classList.contains('wrapped')) {
-                    questionText.innerHTML = `<span class="category-highlight">${category}</span>`;
-                    bar.classList.remove('wrapped');
-                    void bar.offsetWidth;
-                    if (typeof syncTopBarCentering === 'function') syncTopBarCentering();
-                }
             });
         }
 
@@ -274,11 +267,6 @@
                     subtitle: sub,
                     icon: icon,
                     textClass: 'correct',
-                    buttons: [{
-                        text: '下一題 ➜',
-                        className: 'btn-next',
-                        action: nextFoodRound
-                    }],
                     onDismiss: nextFoodRound,
                     pauseTimer: false
                 });

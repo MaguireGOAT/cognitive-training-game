@@ -40,13 +40,13 @@
         Home
        ================================================================ -->
     <div class="menu-overlay home-overlay app-screen" id="home">
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-right">
             <button class="hamburger-btn" id="homeMenuBtn" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
         <div class="menu-header home-header">
             <div class="menu-title"><span class="brain">🧠</span> 認知訓練</div>
         </div>
-        <div class="menu-subtitle">選擇一個遊戲或活動開始</div>
+        <div class="menu-subtitle">選擇一個遊戲</div>
         <div class="tile-scroll-area">
             <div class="home-grid">
                 <button class="category-btn home-link" data-router-target="realityBoard">
@@ -130,10 +130,10 @@
     </div>
 
     <div class="menu-overlay app-screen" id="realitySettings">
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-left">
             <button class="back-btn" id="realitySettingsBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
         </div>
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-right">
             <button class="hamburger-btn" id="realitySettingsMenuBtn" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
         <div class="menu-header" style="margin-top:calc(20px * var(--ui-scale));">
@@ -191,13 +191,13 @@
         <div class="menu-header">
             <div class="menu-title"><span class="brain">🍽️</span> 食物遊戲</div>
         </div>
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-left">
             <button class="back-btn" id="foodMainBackBtn" data-app-back="previous" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
         </div>
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-right">
             <button class="hamburger-btn" id="hamburgerBtnHome" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
-        <div class="menu-subtitle">選擇一個遊戲或活動開始</div>
+        <div class="menu-subtitle">選擇一個遊戲</div>
         <div class="tile-scroll-area">
             <div class="category-grid game-select">
                 <button class="category-btn" id="gameFoodBtn">
@@ -225,10 +225,10 @@
         Food category selector
        ================================================================ -->
     <div class="menu-overlay app-screen" id="foodCategorySelect">
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-left">
             <button class="back-btn" id="foodCategoryBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
         </div>
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-right">
             <button class="hamburger-btn" id="hamburgerBtnFoodCategory" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
         <div class="menu-header" style="margin-top:calc(20px * var(--ui-scale));">
@@ -318,9 +318,13 @@
         <div class="bottom-controls">
             <div class="left-group">
                 <div class="speed-control">
-                    <button class="speed-btn" id="nbackSpeedDown">◀</button>
+                    <button class="speed-btn" id="nbackSpeedDown" title="減慢速度" aria-label="減慢速度">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+                    </button>
                     <span class="speed-display" id="nbackSpeedDisplay">5</span>
-                    <button class="speed-btn" id="nbackSpeedUp">▶</button>
+                    <button class="speed-btn" id="nbackSpeedUp" title="加快速度" aria-label="加快速度">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
                 </div>
                 <button class="play-btn" id="nbackPlayBtn">
                     <span class="play-icon">
@@ -342,10 +346,10 @@
         N-back mode selection
        ================================================================ -->
     <div class="menu-overlay app-screen" id="nbackModeSelect">
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-left">
             <button class="back-btn" id="nbackModeBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
         </div>
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-right">
             <button class="hamburger-btn" id="hamburgerBtnNbackMode" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
         <div class="menu-header">
@@ -371,10 +375,10 @@
         Dual N-back settings
        ================================================================ -->
     <div class="menu-overlay app-screen" id="dualNbackSettings">
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-left">
             <button class="back-btn" id="dualNbackSettingsBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
         </div>
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-right">
             <button class="hamburger-btn" id="hamburgerBtnDualNbackSettings" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
         <div class="menu-header">
@@ -458,9 +462,13 @@
         <div class="bottom-controls">
             <div class="left-group">
                 <div class="speed-control">
-                    <button class="speed-btn" id="dualNbackSpeedDown">◀</button>
+                    <button class="speed-btn" id="dualNbackSpeedDown" title="減慢速度" aria-label="減慢速度">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+                    </button>
                     <span class="speed-display" id="dualNbackSpeedDisplay">5</span>
-                    <button class="speed-btn" id="dualNbackSpeedUp">▶</button>
+                    <button class="speed-btn" id="dualNbackSpeedUp" title="加快速度" aria-label="加快速度">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
                 </div>
                 <button class="play-btn" id="dualNbackPlayBtn">
                     <span class="play-icon">
@@ -502,9 +510,13 @@
         <div class="bottom-controls">
             <div class="left-group">
                 <div class="speed-control">
-                    <button class="speed-btn" id="gngSpeedDown">◀</button>
+                    <button class="speed-btn" id="gngSpeedDown" title="減慢速度" aria-label="減慢速度">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+                    </button>
                     <span class="speed-display" id="gngSpeedDisplay">5</span>
-                    <button class="speed-btn" id="gngSpeedUp">▶</button>
+                    <button class="speed-btn" id="gngSpeedUp" title="加快速度" aria-label="加快速度">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
                 </div>
                 <button class="play-btn" id="gngPlayBtn">
                     <span class="play-icon">
@@ -526,10 +538,10 @@
         Go/No Go settings
        ================================================================ -->
     <div class="menu-overlay app-screen" id="gngSettings">
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-left">
             <button class="back-btn" id="gngSettingsBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
         </div>
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000; display:flex; align-items:center; gap:calc(8px * var(--ui-scale));">
+        <div class="chrome-btn-right chrome-btn-cluster">
             <button class="save-btn" id="gngSaveSettingsBtn" title="儲存設定">💾儲存</button>
             <button class="hamburger-btn" id="hamburgerBtnGngSettings" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
@@ -691,10 +703,10 @@
         Shopping settings
        ================================================================ -->
     <div class="menu-overlay app-screen" id="shoppingSettings">
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); left:calc(14px * var(--ui-scale)); z-index:3000;">
+        <div class="chrome-btn-left">
             <button class="back-btn" id="shoppingSettingsBackBtn" title="返回上一頁"><img class="back-icon" src="assets/icons/back.png" alt="back" /></button>
         </div>
-        <div style="position:fixed; top:calc(10px * var(--ui-scale)); right:calc(14px * var(--ui-scale)); z-index:3000; display:flex; align-items:center; gap:calc(8px * var(--ui-scale));">
+        <div class="chrome-btn-right chrome-btn-cluster">
             <button class="save-btn" id="shoppingSaveSettingsBtn" title="儲存設定">💾儲存</button>
             <button class="hamburger-btn" id="hamburgerBtnShoppingSettings" title="開啟選單"><img class="menu-icon" src="assets/icons/menu.png" alt="menu" /></button>
         </div>
@@ -808,9 +820,13 @@
         <div class="bottom-controls">
             <div class="left-group">
                 <div class="speed-control">
-                    <button class="speed-btn" id="speedDown" title="減慢速度">◀</button>
+                    <button class="speed-btn" id="speedDown" title="減慢速度" aria-label="減慢速度">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+                    </button>
                     <span class="speed-display" id="speedDisplay">5</span>
-                    <button class="speed-btn" id="speedUp" title="加快速度">▶</button>
+                    <button class="speed-btn" id="speedUp" title="加快速度" aria-label="加快速度">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
                 </div>
                 <button class="play-btn" id="playBtn" title="自動播放">
                     <span class="play-icon">

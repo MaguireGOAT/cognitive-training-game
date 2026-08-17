@@ -385,19 +385,29 @@
             }
         }
 
+        function getRealityUiScale() {
+            let scale = 1;
+            try {
+                const parsed = parseFloat(
+                    getComputedStyle(document.documentElement).getPropertyValue('--ui-scale')
+                );
+                if (!isNaN(parsed) && parsed > 0) scale = parsed;
+            } catch (error) {}
+            return scale;
+        }
+
         function fitRealityText() {
             if (realityBoard.classList.contains('hidden')) return;
-            const vw = document.documentElement.clientWidth;
-            const vh = document.documentElement.clientHeight;
-            const valueSize = Math.max(36, Math.min(210, Math.floor(Math.min(vw / 5.8, vh / 3.4))));
-            const labelSize = Math.max(22, Math.min(76, Math.floor(Math.min(vw / 11, vh / 8))));
+            const uiScale = getRealityUiScale();
+            const valueSize = Math.max(36, Math.round(210 * uiScale));
+            const labelSize = Math.max(22, Math.round(76 * uiScale));
             realityBoard.style.setProperty('--reality-value-size', valueSize + 'px');
             realityBoard.style.setProperty('--reality-label-size', labelSize + 'px');
             document.querySelectorAll('.reality-value').forEach(el => {
                 fitRealityValue(el, valueSize);
             });
-            const weatherSize = Math.max(valueSize, Math.min(260, Math.floor(Math.min(vw / 3.4, vh / 2.6))));
-            const locationSize = Math.max(valueSize, Math.min(250, Math.floor(Math.min(vw / 3.8, vh / 2.4)))) * 2.1;
+            const weatherSize = Math.max(valueSize, Math.round(260 * uiScale));
+            const locationSize = Math.max(valueSize, Math.round(525 * uiScale));
             fitRealityValue(realitySeasonText, weatherSize);
             fitRealityValue(realityWeatherText, weatherSize);
             fitRealityValue(realityLocationText, locationSize);

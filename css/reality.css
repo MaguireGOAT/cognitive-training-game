@@ -63,8 +63,8 @@
             gap: calc(8px * var(--ui-scale));
         }
         .reality-edit-btn {
-            width: calc(44px * var(--ui-scale));
-            height: calc(44px * var(--ui-scale));
+            width: max(44px, calc(44px * var(--ui-scale)));
+            height: max(44px, calc(44px * var(--ui-scale)));
             padding: 0;
             border-radius: 50%;
         }
@@ -359,13 +359,4 @@
         }
         [data-theme="dark"] .reality-done-btn:hover {
             background: #1565c0;
-        }
-
-        @media (min-width: 900px) and (orientation: landscape) {
-            .reality-time-page {
-                flex-direction: row;
-            }
-            .reality-time-page .reality-info {
-                flex: 1;
-            }
         }

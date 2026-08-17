@@ -2,7 +2,35 @@
            全域變數與基礎樣式
            ================================================================ */
         :root {
-            --ui-scale: clamp(0.72, min(calc(100vw / 1280px), calc(100vh / 800px)), 1.35);
+            --ui-scale: min(calc(100vw / 1280px), calc(100vh / 800px));
+            --tap-min: 44px;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-left: env(safe-area-inset-left, 0px);
+            --avail-w: calc(100vw - var(--safe-left) - var(--safe-right));
+            --avail-h: calc(100vh - var(--safe-top) - var(--safe-bottom));
+            --top-bar-h: max(44px, calc(48px * var(--ui-scale)));
+            --control-h: max(44px, calc(47px * var(--ui-scale)));
+            --stage-avail-w: calc(var(--avail-w) - calc(24px * var(--ui-scale)));
+            --stage-extra-h: calc(180px * var(--ui-scale));
+            --stage-inner-extra-h: 0px;
+            --stage-avail-h: calc(var(--stage-h, calc(var(--avail-h) - var(--stage-extra-h))) - var(--stage-inner-extra-h));
+            --grid-avail-w: var(--stage-avail-w);
+            --grid-cols: 1;
+            --grid-rows: 1;
+            --grid-gap-h: calc(0px * var(--ui-scale));
+            --grid-gap-v: calc(0px * var(--ui-scale));
+            --grid-name-track: calc(0px * var(--ui-scale));
+            --grid-card-max: calc(1200px * var(--ui-scale));
+            --grid-card: min(
+                calc((var(--grid-avail-w) - (var(--grid-cols) - 1) * var(--grid-gap-h)) / var(--grid-cols)),
+                calc((var(--stage-avail-h) - (var(--grid-rows) - 1) * var(--grid-gap-v) - var(--grid-rows) * var(--grid-name-track)) / var(--grid-rows)),
+                var(--grid-card-max)
+            );
+            --chrome-top: calc(10px * var(--ui-scale) + var(--safe-top));
+            --chrome-left: calc(14px * var(--ui-scale) + var(--safe-left));
+            --chrome-right: calc(14px * var(--ui-scale) + var(--safe-right));
             --bg-color: #f5f0e8;
             --container-bg: #f5f0e8;
             --card-bg: #ffffff;

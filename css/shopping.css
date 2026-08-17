@@ -22,7 +22,7 @@
 
         /* 購物清單 */
         .shopping-list-panel {
-            width: min(96vw, calc(1500px * var(--ui-scale)));
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -45,23 +45,44 @@
             justify-content: center;
             align-items: stretch;
             align-content: center;
-            width: min(96vw, calc(1500px * var(--ui-scale)));
-            --max-w: min(96vw, calc(1500px * var(--ui-scale)));
+            width: 100%;
             --name-track: calc(44px * var(--ui-scale));
             --row-name-track: var(--name-track);
-            --name-shift: calc(-1 * var(--rows) * (var(--name-track) - var(--row-name-track)) / 2);
-            --card: min(calc((var(--max-w) - (var(--cols) - 1) * var(--gaps-h)) / var(--cols)),
-                        calc((100vh - calc(180px * var(--ui-scale)) - (var(--rows) - 1) * var(--gaps-v) - var(--rows) * var(--name-track)) / var(--rows)));
-            grid-template-columns: repeat(var(--cols), var(--card));
-            grid-template-rows: repeat(var(--rows), calc(var(--card) + var(--row-name-track)));
+            --name-shift: calc(-1 * var(--grid-rows) * (var(--name-track) - var(--row-name-track)) / 2);
+            --grid-name-track: var(--name-track);
+            grid-template-columns: repeat(var(--grid-cols), var(--card));
+            grid-template-rows: repeat(var(--grid-rows), calc(var(--card) + var(--row-name-track)));
             transform: translateY(var(--name-shift));
             transition: grid-template-columns 0.35s ease, grid-template-rows 0.35s ease, transform 0.35s ease;
         }
-        .shopping-list-grid.count-2 { --cols: 2; --rows: 1; --gaps-h: calc(18px * var(--ui-scale)); --gaps-v: calc(0px * var(--ui-scale)); }
-        .shopping-list-grid.count-3 { --cols: 3; --rows: 1; --gaps-h: calc(24px * var(--ui-scale)); --gaps-v: calc(0px * var(--ui-scale)); }
-        .shopping-list-grid.count-4 { --cols: 4; --rows: 1; --gaps-h: calc(28px * var(--ui-scale)); --gaps-v: calc(0px * var(--ui-scale)); }
-        .shopping-list-grid.count-5 { --cols: 3; --rows: 2; --gaps-h: calc(24px * var(--ui-scale)); --gaps-v: calc(18px * var(--ui-scale)); }
-        .shopping-list-grid.count-6 { --cols: 3; --rows: 2; --gaps-h: calc(24px * var(--ui-scale)); --gaps-v: calc(18px * var(--ui-scale)); }
+        .shopping-list-grid.count-2 { --grid-cols: 2; --grid-rows: 1; --grid-gap-h: calc(18px * var(--ui-scale)); --grid-gap-v: calc(0px * var(--ui-scale)); }
+        .shopping-list-grid.count-3 { --grid-cols: 3; --grid-rows: 1; --grid-gap-h: calc(24px * var(--ui-scale)); --grid-gap-v: calc(0px * var(--ui-scale)); }
+        .shopping-list-grid.count-4 { --grid-cols: 4; --grid-rows: 1; --grid-gap-h: calc(28px * var(--ui-scale)); --grid-gap-v: calc(0px * var(--ui-scale)); }
+        .shopping-list-grid.count-5 {
+            --grid-cols: 3;
+            --grid-rows: 2;
+            --grid-gap-h: calc(24px * var(--ui-scale));
+            --grid-gap-v: calc(18px * var(--ui-scale));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--grid-gap-v);
+        }
+        .shopping-list-grid.count-5 .shopping-list-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--grid-gap-h);
+            min-width: 0;
+            max-width: 100%;
+        }
+        .shopping-list-grid.count-5 .shopping-list-card {
+            flex: 0 0 auto;
+            width: var(--card);
+            height: calc(var(--card) + var(--row-name-track));
+        }
+        .shopping-list-grid.count-6 { --grid-cols: 3; --grid-rows: 2; --grid-gap-h: calc(24px * var(--ui-scale)); --grid-gap-v: calc(18px * var(--ui-scale)); }
         .shopping-list-grid.name-mode { --name-track: calc(0px * var(--ui-scale)); --row-name-track: calc(0px * var(--ui-scale)); }
         #shoppingGame.hide-names .shopping-list-grid {
             --name-track: calc(0px * var(--ui-scale));
@@ -153,8 +174,13 @@
             justify-content: center;
         }
         .shopping-order-item {
-            width: min(88vw, calc(820px * var(--ui-scale)));
-            height: min(88%, calc(820px * var(--ui-scale)));
+            --grid-cols: 1;
+            --grid-rows: 1;
+            --grid-gap-h: calc(0px * var(--ui-scale));
+            --grid-gap-v: calc(0px * var(--ui-scale));
+            --grid-name-track: calc(0px * var(--ui-scale));
+            width: var(--grid-card);
+            height: var(--grid-card);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -356,35 +382,30 @@
             max-height: 100%;
         }
         .shopping-recall-grid.count-4 {
-            --cols: 4;
-            --rows: 1;
-            --gaps-h: calc(18px * var(--ui-scale));
-            --gaps-v: calc(0px * var(--ui-scale));
-            --card-max: calc(560px * var(--ui-scale));
+            --grid-cols: 4;
+            --grid-rows: 1;
+            --grid-gap-h: calc(18px * var(--ui-scale));
+            --grid-gap-v: calc(0px * var(--ui-scale));
         }
         .shopping-recall-grid.count-6 {
-            --cols: 3;
-            --rows: 2;
-            --gaps-h: calc(20px * var(--ui-scale));
-            --gaps-v: calc(18px * var(--ui-scale));
-            --card-max: calc(520px * var(--ui-scale));
+            --grid-cols: 3;
+            --grid-rows: 2;
+            --grid-gap-h: calc(20px * var(--ui-scale));
+            --grid-gap-v: calc(18px * var(--ui-scale));
         }
         .shopping-recall-grid.count-8 {
-            --cols: 4;
-            --rows: 2;
-            --gaps-h: calc(22px * var(--ui-scale));
-            --gaps-v: calc(18px * var(--ui-scale));
-            --card-max: calc(500px * var(--ui-scale));
+            --grid-cols: 4;
+            --grid-rows: 2;
+            --grid-gap-h: calc(22px * var(--ui-scale));
+            --grid-gap-v: calc(18px * var(--ui-scale));
         }
         .shopping-recall-grid {
             --name-track: calc(44px * var(--ui-scale));
             --row-name-track: var(--name-track);
-            --name-shift: calc(-1 * var(--rows) * (var(--name-track) - var(--row-name-track)) / 2);
-            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - (var(--cols) - 1) * var(--gaps-h)) / var(--cols)),
-                        calc((100vh - calc(200px * var(--ui-scale)) - (var(--rows) - 1) * var(--gaps-v) - var(--rows) * var(--name-track)) / var(--rows)),
-                        var(--card-max));
-            grid-template-columns: repeat(var(--cols), var(--card));
-            grid-template-rows: repeat(var(--rows), calc(var(--card) + var(--row-name-track)));
+            --name-shift: calc(-1 * var(--grid-rows) * (var(--name-track) - var(--row-name-track)) / 2);
+            --grid-name-track: var(--name-track);
+            grid-template-columns: repeat(var(--grid-cols), var(--card));
+            grid-template-rows: repeat(var(--grid-rows), calc(var(--card) + var(--row-name-track)));
             transform: translateY(var(--name-shift));
             transition: grid-template-columns 0.35s ease, grid-template-rows 0.35s ease, transform 0.35s ease;
         }

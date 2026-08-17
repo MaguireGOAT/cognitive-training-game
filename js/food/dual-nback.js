@@ -179,8 +179,8 @@
             const colorItem = dualNbackState.currentItems.color;
 
             dualNbackGrid.className = `dual-grid dual-grid-${dualNbackState.positionGrid}`;
-            dualNbackGrid.style.setProperty('--cols', gridInfo.cols);
-            dualNbackGrid.style.setProperty('--rows', gridInfo.rows);
+            dualNbackGrid.style.setProperty('--grid-cols', gridInfo.cols);
+            dualNbackGrid.style.setProperty('--grid-rows', gridInfo.rows);
             dualNbackGrid.innerHTML = '';
 
             for (let i = 0; i < gridInfo.cols * gridInfo.rows; i++) {

@@ -11,7 +11,12 @@
             overflow: hidden;
         }
         .nback-image-container {
-            width: min(80vw, calc(100vh - calc(180px * var(--ui-scale))), calc(850px * var(--ui-scale)));
+            --grid-cols: 1;
+            --grid-rows: 1;
+            --grid-gap-h: calc(0px * var(--ui-scale));
+            --grid-gap-v: calc(0px * var(--ui-scale));
+            --grid-name-track: calc(0px * var(--ui-scale));
+            width: var(--grid-card);
             max-width: 100%;
             aspect-ratio: 1/1;
             background: var(--card-bg);
@@ -92,7 +97,8 @@
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
             transition: var(--btn-transition);
-            height: calc(44px * var(--ui-scale));
+            height: max(44px, calc(44px * var(--ui-scale)));
+            min-height: 44px;
         }
         [data-theme="dark"] .nback-n-select {
             background: #0d47a1;

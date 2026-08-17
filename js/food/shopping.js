@@ -222,7 +222,7 @@
             const showName = shoppingState.listDisplayMode === 'name' || (showImage && showNames);
             shoppingListHint.textContent = '';
 
-            shoppingState.list.forEach(item => {
+            function createCard(item) {
                 const card = document.createElement('div');
                 card.className = 'shopping-list-card';
 
@@ -259,8 +259,27 @@
                 nameSpan.className = 'food-name';
                 nameSpan.textContent = item.name;
                 card.appendChild(nameSpan);
-                shoppingListGrid.appendChild(card);
+                return card;
+            }
+
+            const topRow = document.createElement('div');
+            topRow.className = 'shopping-list-row';
+            const bottomRow = document.createElement('div');
+            bottomRow.className = 'shopping-list-row';
+
+            shoppingState.list.forEach((item, index) => {
+                const card = createCard(item);
+                if (count === 5) {
+                    (index < 3 ? topRow : bottomRow).appendChild(card);
+                } else {
+                    shoppingListGrid.appendChild(card);
+                }
             });
+
+            if (count === 5) {
+                shoppingListGrid.appendChild(topRow);
+                shoppingListGrid.appendChild(bottomRow);
+            }
         }
 
         function renderShoppingOrderItem(index) {
@@ -575,7 +594,7 @@
                 const timed = shoppingState.listRevealMode === 'timer';
                 title = timed
                     ? `記住清單，${shoppingState.listSeconds} 秒後開始揀選`
-                    : '記住清單，準備好後按<br><span class="start-hint">「開始揀選」</span>';
+                    : '記住清單準備好後按<br><span class="start-hint">「開始揀選」</span>';
             }
             window.CognitiveMessage.show({
                 title: title,

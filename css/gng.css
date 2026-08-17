@@ -22,33 +22,27 @@
             max-height: 100%;
         }
         .gng-grid-container.cols-1 {
-            --cols: 1;
-            --rows: 1;
-            --h-gaps: calc(0px * var(--ui-scale));
-            --v-gaps: calc(0px * var(--ui-scale));
-            --card-max: calc(750px * var(--ui-scale));
-            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(180px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)), var(--card-max));
-            grid-template-columns: repeat(var(--cols), var(--card));
+            --grid-cols: 1;
+            --grid-rows: 1;
+            --grid-gap-h: calc(0px * var(--ui-scale));
+            --grid-gap-v: calc(0px * var(--ui-scale));
+            grid-template-columns: repeat(var(--grid-cols), var(--card));
             grid-auto-rows: var(--card);
         }
         .gng-grid-container.cols-2 {
-            --cols: 2;
-            --rows: 1;
-            --h-gaps: calc(16px * var(--ui-scale));
-            --v-gaps: calc(0px * var(--ui-scale));
-            --card-max: calc(592px * var(--ui-scale));
-            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(180px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)), var(--card-max));
-            grid-template-columns: repeat(var(--cols), var(--card));
+            --grid-cols: 2;
+            --grid-rows: 1;
+            --grid-gap-h: calc(16px * var(--ui-scale));
+            --grid-gap-v: calc(0px * var(--ui-scale));
+            grid-template-columns: repeat(var(--grid-cols), var(--card));
             grid-auto-rows: var(--card);
         }
         .gng-grid-container.cols-3 {
-            --cols: 3;
-            --rows: 1;
-            --h-gaps: calc(32px * var(--ui-scale));
-            --v-gaps: calc(0px * var(--ui-scale));
-            --card-max: 100vw;
-            --card: min(calc((100vw - calc(24px * var(--ui-scale)) - var(--h-gaps)) / var(--cols)), calc((100vh - calc(180px * var(--ui-scale)) - var(--v-gaps)) / var(--rows)), var(--card-max));
-            grid-template-columns: repeat(var(--cols), var(--card));
+            --grid-cols: 3;
+            --grid-rows: 1;
+            --grid-gap-h: calc(32px * var(--ui-scale));
+            --grid-gap-v: calc(0px * var(--ui-scale));
+            grid-template-columns: repeat(var(--grid-cols), var(--card));
             grid-auto-rows: var(--card);
         }
         .gng-grid-container .gng-card {
@@ -90,7 +84,8 @@
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
             transition: var(--btn-transition);
-            height: calc(44px * var(--ui-scale));
+            height: max(44px, calc(44px * var(--ui-scale)));
+            min-height: 44px;
         }
         [data-theme="dark"] .gng-n-select {
             background: #0d47a1;
@@ -137,19 +132,20 @@
             display: flex;
             align-items: center;
             gap: calc(6px * var(--ui-scale));
-            background: var(--control-bg-nback);
+            background: var(--nback-brown);
             padding: calc(4px * var(--ui-scale)) calc(10px * var(--ui-scale));
             border-radius: calc(30px * var(--ui-scale));
-            border: calc(2px * var(--ui-scale)) solid var(--nback-brown);
+            border: none;
             transition: background 0.3s, border 0.3s;
-            height: calc(44px * var(--ui-scale));
+            height: var(--control-h);
         }
         .speed-btn {
-            width: calc(28px * var(--ui-scale));
-            height: calc(28px * var(--ui-scale));
+            width: max(44px, calc(28px * var(--ui-scale)));
+            height: max(44px, calc(28px * var(--ui-scale)));
             border: none;
+            border-radius: 50%;
             background: transparent;
-            color: var(--nback-brown);
+            color: #fff;
             font-size: 1.1rem;
             font-weight: 900;
             cursor: pointer;
@@ -160,22 +156,45 @@
             touch-action: manipulation;
             padding: 0;
             line-height: 1;
+            box-shadow: none;
+            transition: var(--btn-transition);
+            touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+        }
+        .speed-btn svg {
+            width: calc(22px * var(--ui-scale));
+            height: calc(22px * var(--ui-scale));
+            display: block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 3.4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .speed-btn:hover {
+            background: rgba(255, 255, 255, 0.16);
+        }
+        .speed-btn:active {
+            transform: scale(0.96);
+        }
+        .speed-btn:focus-visible {
+            outline: calc(3px * var(--ui-scale)) solid #ffb300;
+            outline-offset: calc(2px * var(--ui-scale));
         }
         .speed-display {
             min-width: calc(32px * var(--ui-scale));
             text-align: center;
             font-size: 1.1rem;
             font-weight: 700;
-            color: var(--control-text);
+            color: #fff;
             transition: color 0.3s;
             line-height: 1;
         }
 
         /* 播放按鈕 (共用) */
         .play-btn {
-            width: calc(47px * var(--ui-scale));
-            height: calc(47px * var(--ui-scale));
+            width: max(44px, calc(47px * var(--ui-scale)));
+            height: max(44px, calc(47px * var(--ui-scale)));
             border: none;
             border-radius: 50%;
             background: var(--nback-brown);
@@ -193,8 +212,9 @@
         }
         .play-btn:focus-visible { outline: calc(3px * var(--ui-scale)) solid #ffb300; outline-offset: calc(2px * var(--ui-scale)); }
         .play-btn:hover { background: #6D4C41; }
-        [data-theme="dark"] .speed-control { border-color: var(--primary-blue); }
-        [data-theme="dark"] .speed-btn { color: var(--primary-blue); }
+        [data-theme="dark"] .speed-control { background: var(--btn-bg); }
+        [data-theme="dark"] .speed-btn { color: #fff; background: transparent; }
+        [data-theme="dark"] .speed-btn:hover { background: rgba(255, 255, 255, 0.16); }
         [data-theme="dark"] .play-btn { background: var(--btn-bg); }
         [data-theme="dark"] .play-btn:hover { background: #1565c0; }
         .play-btn .play-icon {
