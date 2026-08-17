@@ -316,7 +316,13 @@
                 switchGngTask();
             }
 
-            renderGngImage();
+            window.CognitiveAnimations.fadeSwap({
+                container: gngGridContainer,
+                selector: '.gng-card',
+                render: function () {
+                    renderGngImage();
+                }
+            });
             resetGngTimer();
         }
 

@@ -558,7 +558,11 @@
             shoppingPhaseText.textContent = `📋 購物清單（${shoppingState.list.length} 樣）`;
             shoppingProgress.classList.add('hidden');
             if (renderList) {
-                renderShoppingList();
+                window.CognitiveAnimations.fadeSwap({
+                    container: shoppingListGrid,
+                    selector: '.shopping-list-card',
+                    render: function () { renderShoppingList(); }
+                });
             } else {
                 shoppingListGrid.innerHTML = '';
             }
@@ -628,7 +632,11 @@
             shoppingTimer.classList.toggle('hidden', !shoppingState.recallTimed);
             shoppingPhaseText.textContent = '揀選清單中的食物';
             shoppingProgress.classList.remove('hidden');
-            renderShoppingRecallGrid();
+            window.CognitiveAnimations.fadeSwap({
+                container: shoppingRecallGrid,
+                selector: '.shopping-recall-card',
+                render: function () { renderShoppingRecallGrid(); }
+            });
             updateShoppingProgress();
             clearShoppingFeedback();
             syncTopBarCentering();

@@ -168,10 +168,17 @@
         }
 
         function generateDifferentRound() {
-            renderDifferentGrid(buildDifferentRound());
-            updateDifferentRound();
-            differentState.isAnswered = false;
-            differentState.isWaitingForNext = false;
+            var items = buildDifferentRound();
+            window.CognitiveAnimations.fadeSwap({
+                container: differentGridContainer,
+                selector: '.different-card',
+                render: function () {
+                    renderDifferentGrid(items);
+                    updateDifferentRound();
+                    differentState.isAnswered = false;
+                    differentState.isWaitingForNext = false;
+                }
+            });
         }
 
         function pauseDifferent() {
