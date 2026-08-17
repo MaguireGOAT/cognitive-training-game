@@ -84,7 +84,22 @@ The user asked to standardise everything after documenting this context. Approve
 
 ## Status
 
-- All 11 approved changes are implemented in the working tree.
-- Shared standardisation for top bar, bottom controls, and image/card sizing is applied.
-- `sw.js` is regenerated after the changes.
-- Changes are not committed or pushed; the user should test first.
+Updated: 2026-08-17 (evening)
+
+### Feedback standardisation
+- All six games (Food, Find Different, Go/No Go, Single N-back, Dual N-back, Shopping) now use one shared `CognitiveFeedback` pill for correct/wrong feedback.
+- Shared pill CSS in `css/shared.css`, helper in `js/food/ui.js`.
+- Correct: `✅ 正確！`, Wrong: `❌ 再試一次！`.
+- Dead code removed: old shopping feedback CSS, encourage arrays, showGngFeedback, showAnswerMessage.
+- Committed and pushed.
+
+### Architecture candidates
+- Candidate 1 (Activity timing controller): Implemented in `js/session.js`. Migrated nback, dual-nback, gng, palm. Shopping countdown timer kept separate (different pattern). Committed.
+- Candidate 2 (Observable N-back trials): Already done. `sequence.js` returns trials with `isMatch` semantics and guarantees non-match differs from target.
+- Candidate 3 (Unified settings store): Already done. `CognitiveSettingsStore` with typed schemas, `CognitivePrefs` delegates to it, `CognitiveAudio` and `reality.js` use it.
+- Candidate 4 (Explicit pause coordinator): Already done. `message.js` requires explicit `pauseCoordinator` via adapters.
+- Candidate 5 (Router owns lifecycle): Already done. `defineScreen` with enter/exit/pause/back hooks, transition management, overlay cleanup.
+
+### Remaining
+- Candidate 1 committed but not pushed. User should test locally first.
+- `sw.js` regenerated after each commit.
