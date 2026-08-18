@@ -138,6 +138,65 @@ test('worker install precaches app assets and stable media', async function () {
     assert.equal(fixture.messages[4].loaded, 4);
 });
 
+test('worker reuses stable media and old app assets instead of refetching them', async function () {
+    const fetchCalls = [];
+    const fixture = createWorkerFixture(['a.js'], {
+        mediaAssetPaths: ['x.webp', 'y.mp3'],
+        fetch: async url => {
+            fetchCalls.push(url);
+            return { ok: true, status: 200, clone() { return this; } };
+        }
+    });
+    fixture.cacheNames.add('cognitive-app-old');
+    fixture.appCache.entries.set('a.js', { body: 'old app' });
+    fixture.mediaCache.entries.set('x.webp', { body: 'old media' });
+    let installPromise;
+
+    fixture.worker.emit('install', {
+        waitUntil(promise) {
+            installPromise = promise;
+        }
+    });
+    await installPromise;
+
+    assert.deepEqual(fetchCalls, ['y.mp3']);
+    assert.equal(fixture.appCache.entries.has('a.js'), true);
+    assert.equal(fixture.mediaCache.entries.has('x.webp'), true);
+    assert.equal(fixture.messages[fixture.messages.length - 1].loaded, 3);
+});
+
+test('worker reuses stable media when hash matches and refetches when changed', async function () {
+    const fetchCalls = [];
+    const fixture = createWorkerFixture([], {
+        mediaAssetPaths: [
+            { path: 'x.webp', hash: 'same-hash' },
+            { path: 'y.mp3', hash: 'new-hash' }
+        ],
+        fetch: async url => {
+            fetchCalls.push(url);
+            return { ok: true, status: 200, clone() { return this; } };
+        }
+    });
+    fixture.mediaCache.entries.set('x.webp', {
+        headers: { get(name) { return name === 'x-cognitive-hash' ? 'same-hash' : null; } }
+    });
+    fixture.mediaCache.entries.set('y.mp3', {
+        headers: { get(name) { return name === 'x-cognitive-hash' ? 'old-hash' : null; } }
+    });
+    let installPromise;
+
+    fixture.worker.emit('install', {
+        waitUntil(promise) {
+            installPromise = promise;
+        }
+    });
+    await installPromise;
+
+    assert.deepEqual(fetchCalls, ['y.mp3']);
+    assert.equal(fixture.mediaCache.entries.has('x.webp'), true);
+    assert.equal(fixture.mediaCache.entries.has('y.mp3'), true);
+});
+
 test('worker activate removes old cache versions but keeps app and media caches', async function () {
     const fixture = createWorkerFixture([]);
     fixture.cacheNames.add('cognitive-game-old');

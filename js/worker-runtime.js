@@ -22,8 +22,67 @@
             return mediaExtensions.has(pathname.slice(dot).toLowerCase());
         }
 
+        function normalizeAssetEntry(entry) {
+            if (typeof entry === 'string') return { path: entry, hash: null };
+            return {
+                path: entry && entry.path,
+                hash: entry && entry.hash || null
+            };
+        }
+
+        async function responseHashMatches(response, hash) {
+            if (!hash || !response) return true;
+            try {
+                var headers = response.headers || {};
+                if (typeof headers.get === 'function') {
+                    var storedHash = headers.get('x-cognitive-hash');
+                    if (storedHash) return storedHash === hash;
+                }
+                var buffer = await response.clone().arrayBuffer();
+                var digest = await globalThis.crypto.subtle.digest('SHA-1', buffer);
+                var bytes = new Uint8Array(digest);
+                var hex = '';
+                for (var i = 0; i < bytes.length; i++) {
+                    hex += bytes[i].toString(16).padStart(2, '0');
+                }
+                return hex === hash;
+            } catch (error) {}
+            return false;
+        }
+
+        function withHashHeader(response, hash) {
+            if (!hash || !response) return response;
+            try {
+                var headers = new Headers(response.headers);
+                headers.set('x-cognitive-hash', hash);
+                return new ResponseImpl(response.body, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: headers
+                });
+            } catch (error) {
+                return response;
+            }
+        }
+
+        async function runLimited(items, limit, task) {
+            var queue = items.slice();
+            var workers = [];
+            for (var i = 0; i < Math.min(limit, queue.length); i++) {
+                workers.push((async function () {
+                    while (queue.length > 0) {
+                        var item = queue.shift();
+                        await task(item);
+                    }
+                })());
+            }
+            await Promise.all(workers);
+        }
+
         function installHandler(event) {
             event.waitUntil((async () => {
+                const appEntries = appAssetPaths.map(normalizeAssetEntry);
+                const mediaEntries = mediaAssetPaths.map(normalizeAssetEntry);
                 const appCache = await cacheApi.open(appCacheName);
                 const mediaCache = await cacheApi.open(mediaCacheName);
                 const clients = await worker.clients.matchAll({
@@ -37,7 +96,7 @@
                 const notify = done => {
                     const payload = {
                         type: 'cognitive-precache-progress',
-                        total: appAssetPaths.length + mediaAssetPaths.length,
+                        total: appEntries.length + mediaEntries.length,
                         loaded,
                         failed,
                         done
@@ -51,27 +110,29 @@
                     }
                 };
 
-                async function findInOldCaches(assetPath) {
+                async function findMatchingResponse(assetPath, hash, cacheNames) {
                     const keys = await cacheApi.keys();
                     for (const key of keys) {
-                        if (key === appCacheName || key === mediaCacheName) continue;
+                        if (cacheNames.indexOf(key) < 0) continue;
                         try {
-                            const oldCache = await cacheApi.open(key);
-                            const response = await oldCache.match(assetPath);
-                            if (response) return response;
+                            const existingCache = await cacheApi.open(key);
+                            const response = await existingCache.match(assetPath);
+                            if (response && await responseHashMatches(response, hash)) return response;
                         } catch (error) {}
                     }
                     return null;
                 }
 
-                async function cacheAsset(cache, assetPath, allowOld) {
+                async function cacheAsset(cache, entry, reuseCacheNames) {
                     let response = null;
-                    if (allowOld) response = await findInOldCaches(assetPath);
+                    if (reuseCacheNames && reuseCacheNames.length > 0) {
+                        response = await findMatchingResponse(entry.path, entry.hash, reuseCacheNames);
+                    }
                     if (!response) {
                         for (let attempt = 0; attempt < 2 && !response; attempt++) {
                             try {
-                                response = await fetchImpl(assetPath, { cache: 'reload' });
-                                if (!response.ok) throw new Error(assetPath + ' returned ' + response.status);
+                                response = await fetchImpl(entry.path, { cache: 'reload' });
+                                if (!response.ok) throw new Error(entry.path + ' returned ' + response.status);
                             } catch (error) {
                                 response = null;
                             }
@@ -79,31 +140,30 @@
                     }
                     if (!response) {
                         failed++;
-                        failedPaths.push(assetPath);
+                        failedPaths.push(entry.path);
                         loaded++;
                         notify(false);
                         return;
                     }
                     try {
-                        await cache.put(assetPath, response);
+                        await cache.put(entry.path, withHashHeader(response, entry.hash));
                     } catch (error) {
                         failed++;
-                        failedPaths.push(assetPath);
+                        failedPaths.push(entry.path);
                     }
                     loaded++;
                     notify(false);
                 }
 
-                for (const assetPath of appAssetPaths) {
-                    await cacheAsset(appCache, assetPath, false);
-                }
-                for (const assetPath of mediaAssetPaths) {
-                    await cacheAsset(mediaCache, assetPath, true);
-                }
+                const cacheKeys = await cacheApi.keys();
+                const oldCacheNames = cacheKeys.filter(key => key !== appCacheName && key !== mediaCacheName);
+                const mediaReuseNames = [mediaCacheName].concat(oldCacheNames);
+                await runLimited(appEntries, 8, entry => cacheAsset(appCache, entry, oldCacheNames));
+                await runLimited(mediaEntries, 8, entry => cacheAsset(mediaCache, entry, mediaReuseNames));
 
                 notify(true);
                 if (failedPaths.length > 0 && log && typeof log.warn === 'function') {
-                    log.warn('Precache incomplete:', failedPaths.length + ' of ' + (appAssetPaths.length + mediaAssetPaths.length) + ' assets failed.');
+                    log.warn('Precache incomplete:', failedPaths.length + ' of ' + (appEntries.length + mediaEntries.length) + ' assets failed.');
                 }
                 await worker.skipWaiting();
             })());
