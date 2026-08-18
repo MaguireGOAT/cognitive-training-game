@@ -110,11 +110,11 @@
                 `<span class="reality-time-digits">${now.getFullYear()}</span>` +
                 `<span class="reality-static"> 年 </span>` +
                 `<span class="reality-time-digits">${now.getMonth() + 1}</span>` +
-                `<span class="reality-static"> 月</span>` +
+                `<span class="reality-static"> 月 </span>` +
+                `<span class="reality-time-digits">${now.getDate()}</span>` +
+                `<span class="reality-static"> 日</span>` +
                 `</span>` +
                 `<span class="reality-date-weekday">` +
-                `<span class="reality-time-digits">${now.getDate()}</span>` +
-                `<span class="reality-static"> 日 </span>` +
                 `<span class="reality-weekday">星期${REALITY_WEEKDAYS[now.getDay()]}</span>` +
                 `</span>`;
 

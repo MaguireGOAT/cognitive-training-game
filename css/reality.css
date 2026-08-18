@@ -177,10 +177,13 @@
         #realityDate .reality-date-main,
         #realityDate .reality-date-weekday {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             justify-content: center;
             align-items: center;
             max-width: 100%;
+        }
+        #realityDate .reality-date-main {
+            white-space: nowrap;
         }
         #realityDate .reality-time-digits {
             font-size: 1em;
