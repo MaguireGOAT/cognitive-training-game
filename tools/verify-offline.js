@@ -10,10 +10,13 @@ const chromePath = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome
 const profileDir = path.join(os.tmpdir(), 'cognitive-pwa-cdp-' + Date.now());
 
 const swSource = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
-const assetMatch = swSource.match(/const ASSET_PATHS = (\[[\s\S]*?\]);/);
-const expectedAssets = JSON.parse(assetMatch[1]).length;
-const sampleAsset = JSON.parse(assetMatch[1]).find((name) => name.startsWith('assets/food/'));
-const imageAssets = JSON.parse(assetMatch[1]).filter((name) => /\.(webp|png|svg)$/i.test(name));
+const appAssetMatch = swSource.match(/const APP_ASSET_PATHS = (\[[\s\S]*?\]);/);
+const mediaAssetMatch = swSource.match(/const MEDIA_ASSET_PATHS = (\[[\s\S]*?\]);/);
+const appAssets = JSON.parse(appAssetMatch[1]);
+const mediaAssets = JSON.parse(mediaAssetMatch[1]);
+const expectedAssets = appAssets.length + mediaAssets.length;
+const sampleAsset = mediaAssets.find((name) => name.startsWith('assets/food/'));
+const imageAssets = mediaAssets.filter((name) => /\.(webp|png|svg)$/i.test(name));
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));

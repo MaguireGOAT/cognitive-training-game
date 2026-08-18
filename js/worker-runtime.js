@@ -4,17 +4,28 @@
     function createCognitiveWorker(env) {
         env = env || {};
         var worker = env.self || global;
-        var cacheName = env.cacheName;
-        var assetPaths = env.assetPaths || [];
+        var appCacheName = env.appCacheName || env.cacheName || 'cognitive-app';
+        var mediaCacheName = env.mediaCacheName || 'cognitive-media';
+        var appAssetPaths = env.assetPaths || [];
+        var mediaAssetPaths = env.mediaAssetPaths || [];
         var cacheApi = env.caches || worker.caches;
         var fetchImpl = env.fetch || worker.fetch;
         var ResponseImpl = env.Response || worker.Response;
         var URLImpl = env.URL || worker.URL;
         var log = env.console || worker.console;
+        var mediaExtensions = new Set(['.webp', '.png', '.mp3']);
+
+        function isMediaUrl(url) {
+            var pathname = url.pathname || url.pathname || '';
+            var dot = pathname.lastIndexOf('.');
+            if (dot < 0) return false;
+            return mediaExtensions.has(pathname.slice(dot).toLowerCase());
+        }
 
         function installHandler(event) {
             event.waitUntil((async () => {
-                const cache = await cacheApi.open(cacheName);
+                const appCache = await cacheApi.open(appCacheName);
+                const mediaCache = await cacheApi.open(mediaCacheName);
                 const clients = await worker.clients.matchAll({
                     type: 'window',
                     includeUncontrolled: true
@@ -26,7 +37,7 @@
                 const notify = done => {
                     const payload = {
                         type: 'cognitive-precache-progress',
-                        total: assetPaths.length,
+                        total: appAssetPaths.length + mediaAssetPaths.length,
                         loaded,
                         failed,
                         done
@@ -40,30 +51,59 @@
                     }
                 };
 
-                for (const assetPath of assetPaths) {
-                    let succeeded = false;
-                    for (let attempt = 0; attempt < 2 && !succeeded; attempt++) {
+                async function findInOldCaches(assetPath) {
+                    const keys = await cacheApi.keys();
+                    for (const key of keys) {
+                        if (key === appCacheName || key === mediaCacheName) continue;
                         try {
-                            const response = await fetchImpl(assetPath, { cache: 'reload' });
-                            if (!response.ok) {
-                                throw new Error(assetPath + ' returned ' + response.status);
-                            }
-                            await cache.put(assetPath, response);
-                            succeeded = true;
-                        } catch (error) {
-                            if (attempt === 1) {
-                                failed++;
-                                failedPaths.push(assetPath);
+                            const oldCache = await cacheApi.open(key);
+                            const response = await oldCache.match(assetPath);
+                            if (response) return response;
+                        } catch (error) {}
+                    }
+                    return null;
+                }
+
+                async function cacheAsset(cache, assetPath, allowOld) {
+                    let response = null;
+                    if (allowOld) response = await findInOldCaches(assetPath);
+                    if (!response) {
+                        for (let attempt = 0; attempt < 2 && !response; attempt++) {
+                            try {
+                                response = await fetchImpl(assetPath, { cache: 'reload' });
+                                if (!response.ok) throw new Error(assetPath + ' returned ' + response.status);
+                            } catch (error) {
+                                response = null;
                             }
                         }
+                    }
+                    if (!response) {
+                        failed++;
+                        failedPaths.push(assetPath);
+                        loaded++;
+                        notify(false);
+                        return;
+                    }
+                    try {
+                        await cache.put(assetPath, response);
+                    } catch (error) {
+                        failed++;
+                        failedPaths.push(assetPath);
                     }
                     loaded++;
                     notify(false);
                 }
 
+                for (const assetPath of appAssetPaths) {
+                    await cacheAsset(appCache, assetPath, false);
+                }
+                for (const assetPath of mediaAssetPaths) {
+                    await cacheAsset(mediaCache, assetPath, true);
+                }
+
                 notify(true);
                 if (failedPaths.length > 0 && log && typeof log.warn === 'function') {
-                    log.warn('Precache incomplete:', failedPaths.length + ' of ' + assetPaths.length + ' assets failed.');
+                    log.warn('Precache incomplete:', failedPaths.length + ' of ' + (appAssetPaths.length + mediaAssetPaths.length) + ' assets failed.');
                 }
                 await worker.skipWaiting();
             })());
@@ -73,7 +113,7 @@
             event.waitUntil((async () => {
                 const keys = await cacheApi.keys();
                 await Promise.all(keys
-                    .filter(key => key !== cacheName)
+                    .filter(key => key !== appCacheName && key !== mediaCacheName)
                     .map(key => cacheApi.delete(key)));
                 await worker.clients.claim();
             })());
@@ -90,11 +130,12 @@
                 event.respondWith((async () => {
                     try {
                         const response = await fetchImpl(request);
-                        const cache = await cacheApi.open(cacheName);
+                        const cache = await cacheApi.open(appCacheName);
                         cache.put(request, response.clone());
                         return response;
                     } catch (error) {
-                        const cached = await cacheApi.match('index.html');
+                        const cache = await cacheApi.open(appCacheName);
+                        const cached = await cache.match('index.html');
                         if (cached) return cached;
                         return new ResponseImpl('Offline', {
                             status: 503,
@@ -106,12 +147,25 @@
             }
 
             event.respondWith((async () => {
-                const cachedPromise = cacheApi.match(request);
-                const networkPromise = fetchImpl(request).then(async (response) => {
-                    if (response.ok) {
-                        const cache = await cacheApi.open(cacheName);
-                        cache.put(request, response.clone());
+                const isMedia = isMediaUrl(url);
+                const cacheName = isMedia ? mediaCacheName : appCacheName;
+                const cache = await cacheApi.open(cacheName);
+
+                if (isMedia) {
+                    const cached = await cache.match(request);
+                    if (cached) return cached;
+                    try {
+                        const response = await fetchImpl(request);
+                        if (response.ok) cache.put(request, response.clone());
+                        return response;
+                    } catch (error) {
+                        return new ResponseImpl('', { status: 408, statusText: 'Offline' });
                     }
+                }
+
+                const cachedPromise = cache.match(request);
+                const networkPromise = fetchImpl(request).then(async (response) => {
+                    if (response.ok) cache.put(request, response.clone());
                     return response;
                 }).catch(() => null);
 
