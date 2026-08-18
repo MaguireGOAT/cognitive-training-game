@@ -610,9 +610,10 @@
             flex-shrink: 0;
         }
 
-        #realitySettings > div[style*="display:flex"],
-        #gngSettings > div[style*="display:flex"],
-        #shoppingSettings > div[style*="display:flex"] {
+        #realitySettings .settings-options > div,
+        #gngSettings .settings-options > div,
+        #shoppingSettings .settings-options > div,
+        #dualNbackSettings .settings-options > div {
             min-width: 0;
             flex-wrap: wrap;
         }
