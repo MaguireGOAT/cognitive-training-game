@@ -4,10 +4,16 @@
         :root {
             --ui-scale: min(calc(100vw / 1280px), calc(100vh / 800px));
             --tap-min: 44px;
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-right: env(safe-area-inset-right, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-left: env(safe-area-inset-left, 0px);
+            /* 安全區域上限（--safe-cap-*）：預設不設限；手機橫屏在 unified.css 收緊 */
+            --safe-cap-top: 100vh;
+            --safe-cap-right: 100vw;
+            --safe-cap-bottom: 100vh;
+            --safe-cap-left: 100vw;
+            /* 安全區域：讀取裝置回報值，並以 --safe-cap-* 截斷，避免內容貼邊 */
+            --safe-top: min(env(safe-area-inset-top, 0px), var(--safe-cap-top));
+            --safe-right: min(env(safe-area-inset-right, 0px), var(--safe-cap-right));
+            --safe-bottom: min(env(safe-area-inset-bottom, 0px), var(--safe-cap-bottom));
+            --safe-left: min(env(safe-area-inset-left, 0px), var(--safe-cap-left));
             --avail-w: calc(100vw - var(--safe-left) - var(--safe-right));
             --avail-h: calc(100vh - var(--safe-top) - var(--safe-bottom));
             --top-bar-h: max(44px, calc(48px * var(--ui-scale)));

@@ -859,9 +859,9 @@
             :root {
                 --top-bar-h: 38px;
                 --control-h: 32px;
-                --safe-left: 0px;
-                --safe-right: 0px;
-                --safe-bottom: 0px;
+                --safe-cap-left: 14px;
+                --safe-cap-right: 6px;
+                --safe-cap-bottom: 0px;  /* 手機橫屏：安全區域上限（裝置回報值超過即截斷） */
                 --stage-avail-w: calc(var(--avail-w) - calc(8px * var(--ui-scale)));
             }
             .back-btn,

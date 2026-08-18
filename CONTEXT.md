@@ -45,6 +45,15 @@ The user asked to standardise everything after documenting this context. Approve
 - Single- and two-card layouts reserve `24px * var(--ui-scale)` at the bottom of the shared card formula so card shadows are not clipped by the stage.
 - Verified at 1280x800: food, Go/No Go, Find Different, and Shopping images shrink as item count increases; 5/6 item two-row layouts stay centered inside the stage.
 
+## Safe-Area & Rounded Corners (2026-08-19)
+
+- Notched / rounded-corner phones are handled with caps, not hardcoded device values.
+- `css/variables.css`: `--safe-*` are now `min(env(safe-area-inset-*), var(--safe-cap-*))`; `--safe-cap-*` default to the full viewport (no cap).
+- `css/unified.css` phone block (`@media (max-height: 500px) and (orientation: landscape)`) no longer zeroes `--safe-left/right/bottom`. It now sets `--safe-cap-left: 14px`, `--safe-cap-right: 6px`, `--safe-cap-bottom: 0px`.
+- Net effect: short landscape phones cap the device-reported inset at 14/6/0 (more usable space); desktop/iPad/TV are unchanged.
+- Verified at 844x390: container padding = 19.85/11.85px when a device reports 47/21 (capped to 14/6); 5.85px when it reports 0; desktop stays 12px.
+- Accepted trade-off: 14px is below the physical corner radius (~55px), so top-corner buttons sit under the corner curve on rounded-corner phones.
+- Preview tool (not part of the app): `tools/food-game-safe-area-preview.html` + `tools/food-game-safe-area-frame.html` simulate the insets and can be removed after approval.
 ## Implementation Notes
 
 ### Top bar
