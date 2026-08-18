@@ -110,13 +110,13 @@
                 `<span class="reality-time-digits">${now.getFullYear()}</span>` +
                 `<span class="reality-static"> 年 </span>` +
                 `<span class="reality-time-digits">${now.getMonth() + 1}</span>` +
-                `<span class="reality-static"> 月 </span>` +
-                `<span class="reality-time-digits">${now.getDate()}</span>` +
-                `<span class="reality-static"> 日</span>` +
+                `<span class="reality-static"> 月</span>` +
                 `</span>` +
-                `<span class="reality-date-weekday"><span class="reality-static">（星期</span>` +
-                `<span class="reality-weekday">${REALITY_WEEKDAYS[now.getDay()]}</span>` +
-                `<span class="reality-static">）</span></span>`;
+                `<span class="reality-date-weekday">` +
+                `<span class="reality-time-digits">${now.getDate()}</span>` +
+                `<span class="reality-static"> 日 </span>` +
+                `<span class="reality-weekday">星期${REALITY_WEEKDAYS[now.getDay()]}</span>` +
+                `</span>`;
 
             const season = realityState.season === '自動' ? getRealitySeason() : realityState.season;
             realitySeasonText.textContent = season;
@@ -409,17 +409,16 @@
             });
 
             const pageName = activePage.dataset.page;
-            const weatherSize = Math.max(valueSize, Math.round(260 * uiScale));
-            const locationSize = Math.max(valueSize, Math.round(525 * uiScale));
+            const standardRealitySize = Math.max(36, Math.round(200 * uiScale));
             if (pageName === 'time') {
-                fitRealityValue(realityTime, Math.max(36, Math.round(130 * uiScale)));
+                fitRealityValue(realityTime, standardRealitySize);
             } else if (pageName === 'date') {
-                fitRealityValue(realityDate, Math.max(32, Math.round(100 * uiScale)));
+                fitRealityValue(realityDate, standardRealitySize);
             } else if (pageName === 'season') {
-                fitRealityValue(realitySeasonText, weatherSize);
-                fitRealityValue(realityWeatherText, weatherSize);
+                fitRealityValue(realitySeasonText, standardRealitySize);
+                fitRealityValue(realityWeatherText, standardRealitySize);
             } else if (pageName === 'location') {
-                fitRealityValue(realityLocationText, locationSize);
+                fitRealityValue(realityLocationText, standardRealitySize);
             }
         }
 

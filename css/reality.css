@@ -171,12 +171,24 @@
             justify-content: center;
             gap: 0.12em;
             line-height: 1.08;
-            max-height: 64vh;
-            overflow: hidden;
+            max-height: none;
+            overflow: visible;
+        }
+        #realityDate .reality-date-main,
+        #realityDate .reality-date-weekday {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+        }
+        #realityDate .reality-time-digits {
+            font-size: 1em;
         }
         .reality-location-block .reality-value {
-            max-height: 56vh;
-            overflow: hidden;
+            max-height: none;
+            overflow: visible;
+            white-space: normal;
         }
         .reality-time-digits,
         .reality-weekday {
@@ -213,8 +225,8 @@
             min-height: min(54vh, calc(460px * var(--ui-scale)));
         }
         .reality-duo .reality-value {
-            max-height: min(30vh, calc(300px * var(--ui-scale)));
-            overflow: hidden;
+            max-height: none;
+            overflow: visible;
         }
         .reality-big-icon {
             width: min(calc(240px * var(--ui-scale)), 30vh, 30vw);

@@ -48,6 +48,7 @@
         .shopping-list-grid.count-2,
         .nback-image-container,
         .dual-card,
+        .dual-grid,
         .dual-grid.dual-grid-2x1,
         .shopping-order-item {
             --stage-inner-extra-h: calc(24px * var(--ui-scale));
