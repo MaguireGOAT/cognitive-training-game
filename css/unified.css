@@ -897,9 +897,15 @@
             #realitySettings .settings-options {
                 justify-content: center;
             }
+            #realitySettings,
+            #gngSettings,
+            #shoppingSettings,
+            #dualNbackSettings {
+                padding-bottom: 0;
+            }
             .settings-options {
                 position: relative;
-                padding-bottom: 48px;
+                padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
             }
             .settings-actions {
                 position: absolute;
@@ -914,7 +920,7 @@
                 z-index: 5;
                 background: transparent;
                 padding-top: calc(4px * var(--ui-scale));
-                padding-bottom: calc(6px * var(--ui-scale));
+                padding-bottom: calc(6px * var(--ui-scale) + env(safe-area-inset-bottom, 0px));
             }
             .slide-menu {
                 width: min(300px, 82vw);
