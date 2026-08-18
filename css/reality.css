@@ -1,28 +1,6 @@
         /* ================================================================
            現實導向（Reality Orientation）
            ================================================================ */
-        .category-grid.game-select {
-            grid-template-columns: repeat(5, 1fr);
-        }
-        #mainMenu .menu-header {
-            margin-bottom: calc(20px * var(--ui-scale));
-        }
-        #mainMenu .menu-subtitle {
-            margin-bottom: calc(42px * var(--ui-scale));
-        }
-        #mainMenu .category-grid.game-select {
-            max-width: calc(1200px * var(--ui-scale));
-        }
-        #mainMenu .category-grid.game-select .category-btn {
-            min-height: calc(150px * var(--ui-scale));
-        }
-        #mainMenu .category-grid.game-select .category-btn .icon {
-            font-size: calc(58px * var(--ui-scale));
-            margin-bottom: calc(10px * var(--ui-scale));
-        }
-        #mainMenu .category-grid.game-select .category-btn .label {
-            font-size: calc(26px * var(--ui-scale));
-        }
 
         .reality-board {
             position: fixed;
@@ -36,9 +14,6 @@
         }
         #realitySettings {
             z-index: 1500;
-        }
-        #realitySettings .menu-header {
-            margin-top: auto !important;
         }
         #realitySettings .menu-title {
             letter-spacing: 0;

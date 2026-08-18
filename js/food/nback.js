@@ -151,6 +151,19 @@
             }, NBACK_TRANSITION_MS);
         }
 
+        let nbackFeedbackTimer = null;
+
+        function flashNbackFeedback(btn, correct) {
+            if (!btn) return;
+            clearTimeout(nbackFeedbackTimer);
+            btn.classList.remove('feedback-correct', 'feedback-wrong');
+            void btn.offsetWidth;
+            btn.classList.add(correct ? 'feedback-correct' : 'feedback-wrong');
+            nbackFeedbackTimer = setTimeout(function () {
+                btn.classList.remove('feedback-correct', 'feedback-wrong');
+            }, 600);
+        }
+
         function handleNbackMatch(isMatch) {
             if (nbackState.currentIndex < 0 || nbackState.matchPending || nbackState.transitioning) return;
             if (nbackState.currentIndex < nbackState.n) {
@@ -175,6 +188,7 @@
                 showNbackFeedback('❌ 再試一次！', 'wrong');
                 CognitiveAudio.play('wrong');
             }
+            flashNbackFeedback(isMatch ? nbackMatchBtn : nbackNotMatchBtn, correct);
             nbackState.totalTrials++;
             updateNbackScore();
 

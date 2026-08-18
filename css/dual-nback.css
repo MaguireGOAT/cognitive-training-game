@@ -1,48 +1,6 @@
         /* ================================================================
            Dual N-back: mode menu, settings, and game screen
            ================================================================ */
-        #nbackModeSelect {
-            gap: calc(18px * var(--ui-scale));
-        }
-        #nbackModeSelect .menu-header {
-            margin-bottom: calc(4px * var(--ui-scale));
-        }
-        #nbackModeSelect .menu-subtitle {
-            margin-bottom: calc(24px * var(--ui-scale));
-        }
-        .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
-            --large-menu-gap: calc(24px * var(--ui-scale));
-            --large-menu-width: min(calc(var(--avail-w) - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
-            --large-menu-card: min(calc((var(--large-menu-width) - var(--large-menu-gap)) / 2),
-                                   calc((var(--avail-h) - calc(300px * var(--ui-scale))) / 2));
-    display: grid;
-    grid-template-columns: repeat(2, var(--large-menu-card));
-    grid-auto-rows: var(--large-menu-card);
-    width: calc(2 * var(--large-menu-card) + var(--large-menu-gap));
-    max-width: var(--large-menu-width);
-            margin: 0 auto calc(10px * var(--ui-scale));
-            align-content: center;
-            justify-content: center;
-        }
-.app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn {
-    width: var(--large-menu-card);
-    height: var(--large-menu-card);
-    min-height: 0;
-    aspect-ratio: auto;
-    padding: calc(18px * var(--ui-scale)) calc(12px * var(--ui-scale));
-}
-.app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .icon {
-    font-size: calc(66px * var(--ui-scale));
-    margin-bottom: calc(12px * var(--ui-scale));
-}
-.app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .label {
-    font-size: calc(30px * var(--ui-scale));
-    line-height: 1.15;
-    min-width: 0;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-}
-
 /* Dual N-back settings */
 .settings-screen [style*="display:flex"] {
     min-width: 0;

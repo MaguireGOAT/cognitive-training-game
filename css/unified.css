@@ -74,13 +74,14 @@
             --menu-cols: 4;
             --menu-rows: 1;
             --menu-width: min(calc(var(--avail-w) - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
+            --menu-ref-cols: 4;
             --menu-chrome-h: calc(300px * var(--ui-scale));
             --menu-avail-h: calc(var(--avail-h) - var(--menu-chrome-h));
             --menu-card-min: calc(96px * var(--ui-scale));
             --menu-card: max(
                 var(--menu-card-min),
                 min(
-                    calc((var(--menu-width) - (var(--menu-cols) - 1) * var(--menu-gap)) / var(--menu-cols)),
+                    calc((var(--menu-width) - (var(--menu-ref-cols) - 1) * var(--menu-gap)) / var(--menu-ref-cols)),
                     calc((var(--menu-avail-h) - (var(--menu-rows) - 1) * var(--menu-gap)) / var(--menu-rows))
                 )
             );
@@ -718,6 +719,9 @@
             --settings-subtitle-gap: var(--screen-gap-md);
             --settings-actions-gap: var(--screen-gap-md);
             --settings-options-pad-y: calc(10px * var(--ui-scale));
+            --settings-options-width: calc(600px * var(--ui-scale));
+            --settings-actions-scale: 2;
+            --settings-actions-max-width: calc(var(--settings-options-width) * var(--settings-actions-scale));
         }
         .settings-screen--centered {
             justify-content: center;
@@ -728,6 +732,10 @@
         }
         .settings-screen--centered .settings-actions {
             position: static;
+        }
+        .settings-screen .settings-actions {
+            width: 100%;
+            max-width: var(--settings-actions-max-width);
         }
         .settings-screen .settings-actions > button {
             width: 100%;
@@ -799,7 +807,8 @@
 
             /* Phone landscape: reuse the shared menu grid formula with a
                viewport-derived chrome allowance instead of a fixed card size. */
-            .menu-grid {
+            .category-grid.menu-grid,
+            .home-grid.menu-grid {
                 --menu-chrome-h: clamp(100px, 28vh, 300px);
             }
 

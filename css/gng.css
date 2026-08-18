@@ -353,3 +353,18 @@
         [data-theme="dark"] .gng-controls .go-btn:hover { background: var(--btn-hover-correct); box-shadow: var(--btn-shadow-correct); }
         [data-theme="dark"] .gng-controls .nogo-btn { background: #b71c1c; box-shadow: var(--btn-shadow-wrong); }
         [data-theme="dark"] .gng-controls .nogo-btn:hover { background: var(--btn-hover-wrong); box-shadow: var(--btn-shadow-wrong); }
+        /* 回饋燈光：回應按鈕（與 Dual N-back 一致，沿用共用 --feedback-* Token） */
+        .nback-controls .match-btn.feedback-correct,
+        .nback-controls .notmatch-btn.feedback-correct,
+        .gng-controls .go-btn.feedback-correct,
+        .gng-controls .nogo-btn.feedback-correct {
+            background: var(--feedback-correct-strong);
+            box-shadow: var(--btn-shadow-correct);
+        }
+        .nback-controls .match-btn.feedback-wrong,
+        .nback-controls .notmatch-btn.feedback-wrong,
+        .gng-controls .go-btn.feedback-wrong,
+        .gng-controls .nogo-btn.feedback-wrong {
+            background: var(--feedback-wrong-strong);
+            box-shadow: var(--btn-shadow-wrong);
+        }

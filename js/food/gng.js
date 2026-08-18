@@ -320,6 +320,19 @@
             resetGngTimer();
         }
 
+        let gngFeedbackTimer = null;
+
+        function flashGngFeedback(btn, correct) {
+            if (!btn) return;
+            clearTimeout(gngFeedbackTimer);
+            btn.classList.remove('feedback-correct', 'feedback-wrong');
+            void btn.offsetWidth;
+            btn.classList.add(correct ? 'feedback-correct' : 'feedback-wrong');
+            gngFeedbackTimer = setTimeout(function () {
+                btn.classList.remove('feedback-correct', 'feedback-wrong');
+            }, 600);
+        }
+
         function handleGngResponse(isGo) {
             if (gngState.currentIndex < 0 || gngState.matchPending) return;
             const items = gngState.currentItems;
@@ -337,6 +350,7 @@
                 CognitiveAudio.play('wrong');
                 window.CognitiveFeedback.show(gngGridWrapper, '❌ 再試一次！', 'wrong');
             }
+            flashGngFeedback(isGo ? gngGoBtn : gngNoGoBtn, correct);
             gngState.totalTrials++;
             updateGngScore();
 
