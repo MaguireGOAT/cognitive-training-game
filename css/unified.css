@@ -755,8 +755,8 @@
                 --phone-menu-card: max(
                     calc(96px * var(--ui-scale)),
                     min(
-                        calc((var(--phone-menu-width) - var(--phone-menu-gap)) / 2),
-                        var(--phone-menu-avail-h)
+                        calc((var(--phone-menu-width) - 3 * var(--phone-menu-gap)) / 4),
+                        calc(var(--phone-menu-avail-h) / 2)
                     )
                 );
                 --large-menu-gap: var(--phone-menu-gap);
@@ -853,7 +853,7 @@
 
             :root {
                 --top-bar-h: 38px;
-                --control-h: 36px;
+                --control-h: 32px;
             }
             .back-btn,
             .hamburger-btn {
@@ -864,13 +864,17 @@
             }
             .action-btn,
             .score-display,
-            .dropdown-wrapper,
-            .magnify-btn,
-            .play-btn,
-            .speed-btn {
+            .dropdown-wrapper {
                 min-width: 38px;
                 min-height: 38px;
                 height: 38px;
+            }
+            .magnify-btn,
+            .play-btn,
+            .speed-btn {
+                min-width: 34px;
+                min-height: 34px;
+                height: 34px;
             }
             .action-btn,
             .score-display,
@@ -878,16 +882,47 @@
                 width: auto;
             }
             .speed-control {
-                height: 38px;
+                height: 34px;
             }
             .play-btn,
             .speed-btn {
-                width: 38px;
-                height: 38px;
+                width: 34px;
+                height: 34px;
+            }
+            .bottom-controls {
+                border-top: none;
+                min-height: 0;
+                margin-top: 0;
+                padding-top: calc(2px * var(--ui-scale));
+                padding-bottom: calc(2px * var(--ui-scale));
+                background: transparent;
+            }
+            #palm .speed-control,
+            #palm .play-btn,
+            #palm #swapBtn {
+                height: 34px;
+                min-height: 34px;
+            }
+            #palm .play-btn {
+                width: 34px;
+                min-width: 34px;
+            }
+            #palm .speed-btn {
+                width: 34px;
+                height: 34px;
+                min-width: 34px;
+                min-height: 34px;
             }
             .tile-scroll-area {
                 align-items: center;
                 justify-content: flex-start;
+            }
+            #foodCategorySelect {
+                padding-bottom: 0;
+            }
+            #foodCategorySelect .tile-scroll-area {
+                justify-content: flex-end;
+                padding-bottom: env(safe-area-inset-bottom, 0px);
             }
             .tile-scroll-area > .home-grid,
             .tile-scroll-area > .category-grid {
