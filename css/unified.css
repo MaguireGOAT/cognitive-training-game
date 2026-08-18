@@ -854,6 +854,9 @@
             :root {
                 --top-bar-h: 38px;
                 --control-h: 32px;
+                --safe-left: 0px;
+                --safe-right: 0px;
+                --stage-avail-w: calc(var(--avail-w) - calc(8px * var(--ui-scale)));
             }
             .back-btn,
             .hamburger-btn {
@@ -890,7 +893,7 @@
                 height: 34px;
             }
             .game-container {
-                padding-bottom: 0;
+                padding-bottom: calc(10px * var(--ui-scale) + env(safe-area-inset-bottom, 0px));
             }
             .bottom-controls {
                 border-top: none;
@@ -918,7 +921,7 @@
             }
             .tile-scroll-area {
                 align-items: center;
-                justify-content: flex-start;
+                justify-content: center;
             }
             #home,
             #mainMenu,
@@ -931,7 +934,7 @@
                 padding-bottom: 0;
             }
             #foodCategorySelect .tile-scroll-area {
-                justify-content: flex-end;
+                justify-content: center;
                 padding-bottom: 0;
             }
             .tile-scroll-area > .home-grid,
@@ -939,7 +942,9 @@
                 margin: 0 auto;
             }
             #gngSettings .settings-options,
-            #realitySettings .settings-options {
+            #shoppingSettings .settings-options,
+            #realitySettings .settings-options,
+            #dualNbackSettings .settings-options {
                 justify-content: center;
             }
             #realitySettings,
@@ -956,7 +961,7 @@
                 position: absolute;
                 left: 0;
                 right: 0;
-                bottom: 0;
+                bottom: calc(10px * var(--ui-scale) + env(safe-area-inset-bottom, 0px));
                 top: auto;
                 width: 100%;
                 box-sizing: border-box;
@@ -968,7 +973,7 @@
                 padding-bottom: calc(6px * var(--ui-scale));
             }
             .slide-menu {
-                width: min(300px, 82vw);
+                width: min(225px, 61.5vw);
             }
             .slide-menu .menu-item {
                 white-space: nowrap;
