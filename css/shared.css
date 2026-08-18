@@ -547,7 +547,7 @@
             letter-spacing: calc(1px * var(--ui-scale));
             line-height: calc(44px * var(--ui-scale));
             height: calc(44px * var(--ui-scale));
-            box-shadow: inset 0 calc(2px * var(--ui-scale)) calc(8px * var(--ui-scale)) rgba(0, 0, 0, 0.04);
+            box-shadow: none;
             transition: background 0.4s, color 0.4s, box-shadow 0.4s;
             white-space: nowrap;
             transform: translateX(var(--top-extra));
@@ -566,7 +566,7 @@
             letter-spacing: calc(1px * var(--ui-scale));
             line-height: calc(44px * var(--ui-scale));
             height: calc(44px * var(--ui-scale));
-            box-shadow: inset 0 calc(2px * var(--ui-scale)) calc(8px * var(--ui-scale)) rgba(0, 0, 0, 0.04);
+            box-shadow: none;
             transition: background 0.4s, color 0.4s, box-shadow 0.4s;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;

@@ -814,7 +814,9 @@
             }
 
             .save-btn {
-                font-size: calc(20px * var(--ui-scale));
+                min-width: 62px;
+                padding: 0 calc(20px * var(--ui-scale));
+                font-size: calc(24px * var(--ui-scale));
             }
 
             .question-text,
@@ -884,6 +886,27 @@
             .score-display,
             .dropdown-wrapper {
                 width: auto;
+            }
+            .action-btn {
+                min-width: 56px;
+                padding: 0 calc(20px * var(--ui-scale));
+                font-size: calc(24px * var(--ui-scale));
+            }
+            .score-display {
+                min-width: 58px;
+                padding: 0 calc(24px * var(--ui-scale));
+                font-size: calc(24px * var(--ui-scale));
+            }
+            .score-display span {
+                font-size: calc(26px * var(--ui-scale));
+            }
+            .dropdown-wrapper {
+                min-width: 80px;
+                padding: 0 calc(16px * var(--ui-scale));
+            }
+            .dropdown-wrapper label,
+            .dropdown-wrapper select {
+                font-size: calc(22px * var(--ui-scale));
             }
             .speed-control {
                 height: 34px;
@@ -976,8 +999,9 @@
             #gngSettings,
             #shoppingSettings,
             #dualNbackSettings {
-                justify-content: center;
-                padding-bottom: 0;
+                justify-content: flex-start;
+                padding-top: 28px;
+                padding-bottom: 24px;
             }
             #realitySettings .menu-header,
             #gngSettings .menu-header,
@@ -994,8 +1018,15 @@
                 margin-bottom: calc(24px * var(--ui-scale));
             }
             .settings-options {
-                flex: 0 0 auto;
+                flex: 1 1 auto;
+                min-height: 0;
+                overflow-y: auto;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
                 position: relative;
+                width: 100%;
+                max-width: calc(600px * var(--ui-scale)) !important;
                 margin-bottom: 0 !important;
                 padding-top: calc(10px * var(--ui-scale)) !important;
                 padding-bottom: calc(10px * var(--ui-scale)) !important;
@@ -1007,9 +1038,13 @@
                 bottom: auto;
                 top: auto;
                 width: 100%;
+                max-width: calc(600px * var(--ui-scale));
+                margin-top: calc(28px * var(--ui-scale));
+                margin-right: auto !important;
+                margin-bottom: 0 !important;
+                margin-left: auto !important;
                 box-sizing: border-box;
                 transform: none;
-                margin-top: calc(28px * var(--ui-scale));
                 z-index: auto;
                 background: transparent;
                 padding-top: calc(4px * var(--ui-scale));
