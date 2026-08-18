@@ -42,7 +42,7 @@
         .shopping-list-grid {
             display: grid;
             gap: calc(18px * var(--ui-scale));
-            justify-content: center;
+            justify-content: space-between;
             align-items: stretch;
             align-content: center;
             width: 100%;
@@ -72,7 +72,7 @@
         .shopping-list-grid.count-5 .shopping-list-row {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: var(--grid-gap-h);
             min-width: 0;
             max-width: 100%;
