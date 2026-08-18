@@ -387,14 +387,11 @@
         }
 
         function getRealityUiScale() {
-            let scale = 1;
-            try {
-                const parsed = parseFloat(
-                    getComputedStyle(document.documentElement).getPropertyValue('--ui-scale')
-                );
-                if (!isNaN(parsed) && parsed > 0) scale = parsed;
-            } catch (error) {}
-            return scale;
+            const width = window.innerWidth || document.documentElement.clientWidth || 0;
+            const height = window.innerHeight || document.documentElement.clientHeight || 0;
+            if (width <= 0 || height <= 0) return 1;
+            // Custom properties keep their token stream, so --ui-scale cannot be parsed directly.
+            return Math.min(width / 1280, height / 800);
         }
 
         function fitRealityText() {
