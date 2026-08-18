@@ -686,7 +686,7 @@
             #mainMenu,
             #foodCategorySelect,
             #nbackModeSelect {
-                overflow: hidden;
+                overflow: visible;
             }
             #home .menu-header,
             #mainMenu .menu-header,
