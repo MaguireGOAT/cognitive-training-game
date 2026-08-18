@@ -856,6 +856,7 @@
                 --control-h: 32px;
                 --safe-left: 0px;
                 --safe-right: 0px;
+                --safe-bottom: 0px;
                 --stage-avail-w: calc(var(--avail-w) - calc(8px * var(--ui-scale)));
             }
             .back-btn,
@@ -893,7 +894,7 @@
                 height: 34px;
             }
             .game-container {
-                padding-bottom: calc(10px * var(--ui-scale) + env(safe-area-inset-bottom, 0px));
+                padding-bottom: max(6px, min(env(safe-area-inset-bottom, 0px), 12px));
             }
             .bottom-controls {
                 border-top: none;
@@ -961,7 +962,7 @@
                 position: absolute;
                 left: 0;
                 right: 0;
-                bottom: calc(10px * var(--ui-scale) + env(safe-area-inset-bottom, 0px));
+                bottom: calc(10px * var(--ui-scale) + max(6px, min(env(safe-area-inset-bottom, 0px), 12px)));
                 top: auto;
                 width: 100%;
                 box-sizing: border-box;
