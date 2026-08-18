@@ -412,9 +412,9 @@
             const weatherSize = Math.max(valueSize, Math.round(260 * uiScale));
             const locationSize = Math.max(valueSize, Math.round(525 * uiScale));
             if (pageName === 'time') {
-                fitRealityValue(realityTime, Math.max(32, Math.round(100 * uiScale)));
+                fitRealityValue(realityTime, Math.max(36, Math.round(130 * uiScale)));
             } else if (pageName === 'date') {
-                fitRealityValue(realityDate, Math.max(28, Math.round(70 * uiScale)));
+                fitRealityValue(realityDate, Math.max(32, Math.round(100 * uiScale)));
             } else if (pageName === 'season') {
                 fitRealityValue(realitySeasonText, weatherSize);
                 fitRealityValue(realityWeatherText, weatherSize);

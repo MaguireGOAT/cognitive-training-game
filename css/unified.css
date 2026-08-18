@@ -40,17 +40,23 @@
             transition: none;
         }
 
-        /* Larger title, subtitle, and tile text on the home and food mode menus. */
+        /* Unified menu typography across home, food, food category, and N-back mode screens. */
         #home .menu-title,
-        #mainMenu .menu-title {
+        #mainMenu .menu-title,
+        #foodCategorySelect .menu-title,
+        #nbackModeSelect .menu-title {
             font-size: calc(56px * var(--ui-scale));
         }
         #home .menu-title .brain,
-        #mainMenu .menu-title .brain {
+        #mainMenu .menu-title .brain,
+        #foodCategorySelect .menu-title .brain,
+        #nbackModeSelect .menu-title .brain {
             font-size: calc(56px * var(--ui-scale));
         }
         #home .menu-subtitle,
-        #mainMenu .menu-subtitle {
+        #mainMenu .menu-subtitle,
+        #foodCategorySelect .menu-subtitle,
+        #nbackModeSelect .menu-subtitle {
             font-size: calc(28px * var(--ui-scale));
         }
         #home .category-btn .icon {
@@ -61,9 +67,10 @@
             font-size: calc(28px * var(--ui-scale));
         }
 
-        /* Shared large tile sizing for the home, food game mode menu, and food categories. */
+        /* Shared large tile sizing for all menu screens. */
         .app-screen#mainMenu .category-grid.game-select,
         #foodCategorySelect .category-grid.food-select,
+        .app-screen#nbackModeSelect .category-grid.nback-mode-grid,
         #home .home-grid {
             --large-menu-gap: calc(24px * var(--ui-scale));
             --large-menu-width: min(calc(var(--avail-w) - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
@@ -89,6 +96,7 @@
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn,
         #foodCategorySelect .category-grid.food-select .category-btn,
+        .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn,
         #home .home-grid .category-btn {
             width: var(--large-menu-card);
             height: var(--large-menu-card);
@@ -98,23 +106,36 @@
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn .icon,
         #foodCategorySelect .category-grid.food-select .category-btn .icon,
+        .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .icon,
         #home .home-grid .category-btn .icon {
             font-size: calc(66px * var(--ui-scale));
             margin-bottom: calc(12px * var(--ui-scale));
         }
         .app-screen#mainMenu .category-grid.game-select .category-btn .label,
         #foodCategorySelect .category-grid.food-select .category-btn .label,
+        .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .label,
         #home .home-grid .category-btn .label {
             font-size: calc(30px * var(--ui-scale));
             line-height: 1.15;
         }
-        #mainMenu {
+        .app-screen#mainMenu .category-grid.game-select,
+        #foodCategorySelect .category-grid.food-select,
+        .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
+            margin: 0 auto;
+        }
+        #mainMenu,
+        #foodCategorySelect,
+        #nbackModeSelect {
             gap: calc(18px * var(--ui-scale));
         }
-        #mainMenu .menu-header {
+        #mainMenu .menu-header,
+        #foodCategorySelect .menu-header,
+        #nbackModeSelect .menu-header {
             margin-bottom: calc(4px * var(--ui-scale));
         }
-        #mainMenu .menu-subtitle {
+        #mainMenu .menu-subtitle,
+        #foodCategorySelect .menu-subtitle,
+        #nbackModeSelect .menu-subtitle {
             margin-bottom: calc(24px * var(--ui-scale));
         }
 
@@ -713,7 +734,7 @@
             .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
                 --phone-menu-gap: calc(18px * var(--ui-scale));
                 --phone-menu-width: min(calc(100vw - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
-                --phone-menu-avail-h: calc(100vh - calc(220px * var(--ui-scale)));
+                --phone-menu-avail-h: calc(100vh - calc(227px * var(--ui-scale)));
                 --phone-menu-card: max(
                     calc(96px * var(--ui-scale)),
                     min(
@@ -725,18 +746,6 @@
                 --large-menu-width: var(--phone-menu-width);
                 --large-menu-card: var(--phone-menu-card);
                 gap: var(--phone-menu-gap);
-            }
-            .app-screen#nbackModeSelect .category-grid.nback-mode-grid {
-                --phone-menu-card: max(
-                    calc(96px * var(--ui-scale)),
-                    min(
-                        calc((var(--phone-menu-width) - 3 * var(--phone-menu-gap)) / 4),
-                        calc(var(--phone-menu-avail-h) / 2)
-                    )
-                );
-                --large-menu-gap: var(--phone-menu-gap);
-                --large-menu-width: var(--phone-menu-width);
-                --large-menu-card: var(--phone-menu-card);
             }
 
             #realitySettings,
@@ -813,6 +822,7 @@
             .score-display,
             .dropdown-wrapper,
             .save-btn,
+            .reality-edit-btn,
             .magnify-btn,
             .play-btn,
             .speed-btn {
@@ -847,7 +857,8 @@
             .action-btn,
             .score-display,
             .dropdown-wrapper,
-            .save-btn {
+            .save-btn,
+            .reality-edit-btn {
                 min-width: 38px;
                 min-height: 38px;
                 height: 38px;
@@ -869,6 +880,13 @@
                 min-width: 56px;
                 padding: 0 calc(20px * var(--ui-scale));
                 font-size: calc(24px * var(--ui-scale));
+            }
+            .reality-edit-btn {
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+                min-height: 38px;
+                padding: 0;
             }
             .score-display {
                 min-width: 58px;
@@ -948,18 +966,6 @@
             #dualNbackSettings {
                 padding-bottom: 0;
             }
-            #foodCategorySelect .category-grid.food-select {
-                --phone-menu-card: max(
-                    calc(96px * var(--ui-scale)),
-                    min(
-                        calc((var(--phone-menu-width) - 3 * var(--phone-menu-gap)) / 5),
-                        calc(var(--phone-menu-avail-h) / 2)
-                    )
-                );
-                --large-menu-gap: var(--phone-menu-gap);
-                --large-menu-width: var(--phone-menu-width);
-                --large-menu-card: var(--phone-menu-card);
-            }
             #gngSettings .settings-options,
             #shoppingSettings .settings-options,
             #realitySettings .settings-options,
@@ -1032,14 +1038,18 @@
                 font-size: max(calc(48px * var(--ui-scale)), 29px);
             }
             #home .menu-title,
-            #mainMenu .menu-title {
+            #mainMenu .menu-title,
+            #foodCategorySelect .menu-title,
+            #nbackModeSelect .menu-title {
                 font-size: max(calc(56px * var(--ui-scale)), 35px);
             }
             .menu-subtitle {
                 font-size: max(calc(24px * var(--ui-scale)), 15px);
             }
             #home .menu-subtitle,
-            #mainMenu .menu-subtitle {
+            #mainMenu .menu-subtitle,
+            #foodCategorySelect .menu-subtitle,
+            #nbackModeSelect .menu-subtitle {
                 font-size: max(calc(28px * var(--ui-scale)), 18px);
             }
             .question-text {

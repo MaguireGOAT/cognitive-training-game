@@ -64,16 +64,10 @@
             gap: calc(8px * var(--ui-scale));
         }
         .reality-edit-btn {
-            width: max(44px, calc(44px * var(--ui-scale)));
-            height: max(44px, calc(44px * var(--ui-scale)));
             padding: 0;
             border-radius: 50%;
         }
         .action-btn.reality-edit-btn {
-            width: max(44px, calc(44px * var(--ui-scale)));
-            height: max(44px, calc(44px * var(--ui-scale)));
-            min-width: max(44px, calc(44px * var(--ui-scale)));
-            min-height: max(44px, calc(44px * var(--ui-scale)));
             padding: 0;
             border-radius: 50%;
         }
