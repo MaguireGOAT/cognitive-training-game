@@ -894,7 +894,7 @@
                 height: 34px;
             }
             .game-container {
-                padding-bottom: max(6px, min(env(safe-area-inset-bottom, 0px), 12px));
+                padding-bottom: 4px;
             }
             .bottom-controls {
                 border-top: none;
@@ -924,6 +924,11 @@
                 align-items: center;
                 justify-content: center;
             }
+            #home .tile-scroll-area,
+            #mainMenu .tile-scroll-area,
+            #nbackModeSelect .tile-scroll-area {
+                justify-content: flex-start;
+            }
             #home,
             #mainMenu,
             #foodCategorySelect,
@@ -936,7 +941,19 @@
             }
             #foodCategorySelect .tile-scroll-area {
                 justify-content: center;
-                padding-bottom: 0;
+                padding-bottom: calc(12px * var(--ui-scale));
+            }
+            #foodCategorySelect .category-grid.food-select {
+                --phone-menu-card: max(
+                    calc(96px * var(--ui-scale)),
+                    min(
+                        calc((var(--phone-menu-width) - 3 * var(--phone-menu-gap)) / 5),
+                        calc(var(--phone-menu-avail-h) / 2)
+                    )
+                );
+                --large-menu-gap: var(--phone-menu-gap);
+                --large-menu-width: var(--phone-menu-width);
+                --large-menu-card: var(--phone-menu-card);
             }
             .tile-scroll-area > .home-grid,
             .tile-scroll-area > .category-grid {
@@ -946,7 +963,7 @@
             #shoppingSettings .settings-options,
             #realitySettings .settings-options,
             #dualNbackSettings .settings-options {
-                justify-content: center;
+                justify-content: flex-start;
             }
             #realitySettings,
             #gngSettings,
@@ -956,13 +973,13 @@
             }
             .settings-options {
                 position: relative;
-                padding-bottom: 48px;
+                padding-bottom: 80px !important;
             }
             .settings-actions {
                 position: absolute;
                 left: 0;
                 right: 0;
-                bottom: calc(10px * var(--ui-scale) + max(6px, min(env(safe-area-inset-bottom, 0px), 12px)));
+                bottom: 16px;
                 top: auto;
                 width: 100%;
                 box-sizing: border-box;
