@@ -889,6 +889,9 @@
                 width: 34px;
                 height: 34px;
             }
+            .game-container {
+                padding-bottom: 0;
+            }
             .bottom-controls {
                 border-top: none;
                 min-height: 0;
@@ -917,12 +920,19 @@
                 align-items: center;
                 justify-content: flex-start;
             }
-            #foodCategorySelect {
+            #home,
+            #mainMenu,
+            #foodCategorySelect,
+            #nbackModeSelect,
+            #realitySettings,
+            #gngSettings,
+            #shoppingSettings,
+            #dualNbackSettings {
                 padding-bottom: 0;
             }
             #foodCategorySelect .tile-scroll-area {
                 justify-content: flex-end;
-                padding-bottom: env(safe-area-inset-bottom, 0px);
+                padding-bottom: 0;
             }
             .tile-scroll-area > .home-grid,
             .tile-scroll-area > .category-grid {
@@ -940,7 +950,7 @@
             }
             .settings-options {
                 position: relative;
-                padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+                padding-bottom: 48px;
             }
             .settings-actions {
                 position: absolute;
@@ -955,7 +965,7 @@
                 z-index: 5;
                 background: transparent;
                 padding-top: calc(4px * var(--ui-scale));
-                padding-bottom: calc(6px * var(--ui-scale) + env(safe-area-inset-bottom, 0px));
+                padding-bottom: calc(6px * var(--ui-scale));
             }
             .slide-menu {
                 width: min(300px, 82vw);
