@@ -1020,45 +1020,45 @@
             }
             .slide-menu .menu-item {
                 white-space: nowrap;
-                font-size: max(calc(24px * var(--ui-scale)), 16px);
+                font-size: max(calc(24px * var(--ui-scale)), 18px);
             }
             .menu-title {
-                font-size: max(calc(48px * var(--ui-scale)), 26px);
+                font-size: max(calc(48px * var(--ui-scale)), 29px);
             }
             #home .menu-title,
             #mainMenu .menu-title {
-                font-size: max(calc(56px * var(--ui-scale)), 32px);
+                font-size: max(calc(56px * var(--ui-scale)), 35px);
             }
             .menu-subtitle {
-                font-size: max(calc(24px * var(--ui-scale)), 14px);
+                font-size: max(calc(24px * var(--ui-scale)), 15px);
             }
             #home .menu-subtitle,
             #mainMenu .menu-subtitle {
-                font-size: max(calc(28px * var(--ui-scale)), 16px);
+                font-size: max(calc(28px * var(--ui-scale)), 18px);
             }
             .question-text {
-                font-size: max(calc(36px * var(--ui-scale)), 18px);
+                font-size: max(calc(36px * var(--ui-scale)), 20px);
             }
             .gng-rules-text {
-                font-size: max(calc(32px * var(--ui-scale)), 16px);
+                font-size: max(calc(32px * var(--ui-scale)), 18px);
             }
             #home .home-grid .category-btn .label,
             .app-screen#mainMenu .category-grid.game-select .category-btn .label,
             #foodCategorySelect .category-grid.food-select .category-btn .label,
             .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .label {
-                font-size: max(calc(30px * var(--ui-scale)), 16px);
+                font-size: max(calc(30px * var(--ui-scale)), 18px);
             }
             #gngSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
             #shoppingSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
             #realitySettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
             #dualNbackSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span {
-                font-size: max(calc(26px * var(--ui-scale)), 15px) !important;
+                font-size: max(calc(26px * var(--ui-scale)), 17px) !important;
             }
             #gngSettings select,
             #shoppingSettings select,
             #realitySettings select,
             #dualNbackSettings select,
             #gngAutoToggle {
-                font-size: max(calc(24px * var(--ui-scale)), 14px) !important;
+                font-size: max(calc(24px * var(--ui-scale)), 16px) !important;
             }
         }
