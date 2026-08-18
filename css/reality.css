@@ -45,11 +45,12 @@
         }
         .reality-top {
             position: absolute;
-            top: calc(10px * var(--ui-scale));
-            left: calc(14px * var(--ui-scale));
-            right: calc(14px * var(--ui-scale));
+            top: var(--chrome-top);
+            left: var(--chrome-left);
+            right: var(--chrome-right);
+            height: var(--chrome-size);
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
             z-index: 20;
             pointer-events: none;
@@ -59,7 +60,7 @@
         }
         .reality-top-right {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: calc(8px * var(--ui-scale));
         }
         .reality-edit-btn {

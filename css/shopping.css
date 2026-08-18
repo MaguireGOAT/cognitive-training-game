@@ -55,13 +55,13 @@
             transform: translateY(var(--name-shift));
             transition: grid-template-columns 0.35s ease, grid-template-rows 0.35s ease, transform 0.35s ease;
         }
-        .shopping-list-grid.count-2 { --grid-cols: 2; --grid-rows: 1; --grid-gap-h: calc(18px * var(--ui-scale)); --grid-gap-v: calc(0px * var(--ui-scale)); }
-        .shopping-list-grid.count-3 { --grid-cols: 3; --grid-rows: 1; --grid-gap-h: calc(24px * var(--ui-scale)); --grid-gap-v: calc(0px * var(--ui-scale)); }
-        .shopping-list-grid.count-4 { --grid-cols: 4; --grid-rows: 1; --grid-gap-h: calc(28px * var(--ui-scale)); --grid-gap-v: calc(0px * var(--ui-scale)); }
+        .shopping-list-grid.count-2 { --grid-cols: 2; --grid-rows: 1; --grid-gap-h: var(--grid-gap-2); --grid-gap-v: calc(0px * var(--ui-scale)); }
+        .shopping-list-grid.count-3 { --grid-cols: 3; --grid-rows: 1; --grid-gap-h: var(--grid-gap-3); --grid-gap-v: calc(0px * var(--ui-scale)); }
+        .shopping-list-grid.count-4 { --grid-cols: 4; --grid-rows: 1; --grid-gap-h: var(--grid-gap-4); --grid-gap-v: calc(0px * var(--ui-scale)); }
         .shopping-list-grid.count-5 {
             --grid-cols: 3;
             --grid-rows: 2;
-            --grid-gap-h: calc(24px * var(--ui-scale));
+            --grid-gap-h: var(--grid-gap-5);
             --grid-gap-v: calc(18px * var(--ui-scale));
             display: flex;
             flex-direction: column;
@@ -82,7 +82,7 @@
             width: var(--card);
             height: calc(var(--card) + var(--row-name-track));
         }
-        .shopping-list-grid.count-6 { --grid-cols: 3; --grid-rows: 2; --grid-gap-h: calc(24px * var(--ui-scale)); --grid-gap-v: calc(18px * var(--ui-scale)); }
+        .shopping-list-grid.count-6 { --grid-cols: 3; --grid-rows: 2; --grid-gap-h: var(--grid-gap-6); --grid-gap-v: calc(18px * var(--ui-scale)); }
         .shopping-list-grid.name-mode { --name-track: calc(0px * var(--ui-scale)); --row-name-track: calc(0px * var(--ui-scale)); }
         #shoppingGame.hide-names .shopping-list-grid {
             --name-track: calc(0px * var(--ui-scale));
@@ -362,19 +362,19 @@
         .shopping-recall-grid.count-4 {
             --grid-cols: 4;
             --grid-rows: 1;
-            --grid-gap-h: calc(18px * var(--ui-scale));
+            --grid-gap-h: var(--grid-gap-4);
             --grid-gap-v: calc(0px * var(--ui-scale));
         }
         .shopping-recall-grid.count-6 {
             --grid-cols: 3;
             --grid-rows: 2;
-            --grid-gap-h: calc(20px * var(--ui-scale));
+            --grid-gap-h: var(--grid-gap-6);
             --grid-gap-v: calc(18px * var(--ui-scale));
         }
         .shopping-recall-grid.count-8 {
             --grid-cols: 4;
             --grid-rows: 2;
-            --grid-gap-h: calc(22px * var(--ui-scale));
+            --grid-gap-h: var(--grid-gap-4);
             --grid-gap-v: calc(18px * var(--ui-scale));
         }
         .shopping-recall-grid {

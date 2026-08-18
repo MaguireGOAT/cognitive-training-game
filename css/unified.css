@@ -699,11 +699,6 @@
             #nbackModeSelect .menu-subtitle {
                 flex-shrink: 0;
             }
-            #home .menu-header,
-            #mainMenu .menu-header,
-            #nbackModeSelect .menu-header {
-                margin-top: calc(20px * var(--ui-scale));
-            }
             #home .menu-footer,
             #mainMenu .menu-footer,
             #nbackModeSelect .menu-footer {

@@ -80,14 +80,25 @@
             align-items: center;
             justify-content: flex-start;
             padding:
-                calc(20px * var(--ui-scale) + var(--safe-top))
+                var(--screen-pad-y)
                 calc(30px * var(--ui-scale) + var(--safe-right))
-                calc(20px * var(--ui-scale) + var(--safe-bottom))
+                var(--screen-pad-y)
                 calc(30px * var(--ui-scale) + var(--safe-left));
             transition: background 0.4s;
             overflow-y: auto;
         }
         .menu-overlay.hidden { display: none; }
+        .menu-overlay--center {
+            justify-content: center;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .menu-overlay--center .menu-header {
+            margin-top: 0;
+        }
+        .menu-overlay--center > div:last-child:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) {
+            margin-bottom: 0;
+        }
         .menu-overlay .menu-header,
         .menu-overlay .menu-subtitle,
         .menu-overlay > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) {
@@ -106,12 +117,18 @@
         #gngSettings .menu-header {
             margin-top: auto !important;
         }
+        .menu-overlay--center .menu-header {
+            margin-top: 0 !important;
+        }
+        .menu-overlay--center > div:last-child:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) {
+            margin-bottom: 0 !important;
+        }
 
         .menu-header {
             width: 100%;
             max-width: calc(900px * var(--ui-scale));
             text-align: center;
-            margin-bottom: calc(8px * var(--ui-scale));
+            margin-bottom: var(--screen-gap-sm);
             flex-shrink: 0;
             position: relative;
         }
@@ -129,7 +146,7 @@
         .menu-subtitle {
             font-size: calc(24px * var(--ui-scale));
             color: var(--muted-text);
-            margin-bottom: calc(24px * var(--ui-scale));
+            margin-bottom: var(--screen-gap-md);
             transition: color 0.4s;
         }
 

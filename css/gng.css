@@ -32,7 +32,7 @@
         .gng-grid-container.cols-2 {
             --grid-cols: 2;
             --grid-rows: 1;
-            --grid-gap-h: calc(16px * var(--ui-scale));
+            --grid-gap-h: var(--grid-gap-2);
             --grid-gap-v: calc(0px * var(--ui-scale));
             grid-template-columns: repeat(var(--grid-cols), var(--card));
             grid-auto-rows: var(--card);
@@ -40,7 +40,7 @@
         .gng-grid-container.cols-3 {
             --grid-cols: 3;
             --grid-rows: 1;
-            --grid-gap-h: calc(32px * var(--ui-scale));
+            --grid-gap-h: var(--grid-gap-3);
             --grid-gap-v: calc(0px * var(--ui-scale));
             grid-template-columns: repeat(var(--grid-cols), var(--card));
             grid-auto-rows: var(--card);

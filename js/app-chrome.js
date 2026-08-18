@@ -402,24 +402,31 @@
                     { screen: document.getElementById('shoppingGame'), el: document.getElementById('shoppingStage') }
                 ];
 
-                function applyStage(entry) {
-                    if (!entry.screen || !entry.el) return;
+                function measureStageHeight(entry) {
+                    if (!entry.screen || !entry.el) return null;
                     var rect = entry.el.getBoundingClientRect();
-                    if (rect.width <= 0 || rect.height <= 0) return;
-                    entry.screen.style.setProperty('--stage-h', Math.round(rect.height) + 'px');
+                    if (rect.width <= 0 || rect.height <= 0) return null;
+                    return rect.height;
                 }
 
-                stages.forEach(function (entry) {
-                    applyStage(entry);
-                    if (!window.ResizeObserver) return;
-                    var observer = new ResizeObserver(function () {
-                        applyStage(entry);
+                function applyCommonStageHeight() {
+                    var heights = stages.map(measureStageHeight).filter(function (height) { return height !== null; });
+                    if (heights.length === 0) return;
+                    var common = Math.round(Math.min.apply(null, heights));
+                    stages.forEach(function (entry) {
+                        if (entry.screen) entry.screen.style.setProperty('--stage-h', common + 'px');
                     });
-                    observer.observe(entry.el);
-                });
-                window.addEventListener('resize', function () {
-                    stages.forEach(applyStage);
-                });
+                }
+
+                applyCommonStageHeight();
+                if (window.ResizeObserver) {
+                    stages.forEach(function (entry) {
+                        if (!entry.el) return;
+                        var observer = new ResizeObserver(applyCommonStageHeight);
+                        observer.observe(entry.el);
+                    });
+                }
+                window.addEventListener('resize', applyCommonStageHeight);
             }
 
             syncMeasuredStages();

@@ -31,6 +31,15 @@
             --chrome-top: calc(10px * var(--ui-scale) + var(--safe-top));
             --chrome-left: calc(14px * var(--ui-scale) + var(--safe-left));
             --chrome-right: calc(14px * var(--ui-scale) + var(--safe-right));
+            --chrome-size: max(38px, calc(44px * var(--ui-scale)));
+            --screen-gap-sm: calc(8px * var(--ui-scale));
+            --screen-gap-md: calc(24px * var(--ui-scale));
+            --screen-pad-y: clamp(12px, 4vh, 28px);
+            --grid-gap-2: calc(18px * var(--ui-scale));
+            --grid-gap-3: calc(24px * var(--ui-scale));
+            --grid-gap-4: calc(28px * var(--ui-scale));
+            --grid-gap-5: calc(24px * var(--ui-scale));
+            --grid-gap-6: calc(24px * var(--ui-scale));
             --bg-color: #f5f0e8;
             --container-bg: #f5f0e8;
             --card-bg: #ffffff;
