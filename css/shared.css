@@ -123,6 +123,10 @@
         .menu-overlay--center > div:last-child:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) {
             margin-bottom: 0 !important;
         }
+        .menu-overlay--center > .home-grid,
+        .menu-overlay--center > .category-grid {
+            margin: 0 auto !important;
+        }
 
         .menu-header {
             width: 100%;
