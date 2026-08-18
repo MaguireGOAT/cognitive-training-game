@@ -16,7 +16,6 @@
             --grid-rows: 1;
             --grid-gap-h: calc(0px * var(--ui-scale));
             --grid-gap-v: calc(0px * var(--ui-scale));
-            --grid-name-track: calc(0px * var(--ui-scale));
             width: var(--grid-card);
             max-width: 100%;
             aspect-ratio: 1/1;

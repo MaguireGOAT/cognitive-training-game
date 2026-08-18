@@ -98,7 +98,6 @@
     --dual-gap: calc(16px * var(--ui-scale));
     --grid-gap-h: var(--dual-gap);
     --grid-gap-v: var(--dual-gap);
-    --grid-name-track: calc(0px * var(--ui-scale));
     --dual-cell: var(--grid-card);
     width: calc(var(--dual-cell) * var(--grid-cols) + (var(--grid-cols) - 1) * var(--dual-gap));
     height: calc(var(--dual-cell) * var(--grid-rows) + (var(--grid-rows) - 1) * var(--dual-gap));
@@ -153,7 +152,6 @@
     --grid-rows: 1;
     --grid-gap-h: calc(0px * var(--ui-scale));
     --grid-gap-v: calc(0px * var(--ui-scale));
-    --grid-name-track: calc(0px * var(--ui-scale));
     width: var(--grid-card);
     max-width: 100%;
     aspect-ratio: 1 / 1;

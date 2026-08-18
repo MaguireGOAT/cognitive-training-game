@@ -883,6 +883,10 @@
             .dropdown-wrapper select {
                 font-size: calc(22px * var(--ui-scale));
             }
+            .nback-n-select {
+                height: 38px;
+                min-height: 38px;
+            }
             .speed-control {
                 height: 34px;
             }
@@ -1060,4 +1064,14 @@
             #gngAutoToggle {
                 font-size: max(calc(24px * var(--ui-scale)), 16px) !important;
             }
+        }
+
+        /* Shared game-stage vertical padding so every image stage starts and ends the same way. */
+        #foodGame .grid-wrapper,
+        #differentGame .different-grid-wrapper,
+        #gngGame .gng-grid-wrapper,
+        #nbackGame .nback-grid-wrapper,
+        #dualNbackGame .dual-stage,
+        #shoppingGame .shopping-stage {
+            padding: calc(2px * var(--ui-scale)) 0;
         }
