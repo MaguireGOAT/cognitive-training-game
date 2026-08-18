@@ -401,7 +401,7 @@
             if (realityBoard.classList.contains('hidden')) return;
             const uiScale = getRealityUiScale();
             const valueSize = Math.max(36, Math.round(210 * uiScale));
-            const labelSize = Math.max(22, Math.round(76 * uiScale));
+            const labelSize = Math.max(22, Math.round(56 * uiScale));
             realityBoard.style.setProperty('--reality-value-size', valueSize + 'px');
             realityBoard.style.setProperty('--reality-label-size', labelSize + 'px');
 
@@ -415,9 +415,9 @@
             const weatherSize = Math.max(valueSize, Math.round(260 * uiScale));
             const locationSize = Math.max(valueSize, Math.round(525 * uiScale));
             if (pageName === 'time') {
-                fitRealityValue(realityTime, valueSize * 0.8);
+                fitRealityValue(realityTime, Math.max(32, Math.round(100 * uiScale)));
             } else if (pageName === 'date') {
-                fitRealityValue(realityDate, valueSize * 1.5);
+                fitRealityValue(realityDate, Math.max(28, Math.round(70 * uiScale)));
             } else if (pageName === 'season') {
                 fitRealityValue(realitySeasonText, weatherSize);
                 fitRealityValue(realityWeatherText, weatherSize);
