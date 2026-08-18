@@ -106,18 +106,23 @@
             }
 
             event.respondWith((async () => {
-                const cached = await cacheApi.match(request);
-                if (cached) return cached;
-                try {
-                    const response = await fetchImpl(request);
+                const cachedPromise = cacheApi.match(request);
+                const networkPromise = fetchImpl(request).then(async (response) => {
                     if (response.ok) {
                         const cache = await cacheApi.open(cacheName);
                         cache.put(request, response.clone());
                     }
                     return response;
-                } catch (error) {
-                    return new ResponseImpl('', { status: 408, statusText: 'Offline' });
+                }).catch(() => null);
+
+                const cached = await cachedPromise;
+                if (cached) {
+                    networkPromise.catch(() => {});
+                    return cached;
                 }
+                const network = await networkPromise;
+                if (network) return network;
+                return new ResponseImpl('', { status: 408, statusText: 'Offline' });
             })());
         }
 

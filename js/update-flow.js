@@ -271,7 +271,7 @@
                 return bootPromise;
             }
 
-            navigatorRef.serviceWorker.register(registerUrl).then(function (registration) {
+            navigatorRef.serviceWorker.register(registerUrl, { updateViaCache: "none" }).then(function (registration) {
                 if (disposed) return null;
                 registrationRef = registration;
 
