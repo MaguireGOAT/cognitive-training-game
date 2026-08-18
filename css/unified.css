@@ -708,27 +708,6 @@
             #nbackModeSelect .menu-footer {
                 display: none;
             }
-            .tile-scroll-area {
-                flex: 1 1 auto;
-                min-height: 0;
-                width: 100%;
-                margin-bottom: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                overflow-x: hidden;
-                overflow-y: auto;
-                overscroll-behavior: contain;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: thin;
-                padding: calc(4px * var(--ui-scale)) 0 calc(12px * var(--ui-scale));
-            }
-            .tile-scroll-area > .category-grid,
-            .tile-scroll-area > .home-grid {
-                flex: 0 0 auto;
-                margin: auto;
-            }
 
             /* Phone landscape: shrink tile menus to fit first, then scroll
                only when a tile would drop below the shared 96px minimum. */
@@ -943,21 +922,18 @@
                 min-width: 34px;
                 min-height: 34px;
             }
-            .tile-scroll-area {
-                align-items: center;
-                justify-content: center;
+            #home .home-grid,
+            #mainMenu .category-grid,
+            #foodCategorySelect .category-grid,
+            #nbackModeSelect .category-grid {
+                flex: 0 0 auto;
+                margin: 0 auto;
             }
             #home,
             #mainMenu,
             #foodCategorySelect,
             #nbackModeSelect {
                 justify-content: center;
-            }
-            #home .tile-scroll-area,
-            #mainMenu .tile-scroll-area,
-            #foodCategorySelect .tile-scroll-area,
-            #nbackModeSelect .tile-scroll-area {
-                flex: 0 0 auto;
             }
             #home,
             #mainMenu,
@@ -968,10 +944,6 @@
             #shoppingSettings,
             #dualNbackSettings {
                 padding-bottom: 0;
-            }
-            #foodCategorySelect .tile-scroll-area {
-                justify-content: center;
-                padding-bottom: calc(12px * var(--ui-scale));
             }
             #foodCategorySelect .category-grid.food-select {
                 --phone-menu-card: max(
@@ -984,10 +956,6 @@
                 --large-menu-gap: var(--phone-menu-gap);
                 --large-menu-width: var(--phone-menu-width);
                 --large-menu-card: var(--phone-menu-card);
-            }
-            .tile-scroll-area > .home-grid,
-            .tile-scroll-area > .category-grid {
-                margin: 0 auto;
             }
             #gngSettings .settings-options,
             #shoppingSettings .settings-options,
