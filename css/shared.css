@@ -98,6 +98,9 @@
         .menu-overlay--center .menu-header {
             margin-top: 0;
         }
+        .menu-overlay--center .menu-footer {
+            display: none;
+        }
         .menu-overlay--center > div:last-child:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) {
             margin-bottom: 0;
         }
