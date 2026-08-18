@@ -261,6 +261,7 @@
             startPage.style.opacity = '1';
             targetPage.style.opacity = '1';
             targetPage.classList.add('active');
+            fitRealityText();
             startPage.style.transform = 'translate3d(' + fromDx + 'px, 0, 0)';
             targetPage.style.transform = 'translate3d(' + targetStartX + 'px, 0, 0)';
 
@@ -403,16 +404,26 @@
             const labelSize = Math.max(22, Math.round(76 * uiScale));
             realityBoard.style.setProperty('--reality-value-size', valueSize + 'px');
             realityBoard.style.setProperty('--reality-label-size', labelSize + 'px');
-            document.querySelectorAll('.reality-value').forEach(el => {
+
+            const activePage = document.querySelector('.reality-page.active') || realityVisiblePage;
+            if (!activePage) return;
+            activePage.querySelectorAll('.reality-value').forEach(el => {
                 fitRealityValue(el, valueSize);
             });
+
+            const pageName = activePage.dataset.page;
             const weatherSize = Math.max(valueSize, Math.round(260 * uiScale));
             const locationSize = Math.max(valueSize, Math.round(525 * uiScale));
-            fitRealityValue(realitySeasonText, weatherSize);
-            fitRealityValue(realityWeatherText, weatherSize);
-            fitRealityValue(realityLocationText, locationSize);
-            fitRealityValue(realityTime, valueSize * 0.8);
-            fitRealityValue(realityDate, valueSize * 1.5);
+            if (pageName === 'time') {
+                fitRealityValue(realityTime, valueSize * 0.8);
+            } else if (pageName === 'date') {
+                fitRealityValue(realityDate, valueSize * 1.5);
+            } else if (pageName === 'season') {
+                fitRealityValue(realitySeasonText, weatherSize);
+                fitRealityValue(realityWeatherText, weatherSize);
+            } else if (pageName === 'location') {
+                fitRealityValue(realityLocationText, locationSize);
+            }
         }
 
         function openRealitySettings() {
@@ -626,7 +637,7 @@
                 enter: function () {
                     realityState.currentPageIndex = 0;
                     renderRealityBoard();
-                    fitRealityText();
+                    requestAnimationFrame(() => fitRealityText());
                     startRealityClock();
                 },
                 exit: stopRealityClock,

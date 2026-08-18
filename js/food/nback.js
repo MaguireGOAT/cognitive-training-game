@@ -54,6 +54,10 @@
             nbackPlayBtn.classList.toggle('playing', active);
         }
 
+        function updateNbackInterval() {
+            // Speed-to-interval mapping is handled by CognitiveActivity.start/reset.
+        }
+
         // Brain Workshop-style random match generation: each trial has a set
         // probability of matching the stimulus N trials earlier. The planner
         // keeps identity and match status in the trial itself.

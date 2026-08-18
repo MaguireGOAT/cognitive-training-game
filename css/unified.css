@@ -924,10 +924,17 @@
                 align-items: center;
                 justify-content: center;
             }
+            #home,
+            #mainMenu,
+            #foodCategorySelect,
+            #nbackModeSelect {
+                justify-content: center;
+            }
             #home .tile-scroll-area,
             #mainMenu .tile-scroll-area,
+            #foodCategorySelect .tile-scroll-area,
             #nbackModeSelect .tile-scroll-area {
-                justify-content: flex-start;
+                flex: 0 0 auto;
             }
             #home,
             #mainMenu,
