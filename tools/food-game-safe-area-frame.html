@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="state-proposed">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function () {
+    var m = /[?&]state=(proposed|current)/.exec(location.search);
+    document.documentElement.className = 'state-' + (m ? m[1] : 'proposed');
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>食物分類遊戲 — 圓角／安全區域預覽</title>
+<link rel="stylesheet" href="../css/variables.css" />
+<link rel="stylesheet" href="../css/shared.css" />
+<link rel="stylesheet" href="../css/reality.css" />
+<link rel="stylesheet" href="../css/food.css" />
+<link rel="stylesheet" href="../css/nback.css" />
+<link rel="stylesheet" href="../css/dual-nback.css" />
+<link rel="stylesheet" href="../css/gng.css" />
+<link rel="stylesheet" href="../css/shopping.css" />
+<link rel="stylesheet" href="../css/different.css" />
+<link rel="stylesheet" href="../css/unified.css" />
+<style>
+  /* ================================================================
+     預覽專用（不屬於正式程式碼）
+     1) 模擬手機橫向 844x390 的 env(safe-area-inset-*) 值（可用縮放調整）
+     2) 套用「建議」新增的 --corner-clear-* Token，全出血容器改吃它
+     3) 畫出圓角 / 瀏海 / 主畫面指示條 的視覺標示
+     ================================================================ */
+  :root {
+    /* 參考值（iPhone 12/13 橫向）：瀏海一側 47px、指示條一側 21px */
+    --safe-ref-left: 47px;
+    --safe-ref-right: 21px;
+    --safe-ref-top: 0px;
+    --safe-ref-bottom: 0px;
+
+    --safe-top: 0px;
+    --safe-right: 6px;    /* 縮小後（30%） */
+    --safe-bottom: 0px;
+    --safe-left: 14px;    /* 縮小後（30%） */
+
+    /* 建議 Token：單一來源，chrome 一律從這裡取邊距（base + 裝置 inset） */
+    --corner-clear-top:    calc(var(--safe-top)    + calc(6px  * var(--ui-scale)));
+    --corner-clear-right:  calc(var(--safe-right)  + calc(12px * var(--ui-scale)));
+    --corner-clear-bottom: calc(var(--safe-bottom) + calc(10px * var(--ui-scale)));
+    --corner-clear-left:   calc(var(--safe-left)   + calc(12px * var(--ui-scale)));
+  }
+
+  /* 現況：等同今天手機媒體查詢把 safe-area 歸零的渲染 */
+  html.state-current {
+    --safe-top: 0px;
+    --safe-right: 0px;
+    --safe-bottom: 0px;
+    --safe-left: 0px;
+  }
+
+  /* 建議改動：.game-container 不再內聯 base + safe，改吃 --corner-clear-* */
+  .game-container {
+    padding:
+      var(--corner-clear-top)
+      var(--corner-clear-right)
+      var(--corner-clear-bottom)
+      var(--corner-clear-left);
+  }
+
+  /* ===== 圓角 / 瀏海 / 指示條 視覺標示 ===== */
+  .guide-layer { position: fixed; inset: 0; pointer-events: none; z-index: 9000; }
+  .screen-corner { position: absolute; border: 2px dashed rgba(229, 57, 53, 0.9); background: rgba(229, 57, 53, 0.06); }
+  .screen-corner.tl { top: 0; left: 0; width: 55px; height: 55px; border-right: none; border-bottom: none; border-top-left-radius: 55px; }
+  .screen-corner.tr { top: 0; right: 0; width: 55px; height: 55px; border-left: none; border-bottom: none; border-top-right-radius: 55px; }
+  .screen-corner.bl { bottom: 0; left: 0; width: 55px; height: 55px; border-right: none; border-top: none; border-bottom-left-radius: 55px; }
+  .screen-corner.br { bottom: 0; right: 0; width: 55px; height: 55px; border-left: none; border-top: none; border-bottom-right-radius: 55px; }
+  .notch-guide { position: absolute; left: 0; top: 62px; width: 26px; height: 118px; background: rgba(30, 30, 40, 0.9); border-radius: 0 13px 13px 0; }
+  .home-guide { position: absolute; right: 0; bottom: 30px; width: 118px; height: 6px; background: rgba(30, 30, 40, 0.9); border-radius: 3px 0 0 3px; }
+  .safe-boundary {
+    position: fixed;
+    top: var(--safe-top);
+    left: var(--safe-left);
+    right: var(--safe-right);
+    bottom: var(--safe-bottom);
+    border: 1px dashed rgba(255, 213, 79, 0.9);
+    z-index: 9001;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== 食物分類遊戲（#foodGame 靜態重建，結構取自 index.html） ===== -->
+  <div class="game-container app-screen" id="foodGame">
+    <div class="top-bar">
+      <div class="left-group">
+        <button class="back-btn" title="返回上一頁"><img class="back-icon" src="../assets/icons/back.png" alt="back" /></button>
+      </div>
+      <div class="question-area">
+        <span class="question-text" id="questionText">哪一個是 <span class="category-highlight">水果</span> ？</span>
+      </div>
+      <div class="right-group">
+        <div class="score-display">得分&nbsp;<span>0</span></div>
+        <div class="dropdown-wrapper">
+          <label for="countSelect">顯示</label>
+          <select id="countSelect">
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+        <button class="action-btn" title="顯示/隱藏食物名稱">名稱<span class="state-badge" style="margin-left:calc(4px * var(--ui-scale)); font-size:calc(16px * var(--ui-scale));">●</span></button>
+        <span class="separator">|</span>
+        <button class="hamburger-btn" title="開啟選單"><img class="menu-icon" src="../assets/icons/menu.png" alt="menu" /></button>
+      </div>
+    </div>
+
+    <div class="grid-wrapper">
+      <div class="grid-container cols-3" id="gridContainer">
+        <div class="food-card" data-index="0" data-correct="true">
+          <button class="magnify-btn" title="放大圖片">🔍</button>
+          <div class="food-image"><img src="../assets/food/蘋果.webp" alt="蘋果" /></div>
+          <div class="food-name">蘋果</div>
+        </div>
+        <div class="food-card" data-index="1" data-correct="false">
+          <button class="magnify-btn" title="放大圖片">🔍</button>
+          <div class="food-image"><img src="../assets/food/雞蛋.webp" alt="雞蛋" /></div>
+          <div class="food-name">雞蛋</div>
+        </div>
+        <div class="food-card" data-index="2" data-correct="false">
+          <button class="magnify-btn" title="放大圖片">🔍</button>
+          <div class="food-image"><img src="../assets/food/西蘭花.webp" alt="西蘭花" /></div>
+          <div class="food-name">西蘭花</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="hint">💡 點擊圖片選擇答案</span>
+      <span class="round-info" id="foodRoundInfo">第 1 題</span>
+    </div>
+  </div>
+
+  <!-- ===== 標示圖層 ===== -->
+  <div class="guide-layer">
+    <div class="screen-corner tl"></div>
+    <div class="screen-corner tr"></div>
+    <div class="screen-corner bl"></div>
+    <div class="screen-corner br"></div>
+    <div class="notch-guide"></div>
+    <div class="home-guide"></div>
+  </div>
+  <div class="safe-boundary"></div>
+
+  <script>
+    (function () {
+      'use strict';
+      // 複刻 app-chrome.js 的 syncTopBarCentering：放不下時加上 .wrapped
+      function syncTopBar() {
+        var bar = document.querySelector('.top-bar');
+        if (!bar) return;
+        var left = bar.querySelector('.left-group');
+        var right = bar.querySelector('.right-group');
+        var text = bar.querySelector('.question-text, .gng-rules-text');
+        if (!left || !right || !text) return;
+        var available = right.getBoundingClientRect().left - left.getBoundingClientRect().right - 8;
+        bar.classList.toggle('wrapped', available < text.offsetWidth);
+      }
+      // 回報目前 Token 值給父頁（預覽工具用）
+      function report() {
+        var cs = getComputedStyle(document.documentElement);
+        function v(name) { return cs.getPropertyValue(name).trim(); }
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'safe-area-preview',
+            state: document.documentElement.className.replace('state-', ''),
+            scale: window.__safeScale || null,
+            safe: { top: v('--safe-top'), right: v('--safe-right'), bottom: v('--safe-bottom'), left: v('--safe-left') },
+            cornerClear: { top: v('--corner-clear-top'), right: v('--corner-clear-right'), bottom: v('--corner-clear-bottom'), left: v('--corner-clear-left') }
+          }, '*');
+        }
+      }
+      // 縮放 safe-area（只在「建議」狀態生效）
+      var SAFE_REF = { top: 0, right: 21, bottom: 0, left: 47 };
+      window.__safeScale = 0.3;
+      function applyScale(scale) {
+        if (!scale || scale < 0.1 || scale > 1) return;
+        window.__safeScale = scale;
+        if (document.documentElement.className.indexOf('current') !== -1) return;
+        var s = document.documentElement.style;
+        s.setProperty('--safe-top', '0px');
+        s.setProperty('--safe-right', Math.round(SAFE_REF.right * scale) + 'px');
+        s.setProperty('--safe-bottom', '0px');
+        s.setProperty('--safe-left', Math.round(SAFE_REF.left * scale) + 'px');
+        report();
+      }
+      var mScale = /[?&]scale=([\d.]+)/.exec(location.search);
+      if (mScale) applyScale(parseFloat(mScale[1]));
+
+      window.addEventListener('load', function () { syncTopBar(); report(); });
+      requestAnimationFrame(syncTopBar);
+      window.addEventListener('message', function (e) {
+        if (e.data === 'report') report();
+        else if (e.data && e.data.type === 'safe-area-scale') applyScale(e.data.scale);
+      });
+    })();
+  </script>
+</body>
+</html>
+

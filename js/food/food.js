@@ -180,7 +180,7 @@
             foodState.isAnswered = false;
             foodState.isWaitingForNext = false;
             document.querySelectorAll('.food-card').forEach(card => {
-                card.classList.remove('correct-highlight', 'wrong-highlight', 'disabled');
+                card.classList.remove('feedback-correct', 'feedback-wrong', 'disabled');
             });
             hideOverlay();
             if (foodState.gameMode === 'random') {
@@ -249,17 +249,17 @@
                 foodState.isWaitingForNext = true;
                 foodState.score += 1;
                 updateFoodScore();
-                card.classList.add('correct-highlight');
+                card.classList.add('feedback-correct');
                 cards.forEach(c => c.classList.add('disabled'));
                 CognitiveAudio.play('correct');
-                window.CognitiveFeedback.show(foodGridWrapper, '✅ 正確！', '#3ba87b');
+                window.CognitiveFeedback.show(foodGridWrapper, '✅ 正確！', 'correct');
                 clearTimeout(foodState.advanceTimer);
                 foodState.advanceTimer = setTimeout(nextFoodRound, 650);
             } else {
-                card.classList.add('wrong-highlight');
+                card.classList.add('feedback-wrong');
                 CognitiveAudio.play('wrong');
-                window.CognitiveFeedback.show(foodGridWrapper, '❌ 再試一次！', '#d95a5a');
-                setTimeout(() => { card.classList.remove('wrong-highlight'); }, 600);
+                window.CognitiveFeedback.show(foodGridWrapper, '❌ 再試一次！', 'wrong');
+                setTimeout(() => { card.classList.remove('feedback-wrong'); }, 600);
             }
         }
 

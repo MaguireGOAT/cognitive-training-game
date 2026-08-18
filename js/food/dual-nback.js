@@ -278,20 +278,29 @@
 
         function flashDualNbackFeedback(correct, channel) {
             const visible = getDualVisibleContent();
-            visible.classList.remove('correct-highlight', 'wrong-flash');
+            const targets = visible === dualNbackGrid
+                ? Array.from(visible.querySelectorAll('.dual-grid-cell.active'))
+                : [visible];
             clearTimeout(dualFeedbackTimer);
-            visible.classList.add(correct ? 'correct-highlight' : 'wrong-flash');
+            targets.forEach(function (target) {
+                target.classList.remove('feedback-correct', 'feedback-wrong');
+            });
+            targets.forEach(function (target) {
+                target.classList.add(correct ? 'feedback-correct' : 'feedback-wrong');
+            });
             dualFeedbackTimer = setTimeout(function() {
-                visible.classList.remove('correct-highlight', 'wrong-flash');
+                targets.forEach(function (target) {
+                    target.classList.remove('feedback-correct', 'feedback-wrong');
+                });
             }, 600);
 
             const btn = dualNbackMatchButtons.querySelector(`[data-channel="${channel}"]`);
             if (!btn) return;
-            btn.classList.remove('correct-highlight', 'wrong-flash');
+            btn.classList.remove('feedback-correct', 'feedback-wrong');
             void btn.offsetWidth;
-            btn.classList.add(correct ? 'correct-highlight' : 'wrong-flash');
+            btn.classList.add(correct ? 'feedback-correct' : 'feedback-wrong');
             setTimeout(function() {
-                btn.classList.remove('correct-highlight', 'wrong-flash');
+                btn.classList.remove('feedback-correct', 'feedback-wrong');
             }, 600);
         }
 
@@ -312,7 +321,7 @@
             }
             updateDualNbackScore();
             flashDualNbackFeedback(correct, channel);
-            window.CognitiveFeedback.show(dualNbackStage, correct ? '✅ 正確！' : '❌ 再試一次！', correct ? '#3ba87b' : '#d95a5a');
+            window.CognitiveFeedback.show(dualNbackStage, correct ? '✅ 正確！' : '❌ 再試一次！', correct ? 'correct' : 'wrong');
         }
 
         function updateDualNbackScore() {

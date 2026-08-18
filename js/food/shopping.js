@@ -459,7 +459,7 @@
                 badge.className = 'shopping-selected-badge';
                 badge.textContent = '';
                 if (shoppingState.completedNames.includes(getFoodId(item))) {
-                    card.classList.add('selected');
+                    card.classList.add('selected', 'feedback-correct');
                     const orderNumber = shoppingState.list.findIndex(listItem => getFoodId(listItem) === getFoodId(item)) + 1;
                     badge.textContent = shoppingState.orderRequired ? String(orderNumber) : '✓';
                     badge.classList.add('visible');
@@ -643,7 +643,7 @@
             if (shoppingState.roundLocked) return;
             shoppingState.roundLocked = true;
             CognitiveAudio.play('wrong');
-            showShoppingFeedback('⏰ 時間到！再看一次清單', '#ff9800');
+            showShoppingFeedback('⏰ 時間到！再看一次清單', 'warn');
             setTimeout(function() {
                 window.CognitiveMessage.show({
                     title: '⏰ 時間到',
@@ -681,19 +681,19 @@
                     badge.textContent = shoppingState.orderRequired ? String(orderNumber) : '✓';
                     badge.classList.add('visible');
                 }
-                card.classList.add('selected');
+                card.classList.add('selected', 'feedback-correct');
                 CognitiveAudio.play('correct');
-                showShoppingFeedback('✅ 正確！', '#3ba87b');
+                showShoppingFeedback('✅ 正確！', 'correct');
                 updateShoppingProgress();
                 if (shoppingState.completedNames.length >= shoppingState.list.length) {
                     completeShoppingRound();
                 }
             } else {
                 CognitiveAudio.play('wrong');
-                showShoppingFeedback('❌ 再試一次！', '#d95a5a');
-                card.classList.add('wrong-flash');
+                showShoppingFeedback('❌ 再試一次！', 'wrong');
+                card.classList.add('feedback-wrong');
                 shoppingState.wrongFlashTimer = setTimeout(function() {
-                    card.classList.remove('wrong-flash');
+                    card.classList.remove('feedback-wrong');
                 }, 600);
             }
         }
@@ -756,11 +756,11 @@
                 shoppingState.wrongFlashTimer = null;
             }
             window.CognitiveFeedback.clear(shoppingStage);
-            shoppingRecallGrid.querySelectorAll('.shopping-recall-card.wrong-flash').forEach(el => el.classList.remove('wrong-flash'));
+            shoppingRecallGrid.querySelectorAll('.shopping-recall-card.feedback-wrong').forEach(el => el.classList.remove('feedback-wrong'));
         }
 
-        function showShoppingFeedback(text, color) {
-            window.CognitiveFeedback.show(shoppingStage, text, color);
+        function showShoppingFeedback(text, kind) {
+            window.CognitiveFeedback.show(shoppingStage, text, kind);
         }
 
         function pauseShopping() {

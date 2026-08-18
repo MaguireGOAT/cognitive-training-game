@@ -6,14 +6,14 @@
         // ---- 共用即時回饋（正確／錯誤提示） ----
         window.CognitiveFeedback = {
             _entries: new WeakMap(),
-            show: function (host, text, color) {
+            show: function (host, text, kind) {
                 const hostEl = typeof host === 'string' ? document.getElementById(host) : host;
                 if (!hostEl) return;
                 this.clear(hostEl);
                 const pill = document.createElement('div');
                 pill.className = 'feedback-pill';
                 pill.textContent = text;
-                if (color) pill.style.color = color;
+                if (kind) pill.classList.add(kind);
                 hostEl.appendChild(pill);
                 const timer = setTimeout(function () {
                     pill.style.opacity = '0';

@@ -69,24 +69,6 @@
     overflow: hidden;
     position: relative;
 }
-.dual-grid.correct-highlight .dual-grid-cell.active,
-.dual-card.correct-highlight {
-    outline: calc(6px * var(--ui-scale)) solid rgba(59, 168, 123, 0.55);
-    outline-offset: calc(2px * var(--ui-scale));
-}
-.dual-grid.wrong-flash .dual-grid-cell.active,
-.dual-card.wrong-flash {
-    outline: calc(6px * var(--ui-scale)) solid rgba(217, 90, 90, 0.55);
-    outline-offset: calc(2px * var(--ui-scale));
-}
-[data-theme="dark"] .dual-grid.correct-highlight .dual-grid-cell.active,
-[data-theme="dark"] .dual-card.correct-highlight {
-    outline-color: rgba(66, 165, 245, 0.75);
-}
-[data-theme="dark"] .dual-grid.wrong-flash .dual-grid-cell.active,
-[data-theme="dark"] .dual-card.wrong-flash {
-    outline-color: rgba(224, 107, 107, 0.75);
-}
 
 .dual-grid {
     --dual-gap: calc(16px * var(--ui-scale));
@@ -152,6 +134,7 @@
     max-width: 100%;
     aspect-ratio: 1 / 1;
     background: var(--card-bg);
+    border: calc(4px * var(--ui-scale)) solid transparent;
     border-radius: calc(30px * var(--ui-scale));
     box-shadow: var(--card-shadow);
     display: flex;
@@ -172,6 +155,18 @@
 }
 [data-theme="dark"] .dual-card:not(.color-card) {
     background: var(--card-bg);
+}
+.dual-grid-cell.active.feedback-correct,
+.dual-card.feedback-correct {
+    border-color: var(--feedback-correct-border);
+    background: var(--feedback-correct-bg);
+    box-shadow: var(--feedback-correct-glow);
+}
+.dual-grid-cell.active.feedback-wrong,
+.dual-card.feedback-wrong {
+    border-color: var(--feedback-wrong-border);
+    background: var(--feedback-wrong-bg);
+    box-shadow: var(--feedback-wrong-glow);
 }
 
 #dualNbackGame .bottom-controls {
@@ -209,12 +204,12 @@
     transform: translateY(calc(-2px * var(--ui-scale)));
     box-shadow: var(--btn-shadow-correct);
 }
-.dual-match-controls .dual-match-btn.correct-highlight {
-    background: #2f8a64;
+.dual-match-controls .dual-match-btn.feedback-correct {
+    background: var(--feedback-correct-strong);
     box-shadow: var(--btn-shadow-correct);
 }
-.dual-match-controls .dual-match-btn.wrong-flash {
-    background: var(--highlight-wrong);
+.dual-match-controls .dual-match-btn.feedback-wrong {
+    background: var(--feedback-wrong-strong);
     box-shadow: var(--btn-shadow-wrong);
 }
 [data-theme="dark"] .dual-match-controls .dual-match-btn {
@@ -225,23 +220,16 @@
     background: var(--btn-hover-correct);
     box-shadow: var(--btn-shadow-correct);
 }
-[data-theme="dark"] .dual-match-controls .dual-match-btn.correct-highlight {
-    background: #1565c0;
-}
-[data-theme="dark"] .dual-match-controls .dual-match-btn.wrong-flash {
-    background: #b71c1c;
-    box-shadow: var(--btn-shadow-wrong);
-}
 
 @media (max-width: 640px) {
-    #dualNbackSettings [style*="display:flex"] [style*="display:flex"] {
+    .settings-screen [style*="display:flex"] [style*="display:flex"] {
         flex-wrap: wrap;
         row-gap: calc(8px * var(--ui-scale));
     }
-    #dualNbackSettings [style*="display:flex"] [style*="display:flex"] > span {
+    .settings-screen [style*="display:flex"] [style*="display:flex"] > span {
         max-width: 100%;
     }
-    #dualNbackSettings select {
+    .settings-screen select {
         max-width: 100%;
     }
 }

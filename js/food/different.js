@@ -136,19 +136,19 @@
                 differentState.isWaitingForNext = true;
                 differentState.score++;
                 updateDifferentScore();
-                card.classList.add('correct-highlight');
+                card.classList.add('feedback-correct');
                 Array.from(differentGridContainer.querySelectorAll('.different-card')).forEach(child => child.classList.add('disabled'));
                 CognitiveAudio.play('correct');
-                window.CognitiveFeedback.show(differentGridWrapper, '✅ 正確！', '#3ba87b');
+                window.CognitiveFeedback.show(differentGridWrapper, '✅ 正確！', 'correct');
                 clearTimeout(differentState.advanceTimer);
                 differentState.advanceTimer = setTimeout(nextDifferentRound, 650);
             } else {
                 CognitiveAudio.play('wrong');
-                card.classList.add('wrong-flash');
-                window.CognitiveFeedback.show(differentGridWrapper, '❌ 再試一次！', '#d95a5a');
+                card.classList.add('feedback-wrong');
+                window.CognitiveFeedback.show(differentGridWrapper, '❌ 再試一次！', 'wrong');
                 clearTimeout(differentState.wrongFlashTimer);
                 differentState.wrongFlashTimer = setTimeout(function() {
-                    card.classList.remove('wrong-flash');
+                    card.classList.remove('feedback-wrong');
                 }, 600);
             }
         }

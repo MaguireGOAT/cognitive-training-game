@@ -154,7 +154,7 @@
         function handleNbackMatch(isMatch) {
             if (nbackState.currentIndex < 0 || nbackState.matchPending || nbackState.transitioning) return;
             if (nbackState.currentIndex < nbackState.n) {
-                showNbackFeedback('還不夠 N 步', '#ffaa00');
+                showNbackFeedback('還不夠 N 步', 'warn');
                 return;
             }
             const actualMatch = Boolean(
@@ -169,10 +169,10 @@
                 nbackState.score++;
                 if (isMatch) nbackState.correctHits++;
                 else nbackState.falseAlarms++;
-                showNbackFeedback('✅ 正確！', '#3ba87b');
+                showNbackFeedback('✅ 正確！', 'correct');
                 CognitiveAudio.play('correct');
             } else {
-                showNbackFeedback('❌ 再試一次！', '#d95a5a');
+                showNbackFeedback('❌ 再試一次！', 'wrong');
                 CognitiveAudio.play('wrong');
             }
             nbackState.totalTrials++;
@@ -192,8 +192,8 @@
             }
         }
 
-        function showNbackFeedback(text, color) {
-            window.CognitiveFeedback.show(nbackGridWrapper, text, color);
+        function showNbackFeedback(text, kind) {
+            window.CognitiveFeedback.show(nbackGridWrapper, text, kind);
         }
 
         function updateNbackScore() { nbackScoreNum.textContent = nbackState.score; }

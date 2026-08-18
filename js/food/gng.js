@@ -332,10 +332,10 @@
                 gngState.score++;
                 gngState.correctHits++;
                 CognitiveAudio.play('correct');
-                window.CognitiveFeedback.show(gngGridWrapper, '✅ 正確！', '#3ba87b');
+                window.CognitiveFeedback.show(gngGridWrapper, '✅ 正確！', 'correct');
             } else {
                 CognitiveAudio.play('wrong');
-                window.CognitiveFeedback.show(gngGridWrapper, '❌ 再試一次！', '#d95a5a');
+                window.CognitiveFeedback.show(gngGridWrapper, '❌ 再試一次！', 'wrong');
             }
             gngState.totalTrials++;
             updateGngScore();

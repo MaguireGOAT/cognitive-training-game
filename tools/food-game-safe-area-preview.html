@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>食物分類遊戲 — 手機圓角／安全區域預覽</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(1200px 600px at 50% -10%, #23272e, #14161a 60%);
+    color: #e8e6e1;
+    font-family: 'Segoe UI', 'Microsoft JhengHei', system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+  }
+  .stage { width: 100%; max-width: 1080px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: .5px; text-align: center; }
+  .sub { margin: -2px 0 0; font-size: 14px; color: #9aa0a8; text-align: center; max-width: 880px; line-height: 1.55; }
+  .phone {
+    position: relative;
+    background: #000;
+    border-radius: 58px;
+    padding: 14px;
+    box-shadow: 0 34px 90px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  }
+  .bezel-notch {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 26px; height: 122px;
+    background: #000;
+    border-radius: 0 14px 14px 0;
+    z-index: 3;
+  }
+  iframe {
+    width: 844px;
+    height: 390px;
+    border: 0;
+    border-radius: 44px;
+    display: block;
+    background: #f5f0e8;
+  }
+  .controls { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  button {
+    font: 600 15px/1 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+    color: #d8d6d1;
+    background: #23272e;
+    border: 1px solid #3a3f47;
+    border-radius: 12px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  button:hover { border-color: #6b7280; }
+  button.active { background: #1e88e5; border-color: #1e88e5; color: #fff; }
+  .slider-row {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; color: #c6c9cf;
+  }
+  .slider-row input[type="range"] { width: 220px; accent-color: #1e88e5; }
+  .slider-row output { min-width: 150px; font-weight: 600; color: #ffd54f; }
+  .readout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 24px;
+    justify-content: center;
+    align-items: baseline;
+    font-size: 13px;
+    color: #c6c9cf;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 12px 20px;
+    min-height: 58px;
+    max-width: 940px;
+  }
+  .readout b { color: #ffd54f; font-weight: 600; }
+  .note { font-size: 12px; color: #7d838c; text-align: center; max-width: 940px; line-height: 1.55; margin: 0; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <h1>食物分類遊戲 · 手機圓角／瀏海 安全區域預覽</h1>
+    <p class="sub">
+      模擬手機橫向（844&times;390）。「建議」方案以單一 <b style="color:#ffd54f">--corner-clear-*</b> Token
+      取代各處內聯的 <code style="color:#9aa0a8">base + safe-area</code> 邊距，並不再把手機的 safe-area 歸零。
+      可用滑桿縮放安全區域（預設 30%，即瀏海 14px、指示條 6px）。
+    </p>
+
+    <div class="phone">
+      <div class="bezel-notch"></div>
+      <iframe id="screen" src="food-game-safe-area-frame.html?state=proposed&scale=0.3" title="食物分類遊戲預覽"></iframe>
+    </div>
+
+    <div class="controls">
+      <button id="btnCurrent" type="button">現況（safe-area 歸零）</button>
+      <button id="btnProposed" type="button" class="active">建議（--corner-clear-* 生效）</button>
+    </div>
+
+    <div class="slider-row">
+      <label for="scaleSlider">安全區域縮放</label>
+      <input type="range" id="scaleSlider" min="0.3" max="1" step="0.05" value="0.3" />
+      <output id="scaleOutput">30% — 左 14px / 右 6px</output>
+    </div>
+
+    <div class="readout" id="readout">載入中…</div>
+
+    <p class="note">
+      紅虛線＝手機螢幕圓角（r=55px）；黃虛線＝safe-area 邊界；左側黑色長條＝瀏海；右側黑色橫條＝主畫面指示條。
+      切換狀態或拖動滑桿時，注意「返回鍵／問題文字／底部提示」與瀏海、圓角的距離變化。
+    </p>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+      var iframe = document.getElementById('screen');
+      var readout = document.getElementById('readout');
+      var btnCurrent = document.getElementById('btnCurrent');
+      var btnProposed = document.getElementById('btnProposed');
+      var slider = document.getElementById('scaleSlider');
+      var scaleOutput = document.getElementById('scaleOutput');
+
+      function fmtScale(scale) {
+        return Math.round(scale * 100) + '% — 左 ' + Math.round(47 * scale) + 'px / 右 ' + Math.round(21 * scale) + 'px';
+      }
+
+      function setState(name) {
+        iframe.src = 'food-game-safe-area-frame.html?state=' + name + '&scale=' + slider.value;
+        btnCurrent.classList.toggle('active', name === 'current');
+        btnProposed.classList.toggle('active', name === 'proposed');
+        readout.textContent = '載入中…';
+      }
+      btnCurrent.addEventListener('click', function () { setState('current'); });
+      btnProposed.addEventListener('click', function () { setState('proposed'); });
+
+      slider.addEventListener('input', function () {
+        var scale = parseFloat(slider.value);
+        scaleOutput.textContent = fmtScale(scale);
+        try { iframe.contentWindow.postMessage({ type: 'safe-area-scale', scale: scale }, '*'); } catch (err) {}
+      });
+
+      window.addEventListener('message', function (e) {
+        var d = e.data;
+        if (!d || d.type !== 'safe-area-preview') return;
+        readout.innerHTML = '';
+        function cell(label, value) {
+          var span = document.createElement('span');
+          span.textContent = label + ' ';
+          var b = document.createElement('b');
+          b.textContent = value;
+          span.appendChild(b);
+          return span;
+        }
+        readout.appendChild(cell('狀態', d.state === 'proposed' ? '建議' : '現況'));
+        readout.appendChild(cell('safe-left', d.safe.left));
+        readout.appendChild(cell('safe-right', d.safe.right));
+        readout.appendChild(cell('safe-bottom', d.safe.bottom));
+        readout.appendChild(cell('corner-clear-left', d.cornerClear.left));
+        readout.appendChild(cell('corner-clear-right', d.cornerClear.right));
+        readout.appendChild(cell('corner-clear-bottom', d.cornerClear.bottom));
+      });
+
+      iframe.addEventListener('load', function () {
+        try {
+          iframe.contentWindow.postMessage('report', '*');
+          iframe.contentWindow.postMessage({ type: 'safe-area-scale', scale: parseFloat(slider.value) }, '*');
+        } catch (err) {}
+      });
+    })();
+  </script>
+</body>
+</html>
+
