@@ -32,6 +32,8 @@
         .shopping-order-item {
             --grid-avail-w: var(--stage-avail-w);
             --stage-avail-h: calc(var(--stage-h, calc(var(--avail-h) - var(--stage-extra-h))) - var(--stage-inner-extra-h));
+            --grid-name-track: calc(44px * var(--ui-scale));
+            --row-name-track: var(--grid-name-track);
             --grid-card: min(
                 calc((var(--grid-avail-w) - (var(--grid-cols) - 1) * var(--grid-gap-h)) / var(--grid-cols)),
                 calc((var(--stage-avail-h) - (var(--grid-rows) - 1) * var(--grid-gap-v) - var(--grid-rows) * var(--grid-name-track)) / var(--grid-rows)),

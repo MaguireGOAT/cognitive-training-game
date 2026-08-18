@@ -13,7 +13,7 @@
             --top-bar-h: max(44px, calc(48px * var(--ui-scale)));
             --control-h: max(44px, calc(47px * var(--ui-scale)));
             --stage-avail-w: calc(var(--avail-w) - calc(24px * var(--ui-scale)));
-            --stage-extra-h: calc(180px * var(--ui-scale));
+            --stage-extra-h: calc(var(--top-bar-h) + var(--control-h) + calc(24px * var(--ui-scale)));
             --stage-inner-extra-h: 0px;
             --stage-avail-h: calc(var(--stage-h, calc(var(--avail-h) - var(--stage-extra-h))) - var(--stage-inner-extra-h));
             --grid-avail-w: var(--stage-avail-w);

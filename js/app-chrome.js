@@ -393,40 +393,7 @@
             });
 
             function syncMeasuredStages() {
-                var stages = [
-                    { screen: document.getElementById('foodGame'), el: document.querySelector('#foodGame .grid-wrapper') },
-                    { screen: document.getElementById('nbackGame'), el: document.getElementById('nbackGridWrapper') },
-                    { screen: document.getElementById('dualNbackGame'), el: document.getElementById('dualNbackStage') },
-                    { screen: document.getElementById('gngGame'), el: document.getElementById('gngGridWrapper') },
-                    { screen: document.getElementById('differentGame'), el: document.getElementById('differentGridWrapper') },
-                    { screen: document.getElementById('shoppingGame'), el: document.getElementById('shoppingStage') }
-                ];
-
-                function measureStageHeight(entry) {
-                    if (!entry.screen || !entry.el) return null;
-                    var rect = entry.el.getBoundingClientRect();
-                    if (rect.width <= 0 || rect.height <= 0) return null;
-                    return rect.height;
-                }
-
-                function applyCommonStageHeight() {
-                    var heights = stages.map(measureStageHeight).filter(function (height) { return height !== null; });
-                    if (heights.length === 0) return;
-                    var common = Math.round(Math.min.apply(null, heights));
-                    stages.forEach(function (entry) {
-                        if (entry.screen) entry.screen.style.setProperty('--stage-h', common + 'px');
-                    });
-                }
-
-                applyCommonStageHeight();
-                if (window.ResizeObserver) {
-                    stages.forEach(function (entry) {
-                        if (!entry.el) return;
-                        var observer = new ResizeObserver(applyCommonStageHeight);
-                        observer.observe(entry.el);
-                    });
-                }
-                window.addEventListener('resize', applyCommonStageHeight);
+                // Stage height is derived from shared layout variables so every game uses the same stage.
             }
 
             syncMeasuredStages();

@@ -27,7 +27,7 @@
             --grid-gap-h: calc(0px * var(--ui-scale));
             --grid-gap-v: calc(0px * var(--ui-scale));
             grid-template-columns: repeat(var(--grid-cols), var(--card));
-            grid-auto-rows: var(--card);
+            grid-auto-rows: calc(var(--card) + var(--row-name-track));
         }
         .gng-grid-container.cols-2 {
             --grid-cols: 2;
@@ -35,7 +35,7 @@
             --grid-gap-h: var(--grid-gap-2);
             --grid-gap-v: calc(0px * var(--ui-scale));
             grid-template-columns: repeat(var(--grid-cols), var(--card));
-            grid-auto-rows: var(--card);
+            grid-auto-rows: calc(var(--card) + var(--row-name-track));
         }
         .gng-grid-container.cols-3 {
             --grid-cols: 3;
@@ -43,7 +43,7 @@
             --grid-gap-h: var(--grid-gap-3);
             --grid-gap-v: calc(0px * var(--ui-scale));
             grid-template-columns: repeat(var(--grid-cols), var(--card));
-            grid-auto-rows: var(--card);
+            grid-auto-rows: calc(var(--card) + var(--row-name-track));
         }
         .gng-grid-container .gng-card {
             background: var(--card-bg);
@@ -54,9 +54,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            aspect-ratio: 1/1;
+            aspect-ratio: 1 / 1;
             width: 100%;
-            height: auto;
+            height: var(--card);
             overflow: hidden;
             transition: background 0.4s;
             -webkit-tap-highlight-color: transparent;

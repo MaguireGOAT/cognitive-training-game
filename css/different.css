@@ -27,7 +27,7 @@
     --grid-gap-h: var(--grid-gap-3);
     --grid-gap-v: calc(0px * var(--ui-scale));
     grid-template-columns: repeat(var(--grid-cols), var(--card));
-    grid-auto-rows: var(--card);
+    grid-auto-rows: calc(var(--card) + var(--row-name-track));
 }
 .different-grid-container.count-4 {
     --grid-cols: 4;
@@ -35,7 +35,7 @@
     --grid-gap-h: var(--grid-gap-4);
     --grid-gap-v: calc(0px * var(--ui-scale));
     grid-template-columns: repeat(var(--grid-cols), var(--card));
-    grid-auto-rows: var(--card);
+    grid-auto-rows: calc(var(--card) + var(--row-name-track));
 }
 .different-grid-container.count-5 {
     --grid-cols: 3;
@@ -49,7 +49,7 @@
     --grid-gap-h: var(--grid-gap-5);
     --grid-gap-v: calc(18px * var(--ui-scale));
     grid-template-columns: repeat(var(--grid-cols), var(--card));
-    grid-auto-rows: var(--card);
+    grid-auto-rows: calc(var(--card) + var(--row-name-track));
 }
 
 .different-grid-container .different-card {
@@ -63,7 +63,7 @@
     justify-content: center;
     aspect-ratio: 1 / 1;
     width: 100%;
-    height: auto;
+    height: var(--card);
     overflow: hidden;
     cursor: pointer;
     position: relative;
