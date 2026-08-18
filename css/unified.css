@@ -631,10 +631,7 @@
             flex-shrink: 0;
         }
 
-        #realitySettings .settings-options > div,
-        #gngSettings .settings-options > div,
-        #shoppingSettings .settings-options > div,
-        #dualNbackSettings .settings-options > div {
+        .settings-screen .settings-options > div {
             min-width: 0;
             flex-wrap: wrap;
         }
@@ -703,6 +700,70 @@
            Short landscape phones (iPhone included)
            Keep titles/buttons fixed and let only the content area scroll.
            ================================================================ */
+        /* Shared settings screen layout: centered when it fits, scroll when it does not. */
+        .settings-screen {
+            --settings-screen-pad-y: var(--screen-pad-y);
+            --settings-screen-pad-bottom: var(--screen-pad-y);
+            --settings-header-gap: var(--screen-gap-sm);
+            --settings-subtitle-gap: var(--screen-gap-md);
+            --settings-actions-gap: var(--screen-gap-md);
+            --settings-options-pad-y: calc(10px * var(--ui-scale));
+        }
+        .settings-screen--centered {
+            justify-content: center;
+        }
+        .settings-screen--centered .settings-options {
+            flex: 0 1 auto;
+            overflow: visible;
+        }
+        .settings-screen--centered .settings-actions {
+            position: static;
+        }
+        .settings-screen .settings-actions > button {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .settings-screen.settings-screen--measure {
+            justify-content: flex-start;
+            overflow: visible;
+        }
+        .settings-screen.settings-screen--measure .settings-options {
+            flex: 0 0 auto;
+            overflow: visible;
+        }
+        .settings-screen.settings-screen--measure .settings-actions {
+            position: static;
+        }
+        .settings-screen--scroll {
+            justify-content: flex-start;
+            overflow: hidden;
+            padding-top: var(--settings-screen-pad-y);
+            padding-bottom: var(--settings-screen-pad-bottom);
+        }
+        .settings-screen--scroll .menu-header {
+            margin-top: 0 !important;
+            margin-bottom: var(--settings-header-gap);
+        }
+        .settings-screen--scroll .menu-subtitle {
+            margin-top: 0;
+            margin-bottom: var(--settings-subtitle-gap);
+        }
+        .settings-screen--scroll .settings-options {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            margin-bottom: 0;
+            padding-top: var(--settings-options-pad-y);
+            padding-bottom: var(--settings-options-pad-y);
+        }
+        .settings-screen--scroll .settings-actions {
+            position: static;
+            margin-top: var(--settings-actions-gap);
+            margin-bottom: 0;
+        }
+
         @media (max-height: 500px) and (orientation: landscape) {
             #home,
             #mainMenu,
@@ -748,53 +809,9 @@
                 gap: var(--phone-menu-gap);
             }
 
-            #realitySettings,
-            #gngSettings,
-            #shoppingSettings,
-            #dualNbackSettings {
-                overflow: hidden;
-            }
-            #realitySettings .menu-header,
-            #gngSettings .menu-header,
-            #shoppingSettings .menu-header,
-            #dualNbackSettings .menu-header,
-            #realitySettings .menu-subtitle,
-            #gngSettings .menu-subtitle,
-            #shoppingSettings .menu-subtitle,
-            #dualNbackSettings .menu-subtitle {
+            .settings-screen .menu-header,
+            .settings-screen .menu-subtitle {
                 flex-shrink: 0;
-            }
-            #dualNbackSettings .menu-header {
-                margin-top: calc(20px * var(--ui-scale));
-            }
-            .settings-options {
-                flex: 0 1 auto;
-                min-height: 0;
-                margin-bottom: 0;
-                overflow-x: hidden;
-                overflow-y: auto;
-                overscroll-behavior: contain;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: thin;
-                padding-bottom: calc(12px * var(--ui-scale));
-            }
-            .settings-actions {
-                position: sticky;
-                left: auto;
-                bottom: 0;
-                width: 100%;
-                box-sizing: border-box;
-                transform: none;
-                margin-top: auto;
-                z-index: 5;
-                background: var(--bg-color);
-                padding-top: calc(10px * var(--ui-scale));
-                padding-bottom: calc(10px * var(--ui-scale));
-            }
-            .settings-actions > button {
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
             }
 
             .save-btn {
@@ -959,73 +976,13 @@
             #home,
             #mainMenu,
             #foodCategorySelect,
-            #nbackModeSelect,
-            #realitySettings,
-            #gngSettings,
-            #shoppingSettings,
-            #dualNbackSettings {
+            #nbackModeSelect {
                 padding-bottom: 0;
             }
-            #gngSettings .settings-options,
-            #shoppingSettings .settings-options,
-            #realitySettings .settings-options,
-            #dualNbackSettings .settings-options {
-                justify-content: flex-start;
-            }
-            #realitySettings,
-            #gngSettings,
-            #shoppingSettings,
-            #dualNbackSettings {
-                justify-content: flex-start;
-                padding-top: 28px;
-                padding-bottom: 24px;
-            }
-            #realitySettings .menu-header,
-            #gngSettings .menu-header,
-            #shoppingSettings .menu-header,
-            #dualNbackSettings .menu-header {
-                margin-top: 0 !important;
-                margin-bottom: calc(8px * var(--ui-scale));
-            }
-            #realitySettings .menu-subtitle,
-            #gngSettings .menu-subtitle,
-            #shoppingSettings .menu-subtitle,
-            #dualNbackSettings .menu-subtitle {
-                margin-top: 0;
-                margin-bottom: calc(24px * var(--ui-scale));
-            }
-            .settings-options {
-                flex: 0 1 auto;
-                min-height: 0;
-                overflow-y: auto;
-                overscroll-behavior: contain;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: thin;
-                position: relative;
-                width: 100%;
-                max-width: calc(600px * var(--ui-scale)) !important;
-                margin-bottom: 0 !important;
-                padding-top: calc(10px * var(--ui-scale)) !important;
-                padding-bottom: calc(10px * var(--ui-scale)) !important;
-            }
-            .settings-actions {
-                position: static;
-                left: auto;
-                right: auto;
-                bottom: auto;
-                top: auto;
-                width: 100%;
-                max-width: calc(600px * var(--ui-scale));
-                margin-top: calc(28px * var(--ui-scale));
-                margin-right: auto !important;
-                margin-bottom: 0 !important;
-                margin-left: auto !important;
-                box-sizing: border-box;
-                transform: none;
-                z-index: auto;
-                background: transparent;
-                padding-top: calc(4px * var(--ui-scale));
-                padding-bottom: calc(6px * var(--ui-scale));
+            .settings-screen {
+                --settings-screen-pad-y: clamp(20px, 7vh, 28px);
+                --settings-screen-pad-bottom: clamp(16px, 6vh, 24px);
+                --settings-actions-gap: var(--screen-gap-md);
             }
             .slide-menu {
                 width: min(225px, 61.5vw);
@@ -1064,16 +1021,10 @@
             .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .label {
                 font-size: max(calc(30px * var(--ui-scale)), 18px);
             }
-            #gngSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
-            #shoppingSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
-            #realitySettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
-            #dualNbackSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span {
+            .settings-screen > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span {
                 font-size: max(calc(26px * var(--ui-scale)), 17px) !important;
             }
-            #gngSettings select,
-            #shoppingSettings select,
-            #realitySettings select,
-            #dualNbackSettings select,
+            .settings-screen select,
             #gngAutoToggle {
                 font-size: max(calc(24px * var(--ui-scale)), 16px) !important;
             }

@@ -44,19 +44,13 @@
 }
 
 /* Dual N-back settings */
-#dualNbackSettings [style*="display:flex"] {
+.settings-screen [style*="display:flex"] {
     min-width: 0;
 }
-        #dualNbackSettings [style*="display:flex"] > span {
+        .settings-screen [style*="display:flex"] > span {
             font-size: calc(26px * var(--ui-scale)) !important;
         }
-        #dualNbackSettings .menu-header {
-            margin-top: auto !important;
-        }
-#dualNbackSettings .menu-subtitle {
-    margin-bottom: calc(24px * var(--ui-scale));
-}
-#dualNbackSettings select {
+.settings-screen select {
     font-size: calc(24px * var(--ui-scale)) !important;
     min-width: 0;
 }

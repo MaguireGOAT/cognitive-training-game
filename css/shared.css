@@ -120,9 +120,6 @@
         .menu-overlay > div:last-child:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) {
             margin-bottom: auto;
         }
-        #gngSettings .menu-header {
-            margin-top: auto !important;
-        }
         .menu-overlay--center .menu-header {
             margin-top: 0 !important;
         }
@@ -196,16 +193,10 @@
             font-size: calc(26px * var(--ui-scale));
         }
 
-        #gngSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
-        #shoppingSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
-        #realitySettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
-        #dualNbackSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span {
+        .settings-screen > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span {
             font-size: calc(26px * var(--ui-scale)) !important;
         }
-        #gngSettings select,
-        #shoppingSettings select,
-        #realitySettings select,
-        #dualNbackSettings select,
+        .settings-screen select,
         #gngAutoToggle {
             font-size: calc(24px * var(--ui-scale)) !important;
             padding: calc(8px * var(--ui-scale)) calc(18px * var(--ui-scale)) !important;
