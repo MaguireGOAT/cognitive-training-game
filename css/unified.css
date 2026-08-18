@@ -847,7 +847,119 @@
                 height: 44px;
             }
             .magnify-btn {
-                width: 44px;
-                height: 44px;
+                width: 38px;
+                height: 38px;
+            }
+
+            :root {
+                --top-bar-h: 38px;
+                --control-h: 36px;
+            }
+            .back-btn,
+            .hamburger-btn {
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+                min-height: 38px;
+            }
+            .action-btn,
+            .score-display,
+            .dropdown-wrapper,
+            .magnify-btn,
+            .play-btn,
+            .speed-btn {
+                min-width: 38px;
+                min-height: 38px;
+                height: 38px;
+            }
+            .action-btn,
+            .score-display,
+            .dropdown-wrapper {
+                width: auto;
+            }
+            .speed-control {
+                height: 38px;
+            }
+            .play-btn,
+            .speed-btn {
+                width: 38px;
+                height: 38px;
+            }
+            .tile-scroll-area {
+                align-items: center;
+                justify-content: flex-start;
+            }
+            .tile-scroll-area > .home-grid,
+            .tile-scroll-area > .category-grid {
+                margin: 0 auto;
+            }
+            #gngSettings .settings-options,
+            #realitySettings .settings-options {
+                justify-content: center;
+            }
+            .settings-options {
+                position: relative;
+                padding-bottom: 48px;
+            }
+            .settings-actions {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                top: auto;
+                width: 100%;
+                box-sizing: border-box;
+                transform: none;
+                margin-top: 0;
+                z-index: 5;
+                background: linear-gradient(to bottom, transparent, var(--bg-color) 38%);
+                padding-top: calc(4px * var(--ui-scale));
+                padding-bottom: calc(6px * var(--ui-scale));
+            }
+            .slide-menu {
+                width: min(300px, 82vw);
+            }
+            .slide-menu .menu-item {
+                white-space: nowrap;
+                font-size: max(calc(24px * var(--ui-scale)), 16px);
+            }
+            .menu-title {
+                font-size: max(calc(48px * var(--ui-scale)), 26px);
+            }
+            #home .menu-title,
+            #mainMenu .menu-title {
+                font-size: max(calc(56px * var(--ui-scale)), 32px);
+            }
+            .menu-subtitle {
+                font-size: max(calc(24px * var(--ui-scale)), 14px);
+            }
+            #home .menu-subtitle,
+            #mainMenu .menu-subtitle {
+                font-size: max(calc(28px * var(--ui-scale)), 16px);
+            }
+            .question-text {
+                font-size: max(calc(36px * var(--ui-scale)), 18px);
+            }
+            .gng-rules-text {
+                font-size: max(calc(32px * var(--ui-scale)), 16px);
+            }
+            #home .home-grid .category-btn .label,
+            .app-screen#mainMenu .category-grid.game-select .category-btn .label,
+            #foodCategorySelect .category-grid.food-select .category-btn .label,
+            .app-screen#nbackModeSelect .category-grid.nback-mode-grid .category-btn .label {
+                font-size: max(calc(30px * var(--ui-scale)), 16px);
+            }
+            #gngSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
+            #shoppingSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
+            #realitySettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span,
+            #dualNbackSettings > div:not(.menu-header):not(.menu-subtitle):not(.chrome-btn-left):not(.chrome-btn-right) span {
+                font-size: max(calc(26px * var(--ui-scale)), 15px) !important;
+            }
+            #gngSettings select,
+            #shoppingSettings select,
+            #realitySettings select,
+            #dualNbackSettings select,
+            #gngAutoToggle {
+                font-size: max(calc(24px * var(--ui-scale)), 14px) !important;
             }
         }
