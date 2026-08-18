@@ -976,23 +976,41 @@
             #gngSettings,
             #shoppingSettings,
             #dualNbackSettings {
+                justify-content: center;
                 padding-bottom: 0;
             }
+            #realitySettings .menu-header,
+            #gngSettings .menu-header,
+            #shoppingSettings .menu-header,
+            #dualNbackSettings .menu-header {
+                margin-top: 0 !important;
+                margin-bottom: calc(8px * var(--ui-scale));
+            }
+            #realitySettings .menu-subtitle,
+            #gngSettings .menu-subtitle,
+            #shoppingSettings .menu-subtitle,
+            #dualNbackSettings .menu-subtitle {
+                margin-top: 0;
+                margin-bottom: calc(24px * var(--ui-scale));
+            }
             .settings-options {
+                flex: 0 0 auto;
                 position: relative;
-                padding-bottom: 80px !important;
+                margin-bottom: 0 !important;
+                padding-top: calc(10px * var(--ui-scale)) !important;
+                padding-bottom: calc(10px * var(--ui-scale)) !important;
             }
             .settings-actions {
-                position: absolute;
-                left: 0;
-                right: 0;
-                bottom: 16px;
+                position: static;
+                left: auto;
+                right: auto;
+                bottom: auto;
                 top: auto;
                 width: 100%;
                 box-sizing: border-box;
                 transform: none;
-                margin-top: 0;
-                z-index: 5;
+                margin-top: calc(28px * var(--ui-scale));
+                z-index: auto;
                 background: transparent;
                 padding-top: calc(4px * var(--ui-scale));
                 padding-bottom: calc(6px * var(--ui-scale));
