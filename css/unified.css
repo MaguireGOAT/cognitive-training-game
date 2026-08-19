@@ -717,7 +717,8 @@
             --settings-screen-pad-bottom: var(--screen-pad-y);
             --settings-header-gap: var(--screen-gap-sm);
             --settings-subtitle-gap: var(--screen-gap-md);
-            --settings-actions-gap: var(--screen-gap-md);
+            --settings-options-gap: calc(18px * var(--ui-scale));
+            --settings-actions-gap: var(--settings-options-gap);
             --settings-options-pad-y: calc(10px * var(--ui-scale));
             --settings-options-max-width: min(calc(var(--avail-w) - calc(48px * var(--ui-scale))), calc(620px * var(--ui-scale)));
         }
@@ -732,11 +733,13 @@
             position: static;
         }
         .settings-screen .settings-options {
+            gap: var(--settings-options-gap);
             max-width: var(--settings-options-max-width);
         }
         .settings-screen .settings-actions {
             width: 100%;
             max-width: var(--settings-options-max-width);
+            margin-top: calc(var(--settings-actions-gap) - var(--settings-options-pad-y));
         }
         .settings-screen .settings-actions > button {
             width: 100%;
@@ -779,7 +782,7 @@
         }
         .settings-screen--scroll .settings-actions {
             position: static;
-            margin-top: var(--settings-actions-gap);
+            margin-top: calc(var(--settings-actions-gap) - var(--settings-options-pad-y));
             margin-bottom: 0;
         }
 
@@ -863,8 +866,8 @@
             :root {
                 --top-bar-h: 38px;
                 --control-h: 32px;
-                --safe-cap-left: 14px;
-                --safe-cap-right: 6px;
+                --safe-cap-left: 10px;
+                --safe-cap-right: 10px;
                 --safe-cap-bottom: 0px;  /* 手機橫屏：安全區域上限（裝置回報值超過即截斷） */
                 --stage-avail-w: calc(var(--avail-w) - calc(8px * var(--ui-scale)));
             }
@@ -986,7 +989,6 @@
             .settings-screen {
                 --settings-screen-pad-y: clamp(20px, 7vh, 28px);
                 --settings-screen-pad-bottom: clamp(16px, 6vh, 24px);
-                --settings-actions-gap: var(--screen-gap-md);
             }
             .slide-menu {
                 width: min(225px, 61.5vw);
