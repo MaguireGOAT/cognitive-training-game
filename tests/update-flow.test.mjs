@@ -231,3 +231,78 @@ test('router home entry installs a deferred update', async function () {
 
     assert.equal(loader.counts().shown, 2);
 });
+test('progress bar stays below 100 until the update is fully active', async function () {
+    const oldWorker = createWorker('activated');
+    const registration = createRegistration(oldWorker);
+    const newWorker = createWorker('installing');
+    registration.update = async function () {
+        this.updateCalls++;
+        this.installing = newWorker;
+        this.emit('updatefound');
+    };
+    const container = createServiceWorkerContainer(registration);
+    const loader = createLoader();
+    const flow = createUpdateFlow({
+        navigator: {
+            serviceWorker: container,
+            onLine: true
+        },
+        loader
+    });
+
+    const startPromise = flow.start();
+    await new Promise(resolve => setImmediate(resolve));
+    await new Promise(resolve => setImmediate(resolve));
+
+    // precache 中途：低於封頂照實顯示
+    container.emit('message', { data: { type: 'cognitive-precache-progress', loaded: 50, total: 100 } });
+    // precache 完成：仍應停在 95%（activation 尚未完成）
+    container.emit('message', { data: { type: 'cognitive-precache-progress', loaded: 100, total: 100, done: true } });
+    await new Promise(resolve => setImmediate(resolve));
+
+    assert.equal(loader.counts().hidden, 0);
+    assert.deepEqual(loader.counts().progress[loader.counts().progress.length - 1], [95, 100]);
+
+    // activation 完成 → 100% + 隱藏
+    newWorker.state = 'activated';
+    newWorker.emit('statechange');
+    await startPromise;
+
+    assert.deepEqual(loader.counts().progress[loader.counts().progress.length - 1], [1, 1]);
+    assert.equal(loader.counts().hidden, 1);
+});
+
+test('progress cap is configurable via progressCapPercent', async function () {
+    const oldWorker = createWorker('activated');
+    const registration = createRegistration(oldWorker);
+    const newWorker = createWorker('installing');
+    registration.update = async function () {
+        this.updateCalls++;
+        this.installing = newWorker;
+        this.emit('updatefound');
+    };
+    const container = createServiceWorkerContainer(registration);
+    const loader = createLoader();
+    const flow = createUpdateFlow({
+        navigator: {
+            serviceWorker: container,
+            onLine: true
+        },
+        loader,
+        progressCapPercent: 80
+    });
+
+    const startPromise = flow.start();
+    await new Promise(resolve => setImmediate(resolve));
+    await new Promise(resolve => setImmediate(resolve));
+
+    container.emit('message', { data: { type: 'cognitive-precache-progress', loaded: 100, total: 100, done: true } });
+    await new Promise(resolve => setImmediate(resolve));
+
+    assert.deepEqual(loader.counts().progress[loader.counts().progress.length - 1], [80, 100]);
+
+    newWorker.state = 'activated';
+    newWorker.emit('statechange');
+    await startPromise;
+    assert.equal(loader.counts().hidden, 1);
+});

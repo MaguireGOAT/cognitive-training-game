@@ -69,6 +69,11 @@ The user asked to standardise everything after documenting this context. Approve
 - The shared feedback card contract in `css/unified.css` now also lists `.gng-grid-container .gng-card` and `.nback-image-container` (needed for specificity).
 - Image areas are transparent (`.food-card .food-image`, `.shopping-*-card .food-image`) so the card feedback tint shows through the now background-free images.
 - Grid stage sizing uses the real stage height: new `js/layout.js` measures each game stage and sets `--stage-h = min(fallback, real)` (the formula already supported the `--stage-h` override). Grid `gap` now renders from `--grid-gap-h/--grid-gap-v` tokens, and multi-row shopping grids (5/6/8) reserve shadow space via `--stage-inner-extra-h`.
+## Boot progress bar matches the real update process (2026-08-19)
+
+- The progress bar only reflected the service-worker precache phase; the loader stayed up through worker activation, so it sat at 100% while the page waited.
+- `js/update-flow.js` now caps precache progress at `progressCapPercent` (default 95, single tunable option) and only sets 100% when the update is fully active (activation done / reload), right before the loader hides. So 100% ⇔ home appears.
+- Verified: first-install live run shows the bar climbing to 95%, then hiding immediately at completion; unit tests cover the plateau and the configurable cap.
 ## Implementation Notes
 
 ### Top bar

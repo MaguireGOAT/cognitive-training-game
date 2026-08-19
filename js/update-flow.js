@@ -18,6 +18,8 @@
         var registerUrl = adapters.registerUrl || 'sw.js';
         var startupUpdateTimeoutMs = adapters.startupUpdateTimeoutMs || 8000;
         var installTimeoutMs = adapters.installTimeoutMs || 90000;
+        // 進度條封頂：precache 完成後還有 activation，先停在 95%，真正完成才顯示 100%
+        var progressCapPercent = adapters.progressCapPercent != null ? adapters.progressCapPercent : 95;
         var firstInstallWaitMs = adapters.firstInstallWaitMs || 3000;
 
         var started = false;
@@ -51,10 +53,13 @@
             if (typeof locationRef.reload === 'function') locationRef.reload();
         }
 
-        function complete() {
+        function complete(success) {
             if (bootTimer && typeof clearTimeoutRef === 'function') {
                 clearTimeoutRef(bootTimer);
                 bootTimer = null;
+            }
+            if (success) {
+                setProgress(1, 1);
             }
             hideLoader();
             if (ready) return;
@@ -80,7 +85,13 @@
         function onProgressMessage(event) {
             var data = event && event.data;
             if (!data || data.type !== 'cognitive-precache-progress') return;
-            setProgress(data.loaded, data.total);
+            var total = data.total;
+            var cap = Math.max(0, Math.min(100, progressCapPercent));
+            var cappedLoaded = data.loaded;
+            if (total > 0 && cap < 100) {
+                cappedLoaded = Math.min(data.loaded, Math.max(0, Math.round(total * cap / 100)));
+            }
+            setProgress(cappedLoaded, total);
             if (data.done && installWaiter) {
                 var finish = installWaiter;
                 installWaiter = null;
@@ -166,10 +177,11 @@
                 })
                 .then(function () {
                     if (shouldReload && registration.active && registration.active.state === 'activated') {
+                        setProgress(1, 1);
                         reloadForUpdate();
                         return;
                     }
-                    complete();
+                    complete(true);
                 });
         }
 

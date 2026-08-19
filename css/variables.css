@@ -81,6 +81,8 @@
             --error-text: #d32f2f;
             --control-bg-nback: #f8f9fa;
             --slide-item-hover: #e8e0d8;
+            --badge-on-color: #42a5f5;
+            --badge-off-color: #888;
             --nback-brown: #5D4037;
             --toggle-on-bg: rgba(59, 168, 123, 0.25);
             --btn-shadow-correct: 0 calc(6px * var(--ui-scale)) 0 #2a7a5a;

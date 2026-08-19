@@ -69,8 +69,8 @@
                 if (audio) audio.playMusic();
             }
 
-            function badge(on) {
-                return on ? '●' : '○';
+            function badgeSpan(id, on) {
+                return '<span class="state-badge' + (on ? ' on' : '') + '" id="' + id + '"></span>';
             }
 
             function updateBadges() {
@@ -78,20 +78,17 @@
                 if (themeBtn) {
                     var dark = settings.theme === 'dark';
                     themeBtn.innerHTML = (dark ? '☀️ 淺色模式' : '🌑 深色模式') +
-                        ' <span class="state-badge" id="themeBadge" style="color:' +
-                        (dark ? '#42a5f5' : '#888') + ';">' + badge(dark) + '</span>';
+                        ' ' + badgeSpan('themeBadge', dark);
                 }
                 var musicBtn = document.getElementById('slideBgMusicBtn');
                 if (musicBtn) {
                     musicBtn.innerHTML = (settings.music ? '🔊 背景音樂' : '🔇 背景音樂') +
-                        ' <span class="state-badge" id="bgMusicBadge" style="color:' +
-                        (settings.music ? '#42a5f5' : '#888') + ';">' + badge(settings.music) + '</span>';
+                        ' ' + badgeSpan('bgMusicBadge', settings.music);
                 }
                 var sfxBtn = document.getElementById('slideSfxBtn');
                 if (sfxBtn) {
                     sfxBtn.innerHTML = (settings.sfx ? '🔊 音效' : '🔇 音效') +
-                        ' <span class="state-badge" id="sfxBadge" style="color:' +
-                        (settings.sfx ? '#42a5f5' : '#888') + ';">' + badge(settings.sfx) + '</span>';
+                        ' ' + badgeSpan('sfxBadge', settings.sfx);
                 }
             }
 
