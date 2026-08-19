@@ -90,12 +90,10 @@
             if (magnifyName) {
                 magnifyName.style.opacity = showNames ? '1' : '0';
             }
-            nameBadge.textContent = showNames ? '●' : '○';
-            nameBadge.style.color = showNames ? '#42a5f5' : '#888';
+            nameBadge.classList.toggle('on', showNames);
             const shoppingNameBadge = document.getElementById('shoppingNameBadge');
             if (shoppingNameBadge) {
-                shoppingNameBadge.textContent = showNames ? '●' : '○';
-                shoppingNameBadge.style.color = showNames ? '#42a5f5' : '#888';
+                shoppingNameBadge.classList.toggle('on', showNames);
             }
         }
 

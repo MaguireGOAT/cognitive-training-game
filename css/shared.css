@@ -870,6 +870,21 @@
             border-color: var(--badge-on-color);
             background: var(--badge-on-color);
         }
+
+        .action-btn .state-badge {
+            margin-left: calc(4px * var(--ui-scale));
+            flex-shrink: 0;
+            width: calc(16px * var(--ui-scale));
+            height: calc(16px * var(--ui-scale));
+            border-radius: 50%;
+            border: calc(2px * var(--ui-scale)) solid var(--badge-off-color);
+            background: transparent;
+            box-sizing: border-box;
+        }
+        .action-btn .state-badge.on {
+            border-color: var(--badge-on-color);
+            background: var(--badge-on-color);
+        }
         .slide-menu .menu-divider {
             border-top: calc(2px * var(--ui-scale)) solid var(--border-color, var(--divider, #d4c5b8));
             margin: calc(4px * var(--ui-scale)) 0;
