@@ -1005,7 +1005,7 @@
                 --settings-screen-pad-bottom: clamp(16px, 6vh, 24px);
             }
             .slide-menu {
-                width: min(225px, 61.5vw);
+                width: min(200px, 55vw);
             }
             .slide-menu .menu-item {
                 white-space: nowrap;

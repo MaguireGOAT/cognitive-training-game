@@ -810,7 +810,7 @@
             position: fixed;
             top: 0;
             right: 0;
-            width: calc(300px * var(--ui-scale));
+            width: calc(260px * var(--ui-scale));
             height: 100%;
             background: var(--slide-bg, var(--menu-bg, rgba(255, 255, 255, 0.96)));
             box-shadow: var(--slide-shadow, 0 0 calc(20px * var(--ui-scale)) rgba(0, 0, 0, 0.15));
