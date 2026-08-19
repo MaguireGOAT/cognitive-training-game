@@ -320,16 +320,16 @@
             resetGngTimer();
         }
 
-        let gngFeedbackTimer = null;
+        let gngCardsTimer = null;
 
-        function flashGngFeedback(btn, correct) {
-            if (!btn) return;
-            clearTimeout(gngFeedbackTimer);
-            btn.classList.remove('feedback-correct', 'feedback-wrong');
-            void btn.offsetWidth;
-            btn.classList.add(correct ? 'feedback-correct' : 'feedback-wrong');
-            gngFeedbackTimer = setTimeout(function () {
-                btn.classList.remove('feedback-correct', 'feedback-wrong');
+        // 回饋燈光落在遊戲卡片上（而非按鈕）
+        function flashGngCards(correct) {
+            clearTimeout(gngCardsTimer);
+            const cards = Array.from(gngGridContainer.querySelectorAll('.gng-card'));
+            cards.forEach(card => card.classList.remove('feedback-correct', 'feedback-wrong'));
+            cards.forEach(card => card.classList.add(correct ? 'feedback-correct' : 'feedback-wrong'));
+            gngCardsTimer = setTimeout(function () {
+                cards.forEach(card => card.classList.remove('feedback-correct', 'feedback-wrong'));
             }, 600);
         }
 
@@ -350,7 +350,7 @@
                 CognitiveAudio.play('wrong');
                 window.CognitiveFeedback.show(gngGridWrapper, '❌ 再試一次！', 'wrong');
             }
-            flashGngFeedback(isGo ? gngGoBtn : gngNoGoBtn, correct);
+            flashGngCards(correct);
             gngState.totalTrials++;
             updateGngScore();
 

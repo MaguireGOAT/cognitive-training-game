@@ -54,17 +54,6 @@
             sizeMagnifyImage();
         }
 
-        // 從 CSS Token 解析實際長度（與 CSS --avail-w/h 同一來源，安全區域一致）
-        function resolveCssVarLength(name, axis) {
-            const probe = document.createElement('div');
-            probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;left:0;top:0;';
-            if (axis === 'h') probe.style.height = name;
-            else probe.style.width = name;
-            document.body.appendChild(probe);
-            const size = axis === 'h' ? probe.getBoundingClientRect().height : probe.getBoundingClientRect().width;
-            probe.remove();
-            return size;
-        }
         function sizeMagnifyImage() {
             const overlay = document.getElementById('magnifyOverlay');
             const image = document.getElementById('magnifyImage');
@@ -84,8 +73,8 @@
             wrapper.style.height = prevHeight || '1px';
 
             const pad = 20;
-            const availW = Math.max(160, resolveCssVarLength('var(--avail-w)', 'w') - nonImageW - pad);
-            const availH = Math.max(160, resolveCssVarLength('var(--avail-h)', 'h') - nonImageH - pad);
+            const availW = Math.max(160, CognitiveLayout.resolveCssVarLength('var(--avail-w)', 'w') - nonImageW - pad);
+            const availH = Math.max(160, CognitiveLayout.resolveCssVarLength('var(--avail-h)', 'h') - nonImageH - pad);
             const naturalW = image.naturalWidth || availW;
             const naturalH = image.naturalHeight || availW;
             const scale = Math.min(availW / naturalW, availH / naturalH);

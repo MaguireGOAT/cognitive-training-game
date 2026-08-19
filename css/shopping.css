@@ -41,7 +41,7 @@
 
         .shopping-list-grid {
             display: grid;
-            gap: calc(18px * var(--ui-scale));
+            gap: var(--grid-gap-h) var(--grid-gap-v);
             justify-content: space-between;
             align-items: stretch;
             align-content: center;
@@ -117,7 +117,8 @@
             position: relative;
             border-radius: calc(18px * var(--ui-scale));
             overflow: hidden;
-            background: var(--card-bg);
+            /* 圖片已去背：圖片區透明，讓卡片底色／回饋燈光透出 */
+            background: transparent;
         }
         .shopping-list-card .food-image img {
             position: absolute;
@@ -208,7 +209,8 @@
             position: relative;
             border-radius: calc(22px * var(--ui-scale));
             overflow: hidden;
-            background: var(--card-bg);
+            /* 圖片已去背：圖片區透明，讓卡片底色／回饋燈光透出 */
+            background: transparent;
         }
         .shopping-order-card .food-image img {
             position: absolute;
@@ -350,7 +352,7 @@
         }
         .shopping-recall-grid {
             display: grid;
-            gap: calc(14px * var(--ui-scale));
+            gap: var(--grid-gap-h) var(--grid-gap-v);
             justify-content: center;
             align-items: stretch;
             align-content: center;
@@ -424,7 +426,8 @@
             position: relative;
             border-radius: calc(18px * var(--ui-scale));
             overflow: hidden;
-            background: var(--card-bg);
+            /* 圖片已去背：圖片區透明，讓卡片底色／回饋燈光透出 */
+            background: transparent;
         }
         .shopping-recall-card .food-image img {
             position: absolute;
@@ -485,7 +488,7 @@
 
         /* 底部狀態 */
         .shopping-controls {
-            gap: calc(18px * var(--ui-scale));
+            gap: var(--grid-gap-h) var(--grid-gap-v);
             flex-wrap: wrap;
         }
         .shopping-progress {

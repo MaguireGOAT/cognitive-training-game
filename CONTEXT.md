@@ -63,6 +63,12 @@ The user asked to standardise everything after documenting this context. Approve
 - Phone block no longer overrides `.game-container` bottom padding with a hardcoded `4px`; it uses the shared token-driven padding.
 - `js/food/ui.js` magnify sizing now resolves `--avail-w/--avail-h` (same source as CSS, safe-area aware) instead of raw `window.innerWidth/innerHeight`.
 - Reality location spans gained styles: `.reality-location-region` (bold) and `.reality-location-suffix` (smaller/dimmer).
+## Feedback + shopping grid fix pass (2026-08-19)
+
+- Feedback lighting now lands on the game surface, not the buttons: Go/No Go lights the current `.gng-card`s, Single N-back lights `#nbackImageContainer`, Dual N-back keeps lighting its grid cells. Button colour-change feedback was removed (GNG/N-back/Dual) and the unused `--feedback-correct-strong`/`--feedback-wrong-strong` tokens were deleted.
+- The shared feedback card contract in `css/unified.css` now also lists `.gng-grid-container .gng-card` and `.nback-image-container` (needed for specificity).
+- Image areas are transparent (`.food-card .food-image`, `.shopping-*-card .food-image`) so the card feedback tint shows through the now background-free images.
+- Grid stage sizing uses the real stage height: new `js/layout.js` measures each game stage and sets `--stage-h = min(fallback, real)` (the formula already supported the `--stage-h` override). Grid `gap` now renders from `--grid-gap-h/--grid-gap-v` tokens, and multi-row shopping grids (5/6/8) reserve shadow space via `--stage-inner-extra-h`.
 ## Implementation Notes
 
 ### Top bar

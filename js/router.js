@@ -22,6 +22,9 @@
                 if (typeof window !== 'undefined' && typeof window.syncTopBarCentering === 'function') {
                     window.syncTopBarCentering();
                 }
+                if (typeof window !== 'undefined' && typeof window.syncStageHeights === 'function') {
+                    window.syncStageHeights();
+                }
             };
         var transitioning = false;
         var transitionTimer = null;

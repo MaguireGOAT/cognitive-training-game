@@ -13,7 +13,7 @@
         }
         .grid-container {
             display: grid;
-            gap: calc(16px * var(--ui-scale));
+            gap: var(--grid-gap-h) var(--grid-gap-v);
             justify-content: space-between;
             align-items: center;
             align-content: center;
@@ -93,7 +93,8 @@
             position: relative;
             border-radius: calc(18px * var(--ui-scale));
             overflow: hidden;
-            background: var(--card-bg);
+            /* 圖片已去背：圖片區透明，讓卡片底色／回饋燈光透出 */
+            background: transparent;
         }
         .food-card .food-image img {
             position: absolute;

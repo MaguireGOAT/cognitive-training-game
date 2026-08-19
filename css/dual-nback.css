@@ -162,14 +162,7 @@
     transform: translateY(calc(-2px * var(--ui-scale)));
     box-shadow: var(--btn-shadow-correct);
 }
-.dual-match-controls .dual-match-btn.feedback-correct {
-    background: var(--feedback-correct-strong);
-    box-shadow: var(--btn-shadow-correct);
-}
-.dual-match-controls .dual-match-btn.feedback-wrong {
-    background: var(--feedback-wrong-strong);
-    box-shadow: var(--btn-shadow-wrong);
-}
+
 [data-theme="dark"] .dual-match-controls .dual-match-btn {
     background: #0d47a1;
     box-shadow: var(--btn-shadow-correct);
@@ -179,12 +172,6 @@
     box-shadow: var(--btn-shadow-correct);
 }
 
-[data-theme="dark"] .dual-match-controls .dual-match-btn.feedback-correct {
-    background: var(--feedback-correct-strong);
-}
-[data-theme="dark"] .dual-match-controls .dual-match-btn.feedback-wrong {
-    background: var(--feedback-wrong-strong);
-}
 
 @media (max-width: 640px) {
     .settings-screen [style*="display:flex"] [style*="display:flex"] {

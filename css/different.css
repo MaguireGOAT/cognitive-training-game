@@ -13,7 +13,7 @@
 }
 .different-grid-container {
     display: grid;
-    gap: calc(16px * var(--ui-scale));
+    gap: var(--grid-gap-h) var(--grid-gap-v);
     justify-content: space-between;
     align-items: center;
     align-content: center;

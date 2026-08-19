@@ -151,16 +151,16 @@
             }, NBACK_TRANSITION_MS);
         }
 
-        let nbackFeedbackTimer = null;
+        let nbackImageTimer = null;
 
-        function flashNbackFeedback(btn, correct) {
-            if (!btn) return;
-            clearTimeout(nbackFeedbackTimer);
-            btn.classList.remove('feedback-correct', 'feedback-wrong');
-            void btn.offsetWidth;
-            btn.classList.add(correct ? 'feedback-correct' : 'feedback-wrong');
-            nbackFeedbackTimer = setTimeout(function () {
-                btn.classList.remove('feedback-correct', 'feedback-wrong');
+        // 回饋燈光落在遊戲圖片容器上（而非按鈕）
+        function flashNbackImage(correct) {
+            clearTimeout(nbackImageTimer);
+            nbackImageContainer.classList.remove('feedback-correct', 'feedback-wrong');
+            void nbackImageContainer.offsetWidth;
+            nbackImageContainer.classList.add(correct ? 'feedback-correct' : 'feedback-wrong');
+            nbackImageTimer = setTimeout(function () {
+                nbackImageContainer.classList.remove('feedback-correct', 'feedback-wrong');
             }, 600);
         }
 
@@ -188,7 +188,7 @@
                 showNbackFeedback('❌ 再試一次！', 'wrong');
                 CognitiveAudio.play('wrong');
             }
-            flashNbackFeedback(isMatch ? nbackMatchBtn : nbackNotMatchBtn, correct);
+            flashNbackImage(correct);
             nbackState.totalTrials++;
             updateNbackScore();
 

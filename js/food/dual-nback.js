@@ -293,15 +293,6 @@
                     target.classList.remove('feedback-correct', 'feedback-wrong');
                 });
             }, 600);
-
-            const btn = dualNbackMatchButtons.querySelector(`[data-channel="${channel}"]`);
-            if (!btn) return;
-            btn.classList.remove('feedback-correct', 'feedback-wrong');
-            void btn.offsetWidth;
-            btn.classList.add(correct ? 'feedback-correct' : 'feedback-wrong');
-            setTimeout(function() {
-                btn.classList.remove('feedback-correct', 'feedback-wrong');
-            }, 600);
         }
 
         function handleDualNbackMatch(channel) {

@@ -369,6 +369,8 @@
         .feedback-correct,
         .food-card.feedback-correct,
         .different-grid-container .different-card.feedback-correct,
+        .gng-grid-container .gng-card.feedback-correct,
+        .nback-image-container.feedback-correct,
         .shopping-list-card.feedback-correct,
         .shopping-order-card.feedback-correct,
         .shopping-recall-card.feedback-correct {
@@ -379,6 +381,8 @@
         .feedback-wrong,
         .food-card.feedback-wrong,
         .different-grid-container .different-card.feedback-wrong,
+        .gng-grid-container .gng-card.feedback-wrong,
+        .nback-image-container.feedback-wrong,
         .shopping-list-card.feedback-wrong,
         .shopping-order-card.feedback-wrong,
         .shopping-recall-card.feedback-wrong {
