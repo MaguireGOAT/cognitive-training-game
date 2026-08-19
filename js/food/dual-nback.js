@@ -325,6 +325,7 @@
             if (newSpeed > 10) newSpeed = 10;
             dualNbackState.speed = newSpeed;
             dualNbackSpeedDisplay.textContent = newSpeed;
+            dualNbackActivity.setSpeed(newSpeed);
             if (dualNbackState.isPlaying) dualNbackActivity.reset();
         }
 

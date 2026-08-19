@@ -6,8 +6,14 @@
 
     function createAudioEngine(adapters) {
         adapters = adapters || {};
-        var storage = adapters.storage ||
-            (typeof window !== 'undefined' ? window.localStorage : null);
+        var storage = adapters.storage;
+        if (!storage && typeof window !== 'undefined') {
+            try {
+                storage = window.localStorage;
+            } catch (error) {
+                storage = null;
+            }
+        }
         var settingsStore = adapters.settingsStore ||
             (typeof window !== 'undefined' ? window.CognitiveSettingsStore : null);
         var schedule = adapters.schedule || function (fn, ms) {

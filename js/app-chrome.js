@@ -2,10 +2,26 @@
             'use strict';
 
             var store = window.CognitiveSettingsStore;
-            var THEME_KEY = store.keys.theme;
-            var MUSIC_KEY = store.keys.music;
-            var SFX_KEY = store.keys.sfx;
+            var THEME_KEY = store && store.keys ? store.keys.theme : 'cognitiveAppTheme';
+            var MUSIC_KEY = store && store.keys ? store.keys.music : 'cognitiveAppMusic';
+            var SFX_KEY = store && store.keys ? store.keys.sfx : 'cognitiveAppSfx';
             var audio = window.CognitiveAudio || null;
+
+            function loadSetting(key) {
+                return store && typeof store.load === 'function' ? store.load(key) : {};
+            }
+
+            function persistSetting(key, patch) {
+                if (!store || typeof store.save !== 'function') return false;
+                try {
+                    return store.save(key, patch);
+                } catch (error) {
+                    if (window.console && typeof window.console.warn === 'function') {
+                        window.console.warn('Could not persist setting "' + key + '":', error);
+                    }
+                    return false;
+                }
+            }
 
             function notifySettingsChanged() {
                 var event;
@@ -19,29 +35,29 @@
             }
 
             var settings = {
-                theme: store.load(THEME_KEY).theme,
-                music: audio ? audio.getMusicEnabled() : store.load(MUSIC_KEY).music,
-                sfx: audio ? audio.getSfxEnabled() : store.load(SFX_KEY).sfx,
+                theme: loadSetting(THEME_KEY).theme === 'dark' ? 'dark' : 'light',
+                music: audio ? audio.getMusicEnabled() : loadSetting(MUSIC_KEY).music !== false,
+                sfx: audio ? audio.getSfxEnabled() : loadSetting(SFX_KEY).sfx !== false,
                 setTheme: function (value) {
                     settings.theme = value === 'dark' ? 'dark' : 'light';
-                    store.save(THEME_KEY, { theme: settings.theme });
                     applyTheme();
                     updateBadges();
                     notifySettingsChanged();
+                    persistSetting(THEME_KEY, { theme: settings.theme });
                 },
                 setMusic: function (value) {
                     settings.music = !!value;
-                    store.save(MUSIC_KEY, { music: settings.music });
                     updateBadges();
                     notifySettingsChanged();
                     if (audio) audio.setMusicEnabled(settings.music);
+                    persistSetting(MUSIC_KEY, { music: settings.music });
                 },
                 setSfx: function (value) {
                     settings.sfx = !!value;
-                    store.save(SFX_KEY, { sfx: settings.sfx });
                     updateBadges();
                     notifySettingsChanged();
                     if (audio) audio.setSfxEnabled(settings.sfx);
+                    persistSetting(SFX_KEY, { sfx: settings.sfx });
                 }
             };
             window.CognitiveSettings = settings;
@@ -53,9 +69,9 @@
 
             function refreshSettingsFromStorage() {
                 if (audio) audio.syncFromStorage();
-                settings.theme = store.load(THEME_KEY).theme;
-                settings.music = audio ? audio.getMusicEnabled() : store.load(MUSIC_KEY).music;
-                settings.sfx = audio ? audio.getSfxEnabled() : store.load(SFX_KEY).sfx;
+                settings.theme = loadSetting(THEME_KEY).theme === 'dark' ? 'dark' : 'light';
+                settings.music = audio ? audio.getMusicEnabled() : loadSetting(MUSIC_KEY).music !== false;
+                settings.sfx = audio ? audio.getSfxEnabled() : loadSetting(SFX_KEY).sfx !== false;
                 applyTheme();
                 updateBadges();
                 notifySettingsChanged();

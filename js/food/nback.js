@@ -218,6 +218,7 @@
             if (newSpeed > 10) newSpeed = 10;
             nbackState.speed = newSpeed;
             nbackSpeedDisplay.textContent = newSpeed;
+            nbackActivity.setSpeed(newSpeed);
             if (nbackState.isPlaying) {
                 nbackActivity.reset();
             }

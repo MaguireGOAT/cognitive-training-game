@@ -189,19 +189,30 @@
     }
 
     function writeStored(storage, key, value, format) {
-        if (!storage) return;
-        if (format === 'json') {
-            storage.setItem(key, JSON.stringify(value));
-        } else {
-            var fieldKeys = Object.keys(value);
-            storage.setItem(key, String(value[fieldKeys[0]]));
+        if (!storage) return false;
+        try {
+            if (format === 'json') {
+                storage.setItem(key, JSON.stringify(value));
+            } else {
+                var fieldKeys = Object.keys(value);
+                storage.setItem(key, String(value[fieldKeys[0]]));
+            }
+            return true;
+        } catch (error) {
+            return false;
         }
     }
 
     function createSettingsStore(options) {
         options = options || {};
-        var storage = options.storage ||
-            (typeof window !== 'undefined' ? window.localStorage : null);
+        var storage = options.storage;
+        if (!storage && typeof window !== 'undefined') {
+            try {
+                storage = window.localStorage;
+            } catch (error) {
+                storage = null;
+            }
+        }
         var schemas = options.schemas || DEFAULT_SCHEMAS;
 
         function getSchema(key) {
@@ -213,7 +224,14 @@
         function load(key) {
             var schema = getSchema(key);
             var result = clone(schema.default);
-            var raw = storage && storage.getItem(key);
+            var raw = null;
+            if (storage) {
+                try {
+                    raw = storage.getItem(key);
+                } catch (error) {
+                    raw = null;
+                }
+            }
             if (raw === null || raw === undefined) return result;
 
             var parsed = parseStored(raw, schema.format);
@@ -264,8 +282,7 @@
             }
 
             if (!storage) return false;
-            writeStored(storage, key, next, schema.format);
-            return true;
+            return writeStored(storage, key, next, schema.format);
         }
 
         return {

@@ -1,6 +1,6 @@
 # Cognitive Training PWA - Current Change Context
 
-Updated: 2026-08-17
+Updated: 2026-08-20
 
 ## Project
 
@@ -10,6 +10,25 @@ Updated: 2026-08-17
 - There is already an uncommitted universal-scaling refactor in the working tree. Do not overwrite it.
 - `AGENTS.md` is untracked and must stay excluded from commits.
 - Do not push without explicit user permission.
+
+## QA findings decisions (2026-08-20)
+
+From the browser QA pass (automated + adversarial):
+
+- N-back and Dual N-back speed `＋／－` now apply immediately during play: the speed handlers call
+  `Activity.setSpeed(newSpeed)` before `reset()` (matching GNG and palm). Previously only the
+  display changed; the actual interval stayed at the session-start speed until restart.
+- Settings storage is now defensive: `CognitiveSettingsStore.load/save` swallow quota/security
+  errors and return defaults/false, and `js/app-chrome.js` guards a missing store so the slide menu
+  and theme/music/sfx toggles survive blocked or full `localStorage` (e.g. Safari private mode).
+  Theme/music/sfx changes apply for the current session even when they cannot persist.
+- Manifest `display: "fullscreen"` is intentional (hide the status bar for a game feel; iOS ignores
+  `display` and always launches standalone). Keep it.
+- Compact phone-landscape touch sizes (back/hamburger 38px, magnify/speed/play 34px, match buttons
+  29px, shopping start ~26px on the smallest screens) are an accepted tradeoff of the phone block;
+  they are below the 44px desktop minimum by design.
+- Back buttons stay inert while instruction message boxes are open (deliberate modal flow; dismiss
+  first, then navigate).
 
 ## User Decision For This Pass
 

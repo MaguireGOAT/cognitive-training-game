@@ -186,3 +186,29 @@ test('singleton is available from the module', function () {
     assert.equal(typeof CognitiveSettingsStore.load, 'function');
     assert.equal(typeof CognitiveSettingsStore.save, 'function');
 });
+
+test('save returns false without throwing when storage writes fail', function () {
+    const storage = {
+        getItem: () => null,
+        setItem: () => {
+            throw new DOMException('QuotaExceededError', 'QuotaExceededError');
+        }
+    };
+    const store = createSettingsStore({ storage: storage, schemas: createSchemas() });
+    assert.equal(store.save('flagKey', { enabled: false }), false);
+    assert.deepEqual(store.load('flagKey'), { enabled: true });
+});
+
+test('load returns defaults and save degrades when storage reads throw', function () {
+    const storage = {
+        getItem: () => {
+            throw new DOMException('SecurityError', 'SecurityError');
+        },
+        setItem: () => {
+            throw new DOMException('SecurityError', 'SecurityError');
+        }
+    };
+    const store = createSettingsStore({ storage: storage, schemas: createSchemas() });
+    assert.deepEqual(store.load('flagKey'), { enabled: true });
+    assert.equal(store.save('flagKey', { enabled: false }), false);
+});
