@@ -79,12 +79,13 @@
             --menu-chrome-h: calc(300px * var(--ui-scale));
             --menu-avail-h: calc(var(--avail-h) - var(--menu-chrome-h));
             --menu-card-min: calc(96px * var(--ui-scale));
+            --menu-row-compact-scale: 1;
             --menu-card: max(
                 var(--menu-card-min),
                 min(
                     calc((var(--menu-width) - (var(--menu-ref-cols) - 1) * var(--menu-gap)) / var(--menu-ref-cols)),
                     calc((var(--menu-avail-h) - (var(--menu-rows) - 1) * var(--menu-row-gap)) / var(--menu-rows))
-                )
+                ) * var(--menu-row-compact-scale)
             );
             display: grid;
             grid-template-columns: repeat(var(--menu-cols), var(--menu-card));
@@ -97,7 +98,7 @@
         .menu-grid.menu-cols-4 { --menu-cols: 4; }
         .menu-grid.menu-cols-2 { --menu-cols: 2; }
         .menu-grid.menu-rows-1 { --menu-rows: 1; }
-        .menu-grid.menu-rows-2 { --menu-rows: 2; }
+        .menu-grid.menu-rows-2 { --menu-rows: 2; --menu-row-compact-scale: 0.85; }
         .menu-grid .category-btn {
             width: var(--menu-card);
             height: var(--menu-card);
