@@ -97,8 +97,8 @@
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
             transition: var(--btn-transition);
-            height: max(44px, calc(44px * var(--ui-scale)));
-            min-height: 44px;
+            height: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            min-height: var(--tap-min);
         }
         [data-theme="dark"] .nback-n-select {
             background: #0d47a1;

@@ -179,6 +179,13 @@
     box-shadow: var(--btn-shadow-correct);
 }
 
+[data-theme="dark"] .dual-match-controls .dual-match-btn.feedback-correct {
+    background: var(--feedback-correct-strong);
+}
+[data-theme="dark"] .dual-match-controls .dual-match-btn.feedback-wrong {
+    background: var(--feedback-wrong-strong);
+}
+
 @media (max-width: 640px) {
     .settings-screen [style*="display:flex"] [style*="display:flex"] {
         flex-wrap: wrap;

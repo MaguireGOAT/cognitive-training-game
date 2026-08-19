@@ -54,6 +54,15 @@ The user asked to standardise everything after documenting this context. Approve
 - Verified at 844x390: container padding = 19.85/11.85px when a device reports 47/21 (capped to 14/6); 5.85px when it reports 0; desktop stays 12px.
 - Accepted trade-off: 14px is below the physical corner radius (~55px), so top-corner buttons sit under the corner curve on rounded-corner phones.
 - Preview tool (not part of the app): `tools/food-game-safe-area-preview.html` + `tools/food-game-safe-area-frame.html` simulate the insets and can be removed after approval.
+## Contradiction-fix pass (2026-08-19)
+
+- Find Different card lighting was dead: `.different-grid-container .different-card` (0,2,0) out-specified the shared `.feedback-correct/.feedback-wrong` (0,1,0). The shared rules in `css/unified.css` now list every game card selector explicitly; add new game cards to that list when adding a game.
+- Dark-mode Dual N-back match-button flash was invisible: added `[data-theme="dark"]` feedback-strong rules after the dark base rules in `css/dual-nback.css`.
+- Dead tokens removed from `css/variables.css`: `--primary-blue`, `--control-text`, `--press-anim`.
+- `--tap-min` is now the single source for the 44px touch minimum (top bar, control height, back/hamburger/action buttons) instead of scattered `44px` literals.
+- Phone block no longer overrides `.game-container` bottom padding with a hardcoded `4px`; it uses the shared token-driven padding.
+- `js/food/ui.js` magnify sizing now resolves `--avail-w/--avail-h` (same source as CSS, safe-area aware) instead of raw `window.innerWidth/innerHeight`.
+- Reality location spans gained styles: `.reality-location-region` (bold) and `.reality-location-suffix` (smaller/dimmer).
 ## Implementation Notes
 
 ### Top bar

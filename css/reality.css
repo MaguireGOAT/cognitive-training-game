@@ -183,8 +183,17 @@
         [data-theme="dark"] .reality-static {
             color: var(--text-color);
         }
+        .reality-location-region {
+            font-weight: 700;
+        }
         .reality-location-home {
             color: var(--text-color);
+            font-size: 0.62em;
+            opacity: 0.9;
+        }
+        .reality-location-suffix {
+            font-size: 0.62em;
+            opacity: 0.72;
         }
 
         .reality-duo {

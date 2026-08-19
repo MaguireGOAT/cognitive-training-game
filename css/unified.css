@@ -220,8 +220,8 @@
         #palm #swapBtn,
         #palm .speed-control,
         #palm .play-btn {
-            height: max(44px, calc(47px * var(--ui-scale)));
-            min-height: 44px;
+            height: max(var(--tap-min), calc(47px * var(--ui-scale)));
+            min-height: var(--tap-min);
         }
         #palm #swapBtn {
             background: var(--btn-bg);
@@ -267,8 +267,8 @@
         #palm .speed-btn {
             width: calc(28px * var(--ui-scale));
             height: calc(28px * var(--ui-scale));
-            min-width: 44px;
-            min-height: 44px;
+            min-width: var(--tap-min);
+            min-height: var(--tap-min);
             border: none;
             border-radius: 50%;
             background: transparent;
@@ -317,8 +317,8 @@
             transition: color 0.3s;
         }
         #palm .play-btn {
-            width: max(44px, calc(47px * var(--ui-scale)));
-            min-width: 44px;
+            width: max(var(--tap-min), calc(47px * var(--ui-scale)));
+            min-width: var(--tap-min);
             border-radius: 50%;
             background: var(--nback-brown);
         }
@@ -364,13 +364,24 @@
             box-shadow: var(--panel-shadow) !important;
         }
 
-        /* Shared right/wrong feedback lighting. */
-        .feedback-correct {
+        /* Shared right/wrong feedback lighting.
+           卡片類別請加入下方清單，確保共用燈光不會被各遊戲卡片的基礎樣式（更高 specificity）蓋過。 */
+        .feedback-correct,
+        .food-card.feedback-correct,
+        .different-grid-container .different-card.feedback-correct,
+        .shopping-list-card.feedback-correct,
+        .shopping-order-card.feedback-correct,
+        .shopping-recall-card.feedback-correct {
             border-color: var(--feedback-correct-border);
             background: var(--feedback-correct-bg);
             box-shadow: var(--feedback-correct-glow);
         }
-        .feedback-wrong {
+        .feedback-wrong,
+        .food-card.feedback-wrong,
+        .different-grid-container .different-card.feedback-wrong,
+        .shopping-list-card.feedback-wrong,
+        .shopping-order-card.feedback-wrong,
+        .shopping-recall-card.feedback-wrong {
             border-color: var(--feedback-wrong-border);
             background: var(--feedback-wrong-bg);
             box-shadow: var(--feedback-wrong-glow);
@@ -852,13 +863,13 @@
             .magnify-btn,
             .play-btn,
             .speed-btn {
-                min-width: 44px;
-                min-height: 44px;
+                min-width: var(--tap-min);
+                min-height: var(--tap-min);
             }
             .back-btn,
             .hamburger-btn {
-                width: 44px;
-                height: 44px;
+                width: var(--tap-min);
+                height: var(--tap-min);
             }
             .magnify-btn {
                 width: 38px;
@@ -941,9 +952,6 @@
             .speed-btn {
                 width: 34px;
                 height: 34px;
-            }
-            .game-container {
-                padding-bottom: 4px;
             }
             .bottom-controls {
                 border-top: none;

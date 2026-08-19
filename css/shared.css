@@ -415,8 +415,8 @@
             background: rgba(255,255,255,0.9);
             border: none;
             border-radius: 50%;
-            width: max(44px, calc(48px * var(--ui-scale)));
-            height: max(44px, calc(48px * var(--ui-scale)));
+            width: max(var(--tap-min), calc(48px * var(--ui-scale)));
+            height: max(var(--tap-min), calc(48px * var(--ui-scale)));
             font-size: calc(24px * var(--ui-scale));
             cursor: pointer;
             z-index: 10;
@@ -609,8 +609,8 @@
             white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
             line-height: 1.4;
-            height: max(44px, calc(44px * var(--ui-scale)));
-            min-height: 44px;
+            height: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            min-height: var(--tap-min);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -629,8 +629,8 @@
             align-items: center;
             gap: calc(4px * var(--ui-scale));
             transition: background 0.4s, color 0.4s;
-            height: max(44px, calc(44px * var(--ui-scale)));
-            min-height: 44px;
+            height: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            min-height: var(--tap-min);
         }
         .score-display span {
             color: #b37b4b;
@@ -646,8 +646,8 @@
             padding: 0 calc(12px * var(--ui-scale));
             border-radius: calc(40px * var(--ui-scale));
             transition: background 0.4s;
-            height: max(44px, calc(44px * var(--ui-scale)));
-            min-height: 44px;
+            height: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            min-height: var(--tap-min);
         }
         .dropdown-wrapper label {
             font-size: calc(18px * var(--ui-scale));
@@ -724,8 +724,8 @@
            ================================================================ */
         .back-btn,
         .hamburger-btn {
-            width: max(44px, calc(44px * var(--ui-scale)));
-            height: max(44px, calc(44px * var(--ui-scale)));
+            width: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            height: max(var(--tap-min), calc(44px * var(--ui-scale)));
             padding: 0;
             display: flex;
             align-items: center;
@@ -742,7 +742,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         .save-btn {
-            height: max(44px, calc(44px * var(--ui-scale)));
+            height: max(var(--tap-min), calc(44px * var(--ui-scale)));
             padding: 0 calc(16px * var(--ui-scale));
             display: flex;
             align-items: center;

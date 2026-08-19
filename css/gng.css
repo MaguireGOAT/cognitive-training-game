@@ -84,8 +84,8 @@
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
             transition: var(--btn-transition);
-            height: max(44px, calc(44px * var(--ui-scale)));
-            min-height: 44px;
+            height: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            min-height: var(--tap-min);
         }
         [data-theme="dark"] .gng-n-select {
             background: #0d47a1;
@@ -140,8 +140,8 @@
             height: var(--control-h);
         }
         .speed-btn {
-            width: max(44px, calc(28px * var(--ui-scale)));
-            height: max(44px, calc(28px * var(--ui-scale)));
+            width: max(var(--tap-min), calc(28px * var(--ui-scale)));
+            height: max(var(--tap-min), calc(28px * var(--ui-scale)));
             border: none;
             border-radius: 50%;
             background: transparent;
@@ -193,8 +193,8 @@
 
         /* 播放按鈕 (共用) */
         .play-btn {
-            width: max(44px, calc(47px * var(--ui-scale)));
-            height: max(44px, calc(47px * var(--ui-scale)));
+            width: max(var(--tap-min), calc(47px * var(--ui-scale)));
+            height: max(var(--tap-min), calc(47px * var(--ui-scale)));
             border: none;
             border-radius: 50%;
             background: var(--nback-brown);
