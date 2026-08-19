@@ -38,11 +38,12 @@
             align-items: flex-start;
             gap: calc(8px * var(--ui-scale));
         }
-        .reality-edit-btn {
-            padding: 0;
-            border-radius: 50%;
-        }
+        .reality-edit-btn,
         .action-btn.reality-edit-btn {
+            width: var(--chrome-size);
+            height: var(--chrome-size);
+            min-width: var(--chrome-size);
+            min-height: var(--chrome-size);
             padding: 0;
             border-radius: 50%;
         }

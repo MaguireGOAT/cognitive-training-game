@@ -719,9 +719,7 @@
             --settings-subtitle-gap: var(--screen-gap-md);
             --settings-actions-gap: var(--screen-gap-md);
             --settings-options-pad-y: calc(10px * var(--ui-scale));
-            --settings-options-width: calc(600px * var(--ui-scale));
-            --settings-actions-scale: 2;
-            --settings-actions-max-width: calc(var(--settings-options-width) * var(--settings-actions-scale));
+            --settings-options-max-width: min(calc(var(--avail-w) - calc(48px * var(--ui-scale))), calc(620px * var(--ui-scale)));
         }
         .settings-screen--centered {
             justify-content: center;
@@ -733,9 +731,12 @@
         .settings-screen--centered .settings-actions {
             position: static;
         }
+        .settings-screen .settings-options {
+            max-width: var(--settings-options-max-width);
+        }
         .settings-screen .settings-actions {
             width: 100%;
-            max-width: var(--settings-actions-max-width);
+            max-width: var(--settings-options-max-width);
         }
         .settings-screen .settings-actions > button {
             width: 100%;
@@ -902,10 +903,10 @@
                 font-size: calc(24px * var(--ui-scale));
             }
             .reality-edit-btn {
-                width: 38px;
-                height: 38px;
-                min-width: 38px;
-                min-height: 38px;
+                width: var(--chrome-size);
+                height: var(--chrome-size);
+                min-width: var(--chrome-size);
+                min-height: var(--chrome-size);
                 padding: 0;
             }
             .score-display {
