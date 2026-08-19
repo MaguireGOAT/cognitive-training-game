@@ -71,6 +71,7 @@
         .category-grid.menu-grid,
         .home-grid.menu-grid {
             --menu-gap: calc(18px * var(--ui-scale));
+            --menu-row-gap: var(--menu-gap);
             --menu-cols: 4;
             --menu-rows: 1;
             --menu-width: min(calc(var(--avail-w) - calc(64px * var(--ui-scale))), calc(1240px * var(--ui-scale)));
@@ -82,7 +83,7 @@
                 var(--menu-card-min),
                 min(
                     calc((var(--menu-width) - (var(--menu-ref-cols) - 1) * var(--menu-gap)) / var(--menu-ref-cols)),
-                    calc((var(--menu-avail-h) - (var(--menu-rows) - 1) * var(--menu-gap)) / var(--menu-rows))
+                    calc((var(--menu-avail-h) - (var(--menu-rows) - 1) * var(--menu-row-gap)) / var(--menu-rows))
                 )
             );
             display: grid;
