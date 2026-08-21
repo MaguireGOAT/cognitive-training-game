@@ -148,8 +148,8 @@
 
         function updateGngRuleDisplay(showPopup = false) {
             const { goCat, noGoCat } = getGngRule();
-            const goDisplay = goCat === '全部' ? '全部' : goCat;
-            const noGoDisplay = noGoCat === '全部' ? '全部' : noGoCat;
+            const goDisplay = goCat === '全部' ? '其他' : goCat;
+            const noGoDisplay = noGoCat === '全部' ? '其他' : noGoCat;
             gngGoLabel.textContent = goDisplay;
             gngNoGoLabel.textContent = noGoDisplay;
             if (showPopup) {
@@ -475,8 +475,8 @@
             e.stopPropagation();
             const currentGo = gngState.goCategory;
             const currentNoGo = gngState.noGoCategory;
-            const goDisplay = currentGo === '全部' ? '全部' : currentGo;
-            const noGoDisplay = currentNoGo === '全部' ? '全部' : currentNoGo;
+            const goDisplay = currentGo === '全部' ? '其他' : currentGo;
+            const noGoDisplay = currentNoGo === '全部' ? '其他' : currentNoGo;
 
             window.CognitiveMessage.show({
                 title: '🔄 立即切換任務',
