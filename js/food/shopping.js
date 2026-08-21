@@ -797,6 +797,19 @@
             }
         });
 
+        if (window.CognitiveKeyboard) {
+            window.CognitiveKeyboard.registerScreen('shoppingGame', {
+                arrowleft: function () {
+                    if (shoppingState.phase !== 'order') return false;
+                    if (shoppingState.orderIndex > 0) showOrderItem(shoppingState.orderIndex - 1);
+                },
+                arrowright: function () {
+                    if (shoppingState.phase !== 'order') return false;
+                    showOrderItem(shoppingState.orderIndex + 1);
+                }
+            });
+        }
+
         shoppingNameToggleBtn.addEventListener('click', function() {
             showNames = !showNames;
             applyNameVisibility();

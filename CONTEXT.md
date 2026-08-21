@@ -13,6 +13,16 @@ Updated: 2026-08-21
 - Terminology: dual N-back code renamed channel → modality (matches the existing 模態 UI labels).
 - New files: js/keyboard.js, 	ests/keyboard.test.mjs; sw.js regenerated.
 
+## Keyboard round 2 (2026-08-21)
+
+- Settings screens (GNG, Dual N-back, Shopping, RO): ↑/↓ move a visible focus ring across controls; a focused select keeps its native arrow behavior; Enter/Space/Tab stay native.
+- N-back and GNG: ← previous / → next image (works paused or playing).
+- Shopping order-memorize phase: ←/→ flip cards; recall-grid arrows still work (keymap handlers can return false to fall through to the grid).
+- `  ` (backtick) toggles the side menu.
+- - / = adjust speed in GNG, N-back, Dual N-back, and Palm.
+- Help box now lists only the unintuitive keys (J/K, , -/=, P, S); obvious arrows/Enter/Esc omitted.
+- Bug fixes: focus ring no longer clipped at screen edges (stage wrappers get horizontal padding via css/unified.css); RO edit button sized like .hamburger-btn (max(tap-min, 44px*scale), 38px on phone).
+
 
 ## Project
 

@@ -40,10 +40,10 @@
         }
         .reality-edit-btn,
         .action-btn.reality-edit-btn {
-            width: var(--chrome-size);
-            height: var(--chrome-size);
-            min-width: var(--chrome-size);
-            min-height: var(--chrome-size);
+            width: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            height: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            min-width: max(var(--tap-min), calc(44px * var(--ui-scale)));
+            min-height: max(var(--tap-min), calc(44px * var(--ui-scale)));
             padding: 0;
             border-radius: 50%;
         }

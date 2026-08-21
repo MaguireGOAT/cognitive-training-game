@@ -435,6 +435,8 @@
                     const modalities = dualNbackState.modalities;
                     if (modalities[1]) handleDualNbackMatch(modalities[1]);
                 },
+                '-': function () { changeDualNbackSpeed(-1); },
+                '=': function () { changeDualNbackSpeed(1); },
                 p: startDual
             });
         }

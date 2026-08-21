@@ -923,10 +923,10 @@
                 font-size: calc(24px * var(--ui-scale));
             }
             .reality-edit-btn {
-                width: var(--chrome-size);
-                height: var(--chrome-size);
-                min-width: var(--chrome-size);
-                min-height: var(--chrome-size);
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+                min-height: 38px;
                 padding: 0;
             }
             .score-display {
@@ -1057,5 +1057,5 @@
         #nbackGame .nback-grid-wrapper,
         #dualNbackGame .dual-stage,
         #shoppingGame .shopping-stage {
-            padding: calc(2px * var(--ui-scale)) 0;
+            padding: calc(2px * var(--ui-scale)) calc(10px * var(--ui-scale));
         }

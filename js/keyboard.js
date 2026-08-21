@@ -194,6 +194,80 @@
         return controller;
     }
 
+    // Settings-style list: arrow keys move focus across controls with the
+    // visible ring; Enter/Space/Tab stay native. A focused select/input keeps
+    // its native arrow behavior.
+    function createControlListController(containerEl, options) {
+        options = options || {};
+        var selector = options.selector || 'select, button, [role="button"], input, textarea';
+        var current = -1;
+
+        function collect() {
+            return Array.prototype.slice.call(containerEl.querySelectorAll(selector))
+                .filter(function (el) {
+                    var r = el.getBoundingClientRect();
+                    return r.width > 0 && r.height > 0;
+                });
+        }
+
+        function setFocused(index) {
+            collect().forEach(function (el, i) {
+                if (i === index) {
+                    el.classList.add('kb-focus');
+                    if (typeof el.focus === 'function') el.focus();
+                } else {
+                    el.classList.remove('kb-focus');
+                }
+            });
+            current = index;
+        }
+
+        function reset() {
+            collect().forEach(function (el) {
+                el.classList.remove('kb-focus');
+            });
+            current = -1;
+        }
+
+        function handleKey(key) {
+            if (documentRef && documentRef.activeElement &&
+                isTypingTarget(documentRef.activeElement)) {
+                return false;
+            }
+            var items = collect();
+            if (items.length === 0) return false;
+            if (key === 'arrowup' || key === 'arrowdown' ||
+                key === 'arrowleft' || key === 'arrowright') {
+                if (current < 0) {
+                    setFocused(0);
+                } else {
+                    var rects = items.map(function (el) {
+                        var r = el.getBoundingClientRect();
+                        return { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+                    });
+                    var direction = key === 'arrowup' ? 'up' :
+                        key === 'arrowdown' ? 'down' :
+                        key === 'arrowleft' ? 'left' : 'right';
+                    var next = findNeighborIndex(current, rects, direction);
+                    if (next >= 0) setFocused(next);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        return {
+            handleKey: handleKey,
+            reset: reset
+        };
+    }
+
+    function attachControlList(screenId, containerEl, options) {
+        var controller = createControlListController(containerEl, options);
+        grids[screenId] = controller;
+        return controller;
+    }
+
     // ------------------------------------------------------------------
     // Dispatcher
     // ------------------------------------------------------------------
@@ -287,13 +361,29 @@
             }
         }
 
+        if (key === '`') {
+            event.preventDefault();
+            if (global.CognitiveMenu &&
+                typeof global.CognitiveMenu.isOpen === 'function' &&
+                typeof global.CognitiveMenu.open === 'function' &&
+                typeof global.CognitiveMenu.close === 'function') {
+                if (global.CognitiveMenu.isOpen()) {
+                    global.CognitiveMenu.close();
+                } else {
+                    global.CognitiveMenu.open();
+                }
+            }
+            return;
+        }
+
         var screen = syncActiveScreen();
         if (!screen) return;
 
         var keymap = screens[screen] && screens[screen].keys;
         if (keymap && typeof keymap[key] === 'function') {
-            keymap[key](event);
-            return;
+            // A handler may return false to fall through (e.g. shopping order
+            // phase vs. the recall grid both use arrow keys).
+            if (keymap[key](event) !== false) return;
         }
 
         var grid = grids[screen];
@@ -336,28 +426,18 @@
     // ------------------------------------------------------------------
 
     function getHelpHtml() {
-        var section = function (label) {
-            return '<div class="help-section">' + label + '</div>';
-        };
+        // Only the unintuitive mappings are listed; arrow/Enter/Space/Esc are
+        // obvious and omitted on purpose.
         var line = function (keys, text) {
             return '<div class="help-line"><span class="help-key">' + keys +
                 '</span> ' + text + '</div>';
         };
         return '<div class="help-heading">⌨️ 鍵盤操作</div>' +
-            section('遊戲內') +
             line('J / K', '— 按左 / 右按鈕（如：相同 / 不相同、Go / 不Go）') +
-            line('← ↑ ↓ →', '— 移動選擇') +
-            line('Enter / Space', '— 確認選擇') +
+            line('`', '— 開啟 / 關閉側邊選單') +
+            line('- / =', '— 調節速度') +
             line('P', '— 開始 / 暫停') +
-            line('Esc', '— 返回') +
-            section('選單') +
-            line('← →', '— 移動選擇') +
-            line('Enter', '— 開啟') +
-            line('Esc', '— 返回') +
-            section('手掌遊戲') +
-            line('← / →', '— 下一張') +
-            line('P', '— 開始 / 暫停') +
-            line('S', '— 左右交換');
+            line('S', '— 左右交換（手掌遊戲）');
     }
 
     function showHelp() {
@@ -377,11 +457,25 @@
     // API
     // ------------------------------------------------------------------
 
+    function enableSettingsNavigation() {
+        if (!documentRef || !documentRef.getElementById) return;
+        ['gngSettings', 'dualNbackSettings', 'shoppingSettings', 'realitySettings']
+            .forEach(function (id) {
+                var screenEl = documentRef.getElementById(id);
+                if (!screenEl) return;
+                var container = screenEl.querySelector('.settings-options');
+                if (container) {
+                    attachControlList(id, container, { selector: 'select, button' });
+                }
+            });
+    }
+
     function start() {
         if (documentRef && typeof documentRef.addEventListener === 'function') {
             documentRef.addEventListener('keydown', handleKeydown);
         }
         enableMenuNavigation();
+        enableSettingsNavigation();
     }
 
     var api = {

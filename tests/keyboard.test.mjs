@@ -23,6 +23,13 @@ test('normalizeKey maps keyboard keys to canonical names', function () {
     assert.equal(keyboard.normalizeKey(null), '');
 });
 
+test('normalizeKey keeps speed and side-menu keys', function () {
+    assert.equal(keyboard.normalizeKey('-'), '-');
+    assert.equal(keyboard.normalizeKey('='), '=');
+    assert.equal(keyboard.normalizeKey('`'), '`');
+    assert.equal(keyboard.normalizeKey('+'), '+');
+});
+
 test('resolveGlobalAction is modal-first for Escape', function () {
     assert.equal(keyboard.resolveGlobalAction('escape', { messageOpen: true }), 'dismiss-message');
     assert.equal(

@@ -123,7 +123,7 @@
             window.CognitiveFeedback.clear(nbackGridWrapper);
         }
 
-        function nextNbackImage(fromTimer = false) {
+        function nbackShowTrial(index) {
             if (nbackState.transitioning) return;
             nbackActivity.hold();
             nbackState.transitioning = true;
@@ -133,11 +133,7 @@
             nbackImageContainer.classList.add('is-exiting');
             nbackState.transitionTimer = setTimeout(() => {
                 if (token !== nbackState.animationToken) return;
-                nbackState.currentIndex++;
-                if (nbackState.currentIndex >= nbackState.sequence.length) {
-                    nbackState.sequence = generateNbackSequence(50);
-                    nbackState.currentIndex = 0;
-                }
+                nbackState.currentIndex = index;
                 const trial = nbackState.sequence[nbackState.currentIndex];
                 nbackImageContainer.classList.remove('is-exiting');
                 nbackImageContainer.classList.add('is-entering');
@@ -149,6 +145,20 @@
                 }, NBACK_TRANSITION_MS);
                 nbackActivity.reset();
             }, NBACK_TRANSITION_MS);
+        }
+
+        function nextNbackImage(fromTimer = false) {
+            let next = nbackState.currentIndex + 1;
+            if (next >= nbackState.sequence.length) {
+                nbackState.sequence = generateNbackSequence(50);
+                next = 0;
+            }
+            nbackShowTrial(next);
+        }
+
+        function prevNbackImage() {
+            if (nbackState.currentIndex <= 0) return;
+            nbackShowTrial(nbackState.currentIndex - 1);
         }
 
         let nbackImageTimer = null;
@@ -282,6 +292,10 @@
             window.CognitiveKeyboard.registerScreen('nbackGame', {
                 j: function () { handleNbackMatch(true); },
                 k: function () { handleNbackMatch(false); },
+                arrowleft: prevNbackImage,
+                arrowright: nextNbackImage,
+                '-': function () { changeNbackSpeed(-1); },
+                '=': function () { changeNbackSpeed(1); },
                 p: function () { if (nbackState.isPlaying) { pauseNback(); } else { startNback(); } }
             });
         }

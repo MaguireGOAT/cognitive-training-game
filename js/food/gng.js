@@ -320,6 +320,13 @@
             resetGngTimer();
         }
 
+        function prevGngImage() {
+            if (gngState.currentIndex <= 0) return;
+            gngState.currentIndex--;
+            renderGngImage();
+            resetGngTimer();
+        }
+
         let gngCardsTimer = null;
 
         // 回饋燈光落在遊戲卡片上（而非按鈕）
@@ -453,6 +460,10 @@
             window.CognitiveKeyboard.registerScreen('gngGame', {
                 j: function () { handleGngResponse(true); },
                 k: function () { handleGngResponse(false); },
+                arrowleft: prevGngImage,
+                arrowright: nextGngImage,
+                '-': function () { changeGngSpeed(-1); },
+                '=': function () { changeGngSpeed(1); },
                 p: function () { if (gngState.isPlaying) { pauseGng(); } else { startGng(); } }
             });
         }
