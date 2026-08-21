@@ -231,9 +231,6 @@
         restartTimerIfPlaying();
     }
 
-    function isPalmVisible() {
-        return !document.getElementById('palm').classList.contains('hidden');
-    }
 
     function syncPalmLayout() {
         if (!palmGrid || !palmBoard) return;
@@ -290,12 +287,14 @@
         changeSpeed(-1);
     });
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key !== ' ' || !isPalmVisible()) return;
-        if (event.target !== document.body) return;
-        event.preventDefault();
-        updateGame();
-    });
+    if (window.CognitiveKeyboard) {
+        window.CognitiveKeyboard.registerScreen('palm', {
+            arrowleft: switchImageManually,
+            arrowright: switchImageManually,
+            p: togglePlay,
+            s: swapGestures
+        });
+    }
 
     if (window.ResizeObserver) {
         var palmResizeObserver = new ResizeObserver(syncPalmLayout);

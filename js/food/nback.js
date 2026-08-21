@@ -278,20 +278,13 @@
             }
         });
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === ' ' && !document.activeElement?.matches('input, button, select')) {
-                e.preventDefault();
-                if (!document.getElementById('nbackGame').classList.contains('hidden')) {
-                    handleNbackMatch(true);
-                }
-            }
-            if (e.key === 'n' && !document.activeElement?.matches('input, button, select')) {
-                e.preventDefault();
-                if (!document.getElementById('nbackGame').classList.contains('hidden')) {
-                    handleNbackMatch(false);
-                }
-            }
-        });
+        if (window.CognitiveKeyboard) {
+            window.CognitiveKeyboard.registerScreen('nbackGame', {
+                j: function () { handleNbackMatch(true); },
+                k: function () { handleNbackMatch(false); },
+                p: function () { if (nbackState.isPlaying) { pauseNback(); } else { startNback(); } }
+            });
+        }
 
         nbackSpeedDisplay.textContent = nbackState.speed;
         nbackNSelect.value = nbackState.n;

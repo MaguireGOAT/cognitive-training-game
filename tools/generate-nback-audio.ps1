@@ -59,7 +59,7 @@ foreach ($item in $items) {
 $synth.Dispose()
 
 $manifestLines = New-Object 'System.Collections.Generic.List[string]'
-$manifestLines.Add('        // Generated Cantonese audio map for N-back channels.')
+$manifestLines.Add('        // Generated Cantonese audio map for N-back modalities.')
 $manifestLines.Add('        const NBACK_AUDIO_MAP = {')
 foreach ($item in $items) {
     $key = $item.Id.Replace("'", "\'")

@@ -925,3 +925,57 @@
         [data-theme="dark"] .feedback-pill {
             background: rgba(30, 30, 50, 0.95);
         }
+
+        /* ================================================================
+           鍵盤操作
+           ================================================================ */
+        /* 用方向鍵移動格線時的高亮外框（roving tabindex + kb-focus）。 */
+        .kb-focus {
+            outline: calc(4px * var(--ui-scale)) solid #ffb300 !important;
+            outline-offset: calc(3px * var(--ui-scale)) !important;
+        }
+        [data-theme="dark"] .kb-focus {
+            outline-color: #ffb300;
+        }
+
+        /* 鍵盤操作說明彈窗（側滑選單 → 鍵盤操作）。 */
+        .message-box .msg-text.help-list {
+            font-size: calc(26px * var(--ui-scale));
+            font-weight: 600;
+            letter-spacing: normal;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .message-box .msg-text.help-list .help-heading {
+            font-size: calc(34px * var(--ui-scale));
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: calc(2px * var(--ui-scale));
+            margin-bottom: calc(6px * var(--ui-scale));
+            color: var(--text-color);
+        }
+        .message-box .msg-text.help-list .help-section {
+            margin-top: calc(10px * var(--ui-scale));
+            font-weight: 700;
+            color: var(--muted-text);
+            font-size: calc(24px * var(--ui-scale));
+        }
+        .message-box .msg-text.help-list .help-line {
+            margin-top: calc(2px * var(--ui-scale));
+        }
+        .message-box .msg-text.help-list .help-key {
+            display: inline-block;
+            min-width: calc(30px * var(--ui-scale));
+            text-align: center;
+            padding: calc(1px * var(--ui-scale)) calc(10px * var(--ui-scale));
+            margin-right: calc(8px * var(--ui-scale));
+            border-radius: calc(8px * var(--ui-scale));
+            background: rgba(0, 0, 0, 0.08);
+            border: calc(1px * var(--ui-scale)) solid var(--border-color);
+            color: var(--text-color);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        [data-theme="dark"] .message-box .msg-text.help-list .help-key {
+            background: rgba(255, 255, 255, 0.10);
+        }

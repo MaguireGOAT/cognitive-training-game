@@ -16,6 +16,12 @@
         const differentGameScreen = document.getElementById('differentGame');
         const differentGridWrapper = document.getElementById('differentGridWrapper');
         const differentGridContainer = document.getElementById('differentGridContainer');
+        const differentGridKeys = window.CognitiveKeyboard
+            ? window.CognitiveKeyboard.attachGrid('differentGame', differentGridContainer, {
+                cardSelector: '.different-card',
+                onConfirm: function (index) { handleDifferentCardClick(index); }
+            })
+            : null;
         const differentScoreNum = document.getElementById('differentScoreNum');
         const differentRoundInfo = document.getElementById('differentRoundInfo');
         const differentBackBtn = document.getElementById('differentBackBtn');
@@ -123,6 +129,7 @@
                     differentGridContainer.appendChild(createDifferentCard(item, index));
                 });
             }
+            if (differentGridKeys) differentGridKeys.reset();
         }
 
         function handleDifferentCardClick(index) {

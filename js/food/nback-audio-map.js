@@ -1,4 +1,4 @@
-        // Generated Cantonese audio map for N-back channels.
+        // Generated Cantonese audio map for N-back modalities.
         const NBACK_AUDIO_MAP = {
             '蘋果': 'assets/audio/nback/000.mp3',
             '香蕉': 'assets/audio/nback/001.mp3',

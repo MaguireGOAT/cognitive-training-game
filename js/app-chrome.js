@@ -384,6 +384,17 @@
                 });
             }
 
+            var helpBtn = document.getElementById('slideHelpBtn');
+            if (helpBtn) {
+                helpBtn.addEventListener('click', function () {
+                    animateMenuTo(false);
+                    if (window.CognitiveKeyboard &&
+                        typeof window.CognitiveKeyboard.showHelp === 'function') {
+                        window.CognitiveKeyboard.showHelp();
+                    }
+                });
+            }
+
             if (window.CognitiveRouter && typeof window.CognitiveRouter.defineScreen === 'function') {
                 window.CognitiveRouter.defineScreen('home', { back: 'home' });
             }

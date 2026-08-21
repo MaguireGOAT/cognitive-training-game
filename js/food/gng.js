@@ -449,6 +449,14 @@
         gngGoBtn.addEventListener('click', function() { handleGngResponse(true); });
         gngNoGoBtn.addEventListener('click', function() { handleGngResponse(false); });
 
+        if (window.CognitiveKeyboard) {
+            window.CognitiveKeyboard.registerScreen('gngGame', {
+                j: function () { handleGngResponse(true); },
+                k: function () { handleGngResponse(false); },
+                p: function () { if (gngState.isPlaying) { pauseGng(); } else { startGng(); } }
+            });
+        }
+
         gngSpeedDown.addEventListener('click', function() { changeGngSpeed(-1); });
         gngSpeedUp.addEventListener('click', function() { changeGngSpeed(1); });
 

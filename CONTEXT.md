@@ -1,6 +1,18 @@
 # Cognitive Training PWA - Current Change Context
 
-Updated: 2026-08-20
+Updated: 2026-08-21
+
+## Keyboard support (2026-08-21)
+
+- Desktop-only keyboard shortcuts via a central js/keyboard.js dispatcher: one global keydown routes by the router's active screen, with a single guard (ignore when focus is in an input/select or a message box / slide menu / magnify overlay is open).
+- Reaction games use J/K = left/right button: GNG (Go/No-Go), N-back (相同/不相同 — the old Space/N handlers were removed), Dual N-back (modality 1 / modality 2).
+- Grid games (Food, Find Different, Shopping recall) use a roving-tabindex ring: arrows move a visible ring (stop at edges, appears on first arrow press, resets per round), Enter/Space confirm.
+- Palm: ←/→ advance, P play/pause, S swap hands (Space handler removed).
+- Global: Esc is modal-first (message box → slide menu → magnify → back); arrows+Enter navigate the menu screens; P toggles play/pause on the four play-button games.
+- Side menu has a ⌨️ 鍵盤操作 item that opens the help message box (list of keys).
+- Terminology: dual N-back code renamed channel → modality (matches the existing 模態 UI labels).
+- New files: js/keyboard.js, 	ests/keyboard.test.mjs; sw.js regenerated.
+
 
 ## Project
 
