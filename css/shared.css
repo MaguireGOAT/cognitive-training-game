@@ -859,10 +859,10 @@
         .slide-menu .menu-item .state-badge {
             margin-left: auto;
             flex-shrink: 0;
-            width: calc(20px * var(--ui-scale));
-            height: calc(20px * var(--ui-scale));
+            width: calc(16px * var(--ui-scale));
+            height: calc(16px * var(--ui-scale));
             border-radius: 50%;
-            border: calc(3px * var(--ui-scale)) solid var(--badge-off-color);
+            border: calc(2px * var(--ui-scale)) solid var(--badge-off-color);
             background: transparent;
             box-sizing: border-box;
         }
