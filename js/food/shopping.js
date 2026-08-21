@@ -39,12 +39,6 @@
         const shoppingListGrid = document.getElementById('shoppingListGrid');
         const shoppingListHint = document.getElementById('shoppingListHint');
         const shoppingRecallGrid = document.getElementById('shoppingRecallGrid');
-        const shoppingGridKeys = window.CognitiveKeyboard
-            ? window.CognitiveKeyboard.attachGrid('shoppingGame', shoppingRecallGrid, {
-                cardSelector: '.shopping-recall-card',
-                onConfirm: function (index) { handleShoppingCardClick(index); }
-            })
-            : null;
         const shoppingOrderItem = document.getElementById('shoppingOrderItem');
         const shoppingOrderIndicator = document.getElementById('shoppingOrderIndicator');
         const shoppingOrderLightbulb = document.getElementById('shoppingOrderLightbulb');
@@ -479,7 +473,6 @@
                 shoppingRecallGrid.appendChild(card);
             });
             applyNameVisibility();
-            if (shoppingGridKeys) shoppingGridKeys.reset();
         }
 
         function updateShoppingScore() {
@@ -797,18 +790,6 @@
             }
         });
 
-        if (window.CognitiveKeyboard) {
-            window.CognitiveKeyboard.registerScreen('shoppingGame', {
-                arrowleft: function () {
-                    if (shoppingState.phase !== 'order') return false;
-                    if (shoppingState.orderIndex > 0) showOrderItem(shoppingState.orderIndex - 1);
-                },
-                arrowright: function () {
-                    if (shoppingState.phase !== 'order') return false;
-                    showOrderItem(shoppingState.orderIndex + 1);
-                }
-            });
-        }
 
         shoppingNameToggleBtn.addEventListener('click', function() {
             showNames = !showNames;

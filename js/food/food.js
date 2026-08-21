@@ -19,12 +19,6 @@
         let showNames = true;
 
         const grid = document.getElementById('gridContainer');
-        const foodGridKeys = window.CognitiveKeyboard
-            ? window.CognitiveKeyboard.attachGrid('foodGame', grid, {
-                cardSelector: '.food-card',
-                onConfirm: function (index) { handleFoodCardClick(index); }
-            })
-            : null;
         const foodGridWrapper = document.querySelector('#foodGame .grid-wrapper');
         const questionText = document.getElementById('questionText');
         const foodScoreNum = document.getElementById('foodScoreNum');
@@ -239,7 +233,6 @@
                 grid.appendChild(card);
             });
             applyNameVisibility();
-            if (foodGridKeys) foodGridKeys.reset();
         }
 
         function handleFoodCardClick(index) {

@@ -156,10 +156,6 @@
             nbackShowTrial(next);
         }
 
-        function prevNbackImage() {
-            if (nbackState.currentIndex <= 0) return;
-            nbackShowTrial(nbackState.currentIndex - 1);
-        }
 
         let nbackImageTimer = null;
 
@@ -292,8 +288,7 @@
             window.CognitiveKeyboard.registerScreen('nbackGame', {
                 j: function () { handleNbackMatch(true); },
                 k: function () { handleNbackMatch(false); },
-                arrowleft: prevNbackImage,
-                arrowright: nextNbackImage,
+                space: function () { if (!nbackState.matchPending && !nbackState.transitioning) nextNbackImage(); },
                 '-': function () { changeNbackSpeed(-1); },
                 '=': function () { changeNbackSpeed(1); },
                 p: function () { if (nbackState.isPlaying) { pauseNback(); } else { startNback(); } }

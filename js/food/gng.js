@@ -320,12 +320,6 @@
             resetGngTimer();
         }
 
-        function prevGngImage() {
-            if (gngState.currentIndex <= 0) return;
-            gngState.currentIndex--;
-            renderGngImage();
-            resetGngTimer();
-        }
 
         let gngCardsTimer = null;
 
@@ -460,8 +454,7 @@
             window.CognitiveKeyboard.registerScreen('gngGame', {
                 j: function () { handleGngResponse(true); },
                 k: function () { handleGngResponse(false); },
-                arrowleft: prevGngImage,
-                arrowright: nextGngImage,
+                space: function () { if (!gngState.matchPending) { gngState.timerPaused = false; nextGngImage(); } },
                 '-': function () { changeGngSpeed(-1); },
                 '=': function () { changeGngSpeed(1); },
                 p: function () { if (gngState.isPlaying) { pauseGng(); } else { startGng(); } }

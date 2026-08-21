@@ -929,14 +929,6 @@
         /* ================================================================
            鍵盤操作
            ================================================================ */
-        /* 用方向鍵移動格線時的高亮外框（roving tabindex + kb-focus）。 */
-        .kb-focus {
-            outline: calc(4px * var(--ui-scale)) solid #ffb300 !important;
-            outline-offset: calc(3px * var(--ui-scale)) !important;
-        }
-        [data-theme="dark"] .kb-focus {
-            outline-color: #ffb300;
-        }
 
         /* 鍵盤操作說明彈窗（側滑選單 → 鍵盤操作）。 */
         .message-box .msg-text.help-list {

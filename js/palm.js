@@ -289,12 +289,9 @@
 
     if (window.CognitiveKeyboard) {
         window.CognitiveKeyboard.registerScreen('palm', {
-            arrowleft: switchImageManually,
-            arrowright: switchImageManually,
             '-': function () { changeSpeed(-1); },
             '=': function () { changeSpeed(1); },
-            p: togglePlay,
-            s: swapGestures
+            p: togglePlay
         });
     }
 

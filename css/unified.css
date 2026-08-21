@@ -1057,5 +1057,5 @@
         #nbackGame .nback-grid-wrapper,
         #dualNbackGame .dual-stage,
         #shoppingGame .shopping-stage {
-            padding: calc(2px * var(--ui-scale)) calc(10px * var(--ui-scale));
+            padding: calc(2px * var(--ui-scale)) 0;
         }
